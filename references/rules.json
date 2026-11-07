@@ -1,0 +1,1713 @@
+{
+ "schema_version": "3.0",
+ "generated_note": "双源规则库：manual=C01-C13 从旧 attribution.py COMBINATIONS 逐条迁移（members/min_hits/evidence_fields 语义不变，改为 expr 结构）；mined=theme_mining 已挖出的显著组合（lift 见 references/combination-insights.md 3.1/3.2/3.4）；derived=依据 references/table-dictionary.md 表结构新推导，字段全部可在 shared/table-dict.json 中查到。",
+ "thresholds": {
+  "saturation": 2.0,
+  "cohort_bonus_max": 0.15,
+  "cohort_bonus_lift_span": 3.0,
+  "significant": 0.5,
+  "moderate": 0.3,
+  "weak": 0.15,
+  "min_cohort_size": 30,
+  "min_lift": 1.5
+ },
+ "manual": [
+  {
+   "rule_id": "C01",
+   "name": "获客激进扩张",
+   "essence": "冲规模批量获客，准入标准被稀释",
+   "source": "manual",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     1,
+     2,
+     3
+    ],
+    "min_hits": 2,
+    "any_of": [],
+    "scale_max": 5
+   },
+   "cross_stage": false,
+   "stages": [
+    "营销获客"
+   ],
+   "metrics": [
+    "零散客户占比均值",
+    "信用类余额占比均值",
+    "低分段(<600)占比"
+   ],
+   "evidence_hint": [
+    "dim:零散获客",
+    "clue:零散获客"
+   ]
+  },
+  {
+   "rule_id": "C02",
+   "name": "准入风控失守",
+   "essence": "反欺诈与审查环节未有效拦截",
+   "source": "manual",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     5,
+     6,
+     8
+    ],
+    "min_hits": 2,
+    "any_of": [],
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "贷前准入",
+    "贷中审查"
+   ],
+   "metrics": [
+    "审批通过率",
+    "线索类型数"
+   ],
+   "evidence_hint": [
+    "clue:风险线索类型",
+    "dim:审查审批"
+   ]
+  },
+  {
+   "rule_id": "C03",
+   "name": "建档造假链条",
+   "essence": "建档走过场、尽调形式化",
+   "source": "manual",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     4,
+     14,
+     15,
+     16
+    ],
+    "min_hits": 2,
+    "any_of": [],
+    "scale_max": 5
+   },
+   "cross_stage": false,
+   "stages": [
+    "贷前准入"
+   ],
+   "metrics": [
+    "异常建档客户占比均值",
+    "同日建档>=5户经理数",
+    "负债率>100%占比"
+   ],
+   "evidence_hint": [
+    "dim:建档质量",
+    "clue:地址异常"
+   ]
+  },
+  {
+   "rule_id": "C04",
+   "name": "超额授信杠杆",
+   "essence": "授信额度超客户承受能力",
+   "source": "manual",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     7,
+     13,
+     39
+    ],
+    "min_hits": 2,
+    "any_of": [],
+    "scale_max": 5
+   },
+   "cross_stage": false,
+   "stages": [
+    "贷前准入"
+   ],
+   "metrics": [
+    "超额授信余额占比均值",
+    "大额信用余额占比均值"
+   ],
+   "evidence_hint": [
+    "dim:超额授信",
+    "dim:大额信用"
+   ]
+  },
+  {
+   "rule_id": "C05",
+   "name": "贷后管理空转",
+   "essence": "贷后监控缺失、风险信号漏处置",
+   "source": "manual",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     9,
+     18,
+     19
+    ],
+    "min_hits": 2,
+    "any_of": [],
+    "scale_max": 5
+   },
+   "cross_stage": false,
+   "stages": [
+    "贷后管理"
+   ],
+   "metrics": [
+    "未办结率",
+    "平均管户数"
+   ],
+   "evidence_hint": [
+    "clue:上门催收",
+    "clue:处置任务"
+   ]
+  },
+  {
+   "rule_id": "C06",
+   "name": "续贷接续断裂",
+   "essence": "到期续贷环节风险滚动",
+   "source": "manual",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     10,
+     44
+    ],
+    "min_hits": 1,
+    "any_of": [],
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "到期续贷",
+    "贷后管理"
+   ],
+   "metrics": [
+    "无还本续贷不良率均值",
+    "平均逾期天数"
+   ],
+   "evidence_hint": [
+    "cont:chain",
+    "clue:接续表"
+   ]
+  },
+  {
+   "rule_id": "C07",
+   "name": "人员道德风险",
+   "essence": "客户经理能力/尽责/道德问题",
+   "source": "manual",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     11,
+     17
+    ],
+    "min_hits": 1,
+    "any_of": [],
+    "scale_max": 5
+   },
+   "cross_stage": false,
+   "stages": [
+    "其他"
+   ],
+   "metrics": [
+    "高风险经理数",
+    "触发资金往来线索经理数"
+   ],
+   "evidence_hint": [
+    "clue:资金往来"
+   ]
+  },
+  {
+   "rule_id": "C08",
+   "name": "产品行业集中",
+   "essence": "特定产品或行业系统性风险",
+   "source": "manual",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     12,
+     28
+    ],
+    "min_hits": 1,
+    "any_of": [],
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "其他",
+    "贷前准入"
+   ],
+   "metrics": [
+    "产品不良率均值",
+    "重点行业不良率均值"
+   ],
+   "evidence_hint": [
+    "dim:业务品种",
+    "dim:投向行业"
+   ]
+  },
+  {
+   "rule_id": "C09",
+   "name": "客户欺诈包装",
+   "essence": "虚假包装骗取贷款",
+   "source": "manual",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     20,
+     21,
+     22,
+     23,
+     25,
+     26,
+     27
+    ],
+    "min_hits": 2,
+    "any_of": [],
+    "scale_max": 5
+   },
+   "cross_stage": false,
+   "stages": [
+    "贷前准入"
+   ],
+   "metrics": [
+    "近12月交易金额中位数",
+    "近12月流入金额中位数",
+    "申请>=3次客户数"
+   ],
+   "evidence_hint": [
+    "dim:地址异常",
+    "clue:白名单审查"
+   ]
+  },
+  {
+   "rule_id": "C10",
+   "name": "客户经营恶化",
+   "essence": "主业造血能力下降",
+   "source": "manual",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     28,
+     29,
+     30,
+     31
+    ],
+    "min_hits": 2,
+    "any_of": [],
+    "scale_max": 5
+   },
+   "cross_stage": false,
+   "stages": [
+    "贷前准入"
+   ],
+   "metrics": [
+    "重点行业不良率均值",
+    "有农地记录占比"
+   ],
+   "evidence_hint": [
+    "dim:投向行业",
+    "dim:建档质量"
+   ]
+  },
+  {
+   "rule_id": "C11",
+   "name": "客户高杠杆",
+   "essence": "多头负债、资金链紧张",
+   "source": "manual",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     32,
+     33,
+     34,
+     35,
+     36
+    ],
+    "min_hits": 2,
+    "any_of": [],
+    "scale_max": 5
+   },
+   "cross_stage": false,
+   "stages": [
+    "贷前准入"
+   ],
+   "metrics": [
+    "账户数>=5占比",
+    "账户>5且负债>50万占比",
+    "近6月查询>=10占比"
+   ],
+   "evidence_hint": [
+    "dim:征信"
+   ]
+  },
+  {
+   "rule_id": "C12",
+   "name": "客户异常行为",
+   "essence": "嗜好/家庭/司法异常",
+   "source": "manual",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     37,
+     38,
+     40,
+     41
+    ],
+    "min_hits": 1,
+    "any_of": [],
+    "scale_max": 5
+   },
+   "cross_stage": false,
+   "stages": [
+    "贷前准入"
+   ],
+   "metrics": [
+    "婚姻状态去重值数"
+   ],
+   "evidence_hint": [
+    "dim:建档质量"
+   ]
+  },
+  {
+   "rule_id": "C13",
+   "name": "第一还款来源失效",
+   "essence": "资金挪用、经营主体消亡",
+   "source": "manual",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     42,
+     43,
+     45
+    ],
+    "min_hits": 1,
+    "any_of": [],
+    "scale_max": 5
+   },
+   "cross_stage": false,
+   "stages": [
+    "贷后管理"
+   ],
+   "metrics": [
+    "线索不属实占比均值",
+    "裸贷户占比"
+   ],
+   "evidence_hint": [
+    "clue:风险线索类型",
+    "dim:FAS资产"
+   ]
+  }
+ ],
+ "mined": [
+  {
+   "rule_id": "M01",
+   "name": "信用劣化已显性化仍放贷",
+   "essence": "征信查询密集（急缺资金）叠加 N 年内已发生不良记录，仍被准入——逆向选择接盘，是全样本最强的复合信号",
+   "source": "mined",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     34,
+     36
+    ],
+    "min_hits": 2,
+    "any_of": [],
+    "scale_max": 5
+   },
+   "cross_stage": false,
+   "stages": [
+    "贷前准入"
+   ],
+   "cohort_lift": 13.72,
+   "cohort_npl_rate": 0.5692,
+   "cohort_size": 65,
+   "incremental_lift": 1.1,
+   "cohort_basis": "theme_mining v2：征信查询过多 ∩ N年内不良，20260831 切片",
+   "metrics": [
+    "近1月查询>=5占比",
+    "近6月查询>=10占比",
+    "近2年累计逾期>0占比"
+   ],
+   "evidence_hint": [
+    "dim:征信",
+    "clue:征信查询"
+   ]
+  },
+  {
+   "rule_id": "M02",
+   "name": "建档与调查双端造假",
+   "essence": "客户经理录入的信息失真，与地址交叉调查造假同时出现——不是单点差错，而是整套尽调材料被包装",
+   "source": "mined",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     16,
+     15
+    ],
+    "min_hits": 2,
+    "any_of": [],
+    "scale_max": 5
+   },
+   "cross_stage": false,
+   "stages": [
+    "贷前准入"
+   ],
+   "cohort_lift": 6.99,
+   "cohort_npl_rate": 0.2902,
+   "cohort_size": 386,
+   "incremental_lift": 1.17,
+   "cohort_basis": "theme_mining v2：信息失真 ∩ 调查造假",
+   "metrics": [
+    "FAS资产与农行金融资产偏差",
+    "地址异常合同占比均值"
+   ],
+   "evidence_hint": [
+    "dim:建档质量",
+    "clue:地址异常"
+   ]
+  },
+  {
+   "rule_id": "M03",
+   "name": "大小额并存异常结构",
+   "essence": "5 万元以下小额农户贷款与大额信用贷并存，增量效应 1.56 倍为全样本最强——客户在多家机构以小额分散、以大额套现",
+   "source": "mined",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     13
+    ],
+    "min_hits": 1,
+    "any_of": [
+     {
+      "dim_bucket": {
+       "dimension": "额度档",
+       "bucket": "5万以下",
+       "min_npl_rate": 0.05
+      }
+     }
+    ],
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "贷前准入",
+    "产品结构"
+   ],
+   "cohort_lift": 6.5,
+   "cohort_npl_rate": 0.2697,
+   "cohort_size": 36287,
+   "incremental_lift": 1.56,
+   "cohort_basis": "theme_mining v2：小额贷款 ∩ 大额信用",
+   "metrics": [
+    "大额信用余额占比均值",
+    "大额信用不良率均值"
+   ],
+   "evidence_hint": [
+    "dim:大额信用",
+    "dim:额度档"
+   ]
+  },
+  {
+   "rule_id": "M04",
+   "name": "小额+地址交叉不一致",
+   "essence": "小额农户贷款叠加调查地址不一致，增量 1.54 倍——小额贷款放款快、尽调薄，成为地址造假的温床",
+   "source": "mined",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     15
+    ],
+    "min_hits": 1,
+    "any_of": [
+     {
+      "dim_bucket": {
+       "dimension": "额度档",
+       "bucket": "5万以下",
+       "min_npl_rate": 0.05
+      }
+     }
+    ],
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "贷前准入",
+    "产品结构"
+   ],
+   "cohort_lift": 6.44,
+   "cohort_npl_rate": 0.2673,
+   "cohort_size": 4018,
+   "incremental_lift": 1.54,
+   "cohort_basis": "theme_mining v2：小额贷款 ∩ 调查造假",
+   "metrics": [
+    "地址异常合同占比均值",
+    "地址异常不良率均值"
+   ],
+   "evidence_hint": [
+    "dim:地址异常",
+    "dim:额度档"
+   ]
+  },
+  {
+   "rule_id": "M05",
+   "name": "小额信用贷高违约",
+   "essence": "小额贷款与无抵押缓释叠加，小额+纯信用的组合违约率显著高于单一维度",
+   "source": "mined",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     2
+    ],
+    "min_hits": 1,
+    "any_of": [
+     {
+      "dim_bucket": {
+       "dimension": "额度档",
+       "bucket": "5万以下",
+       "min_npl_rate": 0.05
+      }
+     }
+    ],
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "营销获客",
+    "产品结构"
+   ],
+   "cohort_lift": 5.34,
+   "cohort_npl_rate": 0.2216,
+   "cohort_size": 134430,
+   "incremental_lift": 1.28,
+   "cohort_basis": "theme_mining v2：小额贷款 ∩ 无抵押缓释",
+   "metrics": [
+    "信用类余额占比均值"
+   ],
+   "evidence_hint": [
+    "dim:担保方式",
+    "dim:额度档"
+   ]
+  },
+  {
+   "rule_id": "M06",
+   "name": "基层放贷道德风险",
+   "essence": "客户经理与客户存在资金往来，且集中在 5 万元以下小额贷款——小额免于复核，利益输送成本最低",
+   "source": "mined",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     17
+    ],
+    "min_hits": 1,
+    "any_of": [
+     {
+      "dim_bucket": {
+       "dimension": "额度档",
+       "bucket": "5万以下",
+       "min_npl_rate": 0.05
+      }
+     }
+    ],
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "其他",
+    "产品结构"
+   ],
+   "cohort_lift": 4.67,
+   "cohort_npl_rate": 0.1937,
+   "cohort_size": 10972,
+   "incremental_lift": 1.12,
+   "cohort_basis": "theme_mining 3.1/3.4：客户经理资金往来 ∩ 小额贷款",
+   "metrics": [
+    "触发资金往来线索经理数"
+   ],
+   "evidence_hint": [
+    "clue:资金往来",
+    "dim:额度档"
+   ]
+  },
+  {
+   "rule_id": "M07",
+   "name": "扶贫客群+尽调失真",
+   "essence": "脱贫户客群叠加调查造假，增量 1.32 倍——政策任务压力下尽调被压缩",
+   "source": "mined",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     15
+    ],
+    "min_hits": 1,
+    "any_of": [
+     {
+      "dim_bucket": {
+       "dimension": "主体类型",
+       "bucket": "脱贫户",
+       "min_npl_rate": 0.05
+      }
+     }
+    ],
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "贷前准入",
+    "客群结构"
+   ],
+   "cohort_lift": 4.41,
+   "cohort_npl_rate": 0.183,
+   "cohort_size": 1022,
+   "incremental_lift": 1.32,
+   "cohort_basis": "theme_mining 3.4：脱贫户 ∩ 调查造假",
+   "metrics": [
+    "地址异常合同占比均值"
+   ],
+   "evidence_hint": [
+    "dim:地址异常",
+    "dim:主体类型"
+   ]
+  },
+  {
+   "rule_id": "M08",
+   "name": "老资产大额信用恶化",
+   "essence": "2023 年及以前发放的存量资产中，大额信用占比高的部分不良率 16.19%，是存量包袱的主体",
+   "source": "mined",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     13
+    ],
+    "min_hits": 1,
+    "any_of": [
+     {
+      "dim_bucket": {
+       "dimension": "放款年份",
+       "bucket_prefix": "2023",
+       "min_npl_rate": 0.05
+      }
+     }
+    ],
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "贷前准入",
+    "账龄结构"
+   ],
+   "cohort_lift": 3.9,
+   "cohort_npl_rate": 0.1619,
+   "cohort_size": 60803,
+   "incremental_lift": 1.18,
+   "cohort_basis": "theme_mining 3.4：存量老资产 ∩ 大额信用",
+   "metrics": [
+    "大额信用余额占比均值",
+    "大额信用不良率均值"
+   ],
+   "evidence_hint": [
+    "dim:大额信用",
+    "dim:放款年份"
+   ]
+  },
+  {
+   "rule_id": "M09",
+   "name": "存量信用贷集中风险",
+   "essence": "存量老资产叠加无抵押缓释，不良率 15.07%——早年信用投放的存量风险尚未出清",
+   "source": "mined",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     2
+    ],
+    "min_hits": 1,
+    "any_of": [
+     {
+      "dim_bucket": {
+       "dimension": "放款年份",
+       "bucket_prefix": "2023",
+       "min_npl_rate": 0.05
+      }
+     }
+    ],
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "营销获客",
+    "账龄结构"
+   ],
+   "cohort_lift": 3.63,
+   "cohort_npl_rate": 0.1507,
+   "cohort_size": 200000,
+   "incremental_lift": 1.23,
+   "cohort_basis": "theme_mining 3.4：存量老资产 ∩ 无抵押缓释（客群数为下限估计）",
+   "metrics": [
+    "信用类余额占比均值"
+   ],
+   "evidence_hint": [
+    "dim:担保方式",
+    "dim:放款年份"
+   ]
+  },
+  {
+   "rule_id": "M10",
+   "name": "经理合谋+信用贷",
+   "essence": "客户经理资金往来叠加纯信用放款，不良率 13.47%，增量 1.10",
+   "source": "mined",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     17,
+     2
+    ],
+    "min_hits": 2,
+    "any_of": [],
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "其他",
+    "营销获客"
+   ],
+   "cohort_lift": 3.25,
+   "cohort_npl_rate": 0.1347,
+   "cohort_size": 18616,
+   "incremental_lift": 1.1,
+   "cohort_basis": "theme_mining 3.4：客户经理资金往来 ∩ 无抵押缓释",
+   "metrics": [
+    "触发资金往来线索经理数",
+    "信用类余额占比均值"
+   ],
+   "evidence_hint": [
+    "clue:资金往来",
+    "dim:担保方式"
+   ]
+  },
+  {
+   "rule_id": "M11",
+   "name": "贷后利益输送",
+   "essence": "客户经理与客户资金往来且集中在 2023 年及以前的存量资产，不良率 13.35%",
+   "source": "mined",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     17
+    ],
+    "min_hits": 1,
+    "any_of": [
+     {
+      "dim_bucket": {
+       "dimension": "放款年份",
+       "bucket_prefix": "2023",
+       "min_npl_rate": 0.05
+      }
+     }
+    ],
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "其他",
+    "账龄结构"
+   ],
+   "cohort_lift": 3.22,
+   "cohort_npl_rate": 0.1335,
+   "cohort_size": 19301,
+   "incremental_lift": 1.1,
+   "cohort_basis": "theme_mining 3.1/3.4：客户经理资金往来 ∩ 存量老资产",
+   "metrics": [
+    "触发资金往来线索经理数"
+   ],
+   "evidence_hint": [
+    "clue:资金往来",
+    "dim:放款年份"
+   ]
+  },
+  {
+   "rule_id": "M12",
+   "name": "尽调造假链条（录入失真+批量建档）",
+   "essence": "同一客户经理批量建档且信息录入失真，不良率 15.38%",
+   "source": "mined",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     16,
+     14
+    ],
+    "min_hits": 2,
+    "any_of": [],
+    "scale_max": 5
+   },
+   "cross_stage": false,
+   "stages": [
+    "贷前准入"
+   ],
+   "cohort_lift": 3.71,
+   "cohort_npl_rate": 0.1538,
+   "cohort_size": 4598,
+   "cohort_basis": "theme_mining 3.2：信息录入失真 ∩ 批量建档",
+   "metrics": [
+    "同日建档>=5户经理数",
+    "FAS资产与农行金融资产偏差"
+   ],
+   "evidence_hint": [
+    "dim:建档质量"
+   ]
+  },
+  {
+   "rule_id": "M13",
+   "name": "批量获客+小额恶化",
+   "essence": "批量建档客户集中在 5 万元以下小额贷款，不良率 15.26%",
+   "source": "mined",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     14
+    ],
+    "min_hits": 1,
+    "any_of": [
+     {
+      "dim_bucket": {
+       "dimension": "额度档",
+       "bucket": "5万以下",
+       "min_npl_rate": 0.05
+      }
+     }
+    ],
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "贷前准入",
+    "产品结构"
+   ],
+   "cohort_lift": 3.68,
+   "cohort_npl_rate": 0.1526,
+   "cohort_size": 67922,
+   "cohort_basis": "theme_mining 3.2：批量建档 ∩ 小额贷款",
+   "metrics": [
+    "同日建档>=5户经理数"
+   ],
+   "evidence_hint": [
+    "dim:建档质量",
+    "dim:额度档"
+   ]
+  },
+  {
+   "rule_id": "M14",
+   "name": "存量批量风险",
+   "essence": "2023 年及以前批量建档的存量资产，不良率 10.66%",
+   "source": "mined",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     14
+    ],
+    "min_hits": 1,
+    "any_of": [
+     {
+      "dim_bucket": {
+       "dimension": "放款年份",
+       "bucket_prefix": "2023",
+       "min_npl_rate": 0.05
+      }
+     }
+    ],
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "贷前准入",
+    "账龄结构"
+   ],
+   "cohort_lift": 2.57,
+   "cohort_npl_rate": 0.1066,
+   "cohort_size": 94474,
+   "cohort_basis": "theme_mining 3.2：批量建档 ∩ 存量老资产",
+   "metrics": [
+    "同日建档>=5户经理数"
+   ],
+   "evidence_hint": [
+    "dim:建档质量",
+    "dim:放款年份"
+   ]
+  },
+  {
+   "rule_id": "M15",
+   "name": "极端弱资质客群",
+   "essence": "裸贷户（零资产零经营收入）叠加脱贫户，不良率 10.32%",
+   "source": "mined",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     45
+    ],
+    "min_hits": 1,
+    "any_of": [
+     {
+      "dim_bucket": {
+       "dimension": "主体类型",
+       "bucket": "脱贫户",
+       "min_npl_rate": 0.05
+      }
+     }
+    ],
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "贷后管理",
+    "客群结构"
+   ],
+   "cohort_lift": 2.49,
+   "cohort_npl_rate": 0.1032,
+   "cohort_size": 1299,
+   "cohort_basis": "theme_mining 3.2/3.4：裸贷户 ∩ 脱贫户",
+   "metrics": [
+    "裸贷户占比"
+   ],
+   "evidence_hint": [
+    "dim:主体类型",
+    "dim:FAS资产"
+   ]
+  },
+  {
+   "rule_id": "M16",
+   "name": "老资产质量恶化",
+   "essence": "2023 年及以前发放的存量资产叠加小额贷款，不良率 17.27%，是存量风险最集中的组合",
+   "source": "mined",
+   "version": 1,
+   "expr": {
+    "all_of": [],
+    "min_hits": 0,
+    "any_of": [
+     {
+      "dim_bucket": {
+       "dimension": "放款年份",
+       "bucket_prefix": "2023",
+       "min_npl_rate": 0.05
+      }
+     },
+     {
+      "dim_bucket": {
+       "dimension": "额度档",
+       "bucket": "5万以下",
+       "min_npl_rate": 0.05
+      }
+     }
+    ],
+    "min_any_hits": 2,
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "产品结构",
+    "账龄结构"
+   ],
+   "cohort_lift": 4.16,
+   "cohort_npl_rate": 0.1727,
+   "cohort_size": 152887,
+   "cohort_basis": "theme_mining 3.2：小额贷款 ∩ 存量老资产",
+   "metrics": [],
+   "evidence_hint": [
+    "dim:额度档",
+    "dim:放款年份"
+   ]
+  },
+  {
+   "rule_id": "M17",
+   "name": "扶贫客群下沉",
+   "essence": "5 万元以下小额贷款集中在脱贫户，不良率 17.01%——小额 + 政策客群双下沉",
+   "source": "mined",
+   "version": 1,
+   "expr": {
+    "all_of": [],
+    "min_hits": 0,
+    "any_of": [
+     {
+      "dim_bucket": {
+       "dimension": "主体类型",
+       "bucket": "脱贫户",
+       "min_npl_rate": 0.05
+      }
+     },
+     {
+      "dim_bucket": {
+       "dimension": "额度档",
+       "bucket": "5万以下",
+       "min_npl_rate": 0.05
+      }
+     }
+    ],
+    "min_any_hits": 2,
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "客群结构",
+    "产品结构"
+   ],
+   "cohort_lift": 4.1,
+   "cohort_npl_rate": 0.1701,
+   "cohort_size": 14376,
+   "cohort_basis": "theme_mining 3.2：小额贷款 ∩ 脱贫户",
+   "metrics": [],
+   "evidence_hint": [
+    "dim:主体类型",
+    "dim:额度档"
+   ]
+  }
+ ],
+ "derived": [
+  {
+   "rule_id": "D01",
+   "name": "接续链无限滚动、风险只被推迟",
+   "essence": "反复以同一类工具接续的客户，凭证到期日被一次次推后；表观不良低但风险从未化解，一旦停止接续即集中暴露",
+   "source": "derived",
+   "version": 1,
+   "expr": {
+    "all_of": [],
+    "min_hits": 0,
+    "any_of": [
+     {
+      "cont": {
+       "tool": "rolling",
+       "min_npl_rate": 0.03
+      }
+     }
+    ],
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "到期续贷",
+    "贷后管理"
+   ],
+   "metrics": [
+    "滚动接续客户数",
+    "滚动接续不良率",
+    "滚动/化解不良率倍数"
+   ],
+   "evidence_hint": [
+    "cont:chain.rolling",
+    "cont:chain.resolving"
+   ],
+   "derivation": {
+    "tables": [
+     "G_00PF_PEAS_LN_LSTY_VCH_CONT_SITU_INFO",
+     "S_00PF_PEAS_CONT_QUAL_C4"
+    ],
+    "fields": [
+     "G_00PF_PEAS_LN_LSTY_VCH_CONT_SITU_INFO.CONTINUE_FLAG",
+     "G_00PF_PEAS_LN_LSTY_VCH_CONT_SITU_INFO.FORM_BAL_RMB",
+     "G_00PF_PEAS_LN_LSTY_VCH_CONT_SITU_INFO.CAN_STS_CD",
+     "S_00PF_PEAS_CONT_QUAL_C4.BAL_SUM",
+     "S_00PF_PEAS_CONT_QUAL_C4.BAD_BAL_SUM"
+    ],
+    "logic": "上线年凭证表按 CONTINUE_FLAG 分组：同一客户多次出现、且接续方式为同一种工具（非结清重贷）即判定为滚动接续；只有一次性结清后再贷或展期后正常还本的算化解。两份口径互相印证：年度接续表给客户级链长，接续质量表给全辖余额与不良余额。",
+    "direction": "same",
+    "expectation": "滚动接续不良率 > 化解不良率；若接近，说明接续并非风险放大器，而只是账务处理"
+   }
+  },
+  {
+   "rule_id": "D02",
+   "name": "接续工具选择即风险偏好：不良重组接住了坏客户",
+   "essence": "五类接续工具（无还本续贷/一键续贷/展期/非不良重组/不良重组）的不良率呈阶梯：不良重组最高，说明接续工具已被用来延后不良确认",
+   "source": "derived",
+   "version": 1,
+   "expr": {
+    "all_of": [],
+    "min_hits": 0,
+    "any_of": [
+     {
+      "cont": {
+       "tool": "bad_agn",
+       "min_npl_rate": 0.03
+      }
+     },
+     {
+      "cont": {
+       "tool": "not_bad_agn",
+       "min_npl_rate": 0.03
+      }
+     }
+    ],
+    "min_any_hits": 2,
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "到期续贷",
+    "贷后管理"
+   ],
+   "metrics": [
+    "无还本续贷不良率",
+    "一键续贷不良率",
+    "展期不良率",
+    "非不良重组不良率",
+    "不良重组不良率"
+   ],
+   "evidence_hint": [
+    "cont:tools"
+   ],
+   "derivation": {
+    "tables": [
+     "S_00PF_PEAS_CONT_QUAL_C4"
+    ],
+    "fields": [
+     "S_00PF_PEAS_CONT_QUAL_C4.CTNU_LN_BAL",
+     "S_00PF_PEAS_CONT_QUAL_C4.CTNU_LN_BAD_RATE",
+     "S_00PF_PEAS_CONT_QUAL_C4.ONE_CTNU_LN_BAD_RATE",
+     "S_00PF_PEAS_CONT_QUAL_C4.RNEW_LN_BAD_RATE",
+     "S_00PF_PEAS_CONT_QUAL_C4.NOT_BAD_AGN_LN_BAD_RATE",
+     "S_00PF_PEAS_CONT_QUAL_C4.BAD_AGN_LN_BAD_RATE",
+     "S_00PF_PEAS_CONT_QUAL_C4.BAL_SUM",
+     "S_00PF_PEAS_CONT_QUAL_C4.BAD_BAL_SUM"
+    ],
+    "logic": "同一张表内五种工具的 BAL / BAD_BAL / BAD_RATE 可横向比较，且 BAL_SUM/BAD_BAL_SUM 给出全部工具合计，可算工具加权平均与单一工具的偏离。不良重组（BAD_AGN）按定义只承接已分类为不良的债务，其不良率天然最高，因此用它衡量的是「已暴露风险靠重组延续的比例」，而不是新增风险。",
+    "direction": "same",
+    "expectation": "不良重组 → 非不良重组 → 展期 → 无还本续贷 → 一键续贷，不良率依次递减；若一键续贷也高，说明工具被大面积滥用"
+   }
+  },
+  {
+   "rule_id": "D03",
+   "name": "循环额度虚高、自助额度失控",
+   "essence": "循环额度远高于自助额度，且自助额度几乎被用满，客户可随时自助提款——授信实际控制力被自助渠道抽空",
+   "source": "derived",
+   "version": 1,
+   "expr": {
+    "all_of": [],
+    "min_hits": 0,
+    "any_of": [
+     {
+      "cont": {
+       "tool": "ad_quot_gap",
+       "min_npl_rate": 0.03
+      }
+     }
+    ],
+    "scale_max": 5
+   },
+   "cross_stage": false,
+   "stages": [
+    "贷前准入"
+   ],
+   "metrics": [
+    "循环额度合计",
+    "自助额度合计",
+    "自助额度占循环额度比",
+    "已用自助额度占自助额度比"
+   ],
+   "evidence_hint": [
+    "cont:tools.ad_quot_gap",
+    "dim:循环标识"
+   ],
+   "derivation": {
+    "tables": [
+     "B_00DT_CYC_QUOT_INFO_H",
+     "G_00PF_IDV_LN_CTRT_DV"
+    ],
+    "fields": [
+     "B_00DT_CYC_QUOT_INFO_H.CYC_QUOT",
+     "B_00DT_CYC_QUOT_INFO_H.AD_QUOT",
+     "B_00DT_CYC_QUOT_INFO_H.USG_AD_QUOT",
+     "B_00DT_CYC_QUOT_INFO_H.AVL_AD_QUOT",
+     "B_00DT_CYC_QUOT_INFO_H.AD_IND",
+     "G_00PF_IDV_LN_CTRT_DV.CYC_LN_IND",
+     "G_00PF_IDV_LN_CTRT_DV.CYC_QUOT"
+    ],
+    "logic": "按 LN_CTRT_NO 关联额度表与合同表，取 CYC_LN_IND=循环 的合同。CYC_QUOT 是合同总循环额度，AD_QUOT 是允许客户自助（无人工复核）提款的部分，USG_AD_QUOT 是已用自助额度。循环额度虚高的判据是 CYC_QUOT 显著大于实际借款金额（CTRT_AMT），自助额度失控的判据是 USG_AD_QUOT/AD_QUOT 很高。表里没有直接的不良率字段，所以 D03 只能作「结构异常」信号，需 cohort 校验才能升级为主题。",
+    "direction": "same",
+    "expectation": "循环额度/借款金额 > 1.5 且 自助额度占循环额度 > 50%，不良率高于循环额度正常组；若自助额度用满组不良率与未用满组无差异，则该线索只反映产品设计而非风险"
+   }
+  },
+  {
+   "rule_id": "D04",
+   "name": "线索核查机制失效：查不下去的风险真发生了",
+   "essence": "线索核查不属实占比高，同时线索内不良占比也高——核查结论为假的客户照样形成不良，核查程序形同虚设",
+   "source": "derived",
+   "version": 1,
+   "expr": {
+    "all_of": [],
+    "min_hits": 0,
+    "any_of": [
+     {
+      "clue": {
+       "clue_type": "*",
+       "condition": "verify_false_high",
+       "min_npl_rate": 0.03
+      }
+     }
+    ],
+    "min_any_hits": 1,
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "贷后管理",
+    "贷前准入"
+   ],
+   "metrics": [
+    "核查不属实占比",
+    "线索内不良合同占比",
+    "线索不良率 lift",
+    "核查不属实且不良合同数"
+   ],
+   "evidence_hint": [
+    "clue:<clue_type>:verify_false_pptn",
+    "clue:<clue_type>:trigger_npl_pptn"
+   ],
+   "derivation": {
+    "tables": [
+     "S_00PF_PEAS_LN_RSK_ORG_C4",
+     "S_00PF_PEAS_LN_CCE_RSK_PSE_ORG_C4"
+    ],
+    "fields": [
+     "S_00PF_PEAS_LN_RSK_ORG_C4.RSK_LINE_TYP",
+     "S_00PF_PEAS_LN_RSK_ORG_C4.NO_LN_CTRT_PPTN",
+     "S_00PF_PEAS_LN_RSK_ORG_C4.PEAS_LN_UHLTH_CTRT_PPTN",
+     "S_00PF_PEAS_LN_RSK_ORG_C4.NO_LN_UHLTH_CTRT_CNT",
+     "S_00PF_PEAS_LN_RSK_ORG_C4.NO_LN_UHLTH_CTRT_PPTN",
+     "S_00PF_PEAS_LN_CCE_RSK_PSE_ORG_C4.RSK_LINE_TYP",
+     "S_00PF_PEAS_LN_CCE_RSK_PSE_ORG_C4.NO_LN_CTRT_PPTN"
+    ],
+    "logic": "按 RSK_LINE_TYP 汇总两张线索处置表（普通线索 + 重点关注线索）。NO_LN_CTRT_PPTN 是核查结论「不属实」的合同占触发合同的比例，PEAS_LN_UHLTH_CTRT_PPTN 是线索内不良合同占全部不良合同的比例（即线索对不良的贡献）。两者同向为高 → 查不下去但风险真发生（核查失效）；一高一低 → 误报泛滥，是另一种管理问题；两者都低 → 线索机制正常。",
+    "direction": "same",
+    "expectation": "核查不属实占比前 20% 的线索类型，其线索内不良贡献也应偏高；若某线索不属实占比 > 50% 但不良贡献很低，判定为误报型线索，应调整模型阈值而非加大核查"
+   }
+  },
+  {
+   "rule_id": "D05",
+   "name": "地址异常与尽调造假串联",
+   "essence": "客户登记地址与实际不符、多个实体共用同一地址的组合，往往与调查造假同时出现——尽调不是没查到，而是按要求「做成」了",
+   "source": "derived",
+   "version": 1,
+   "expr": {
+    "all_of": [],
+    "min_hits": 0,
+    "any_of": [
+     {
+      "dim_bucket": {
+       "dimension": "地址异常",
+       "any_bucket": true,
+       "min_npl_rate": 0.05
+      }
+     },
+     {
+      "feature": {
+       "feature_id": 15,
+       "min_value": 0.02
+      }
+     }
+    ],
+    "min_any_hits": 2,
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "贷前准入",
+    "贷后管理"
+   ],
+   "metrics": [
+    "地址异常合同占比均值",
+    "地址异常不良率均值",
+    "地址异常地址类型数"
+   ],
+   "evidence_hint": [
+    "dim:地址异常",
+    "clue:地址异常"
+   ],
+   "derivation": {
+    "tables": [
+     "S_00PF_PEAS_ADDR_RSK_ORG_SUM_C4",
+     "G_00PL_PEAS_DOC_INFO_DV"
+    ],
+    "fields": [
+     "S_00PF_PEAS_ADDR_RSK_ORG_SUM_C4.ADDR_RSK_TYP",
+     "S_00PF_PEAS_ADDR_RSK_ORG_SUM_C4.ADDR_RSK_CTRT_PPTN",
+     "S_00PF_PEAS_ADDR_RSK_ORG_SUM_C4.ADDR_RSK_UHLTH_RATE",
+     "G_00PL_PEAS_DOC_INFO_DV.CUST_NO",
+     "G_00PL_PEAS_DOC_INFO_DV.ID_CARD_NO",
+     "G_00PL_PEAS_DOC_INFO_DV.PERM_ADDR"
+    ],
+    "logic": "S_00PF_PEAS_ADDR_RSK_ORG_SUM_C4 给机构级地址异常预聚合（ADDR_RSK_TYP 各类型占比与不良率），G_00PL_PEAS_DOC_INFO_DV 给客户级建档常住地址 PERM_ADDR。客户级调查造假的原始表 G_00PL_PEAS_LN_ADDR_CHEK_DV 在 table-dictionary 中标注为「无数据文件」，因此本规则的落地口径是：先按机构地址异常占比排序，再用建档档案的录入行为（同一地址/同一录入人批量建档）做客户级佐证。若 ADDR_CHEK_DV 后续接入数据，则改为按 CUST_NO/ID_CARD_NO 直接比对 PERM_ADDR 与检验地址。",
+    "direction": "same",
+    "expectation": "地址异常合同占比较高的机构，其异常建档客户占比与不良率同步走高；若地址异常高但不良率低，说明是登记质量问题而非造假"
+   }
+  },
+  {
+   "rule_id": "D06",
+   "name": "多头借贷叠加高频查询：资金链已绷紧仍在准入",
+   "essence": "征信三表按 CERTNO 合并后，未结清机构数多且近月查询密集的客户，在农户小额贷款中仍被放款——资金饥渴型客户被当成正常农户",
+   "source": "derived",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     32,
+     34
+    ],
+    "min_hits": 2,
+    "any_of": [],
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "贷前准入",
+    "征信核查"
+   ],
+   "metrics": [
+    "账户数>=5占比",
+    "未结清机构>=3占比",
+    "近1月查询>=5占比",
+    "近6月查询>=10占比"
+   ],
+   "evidence_hint": [
+    "dim:征信",
+    "clue:征信查询"
+   ],
+   "derivation": {
+    "tables": [
+     "G_00PL_PEAS_DOC_INFO_DV",
+     "G_00PF_PEAS_LN_VCH_DV"
+    ],
+    "fields": [
+     "G_00PL_PEAS_DOC_INFO_DV.ID_CARD_NO",
+     "G_00PL_PEAS_DOC_INFO_DV.CUST_NO",
+     "G_00PF_PEAS_LN_VCH_DV.CUST_NO",
+     "G_00PF_PEAS_LN_VCH_DV.RSK_CLS_CD",
+     "G_00PF_PEAS_LN_VCH_DV.FORM_BAL_RMB"
+    ],
+    "logic": "征信三表 P_00CIE_CPS_INDECATE_DIRECTEXTRA/SIMPLEPROCESS/COMPLIATEPROCESS 在 table-dictionary 第 5 节有完整关联分析（CERTNO 同体系、覆盖约 37%），但在 shared/table-dict.json 里没有字段级收录（标记为无数据文件），所以本规则的可校验字段只登记建档档案与凭证表的关联骨架；征信侧指标名（账户数合计/未结清贷款机构数/近1月查询次数/近6月查询次数）由 risk_features.py 的 credit_pivot() 在运行时动态透视产生，以 features 32/34 两个特征的 metric 形式进入信号，不依赖字典字段名。",
+    "direction": "same",
+    "expectation": "多头借贷（账户数≥5）与高频查询（近6月≥10次）双命中客群的不良率，应显著高于单命中与全未命中组；若双命中与单命中无差异，说明查询频次只是产品体验问题"
+   }
+  },
+  {
+   "rule_id": "D07",
+   "name": "催收力度与不良回收脱节",
+   "essence": "上门催收、属地处置、电话催收三张任务表合并后可见：催收任务量大但催回金额与处置完成率低，催收是「有动作、无结果」",
+   "source": "derived",
+   "version": 1,
+   "expr": {
+    "all_of": [],
+    "min_hits": 0,
+    "any_of": [
+     {
+      "cont": {
+       "tool": "collect_efficiency",
+       "max_npl_rate": 0.0,
+       "min_value": 0.5
+      }
+     },
+     {
+      "feature": {
+       "feature_id": 9,
+       "min_value": 0.05
+      }
+     }
+    ],
+    "min_any_hits": 1,
+    "scale_max": 5
+   },
+   "cross_stage": false,
+   "stages": [
+    "贷后管理"
+   ],
+   "metrics": [
+    "上门催收任务数",
+    "催回金额",
+    "累计欠款",
+    "催收回收率",
+    "处置任务完成率",
+    "电话催收任务数"
+   ],
+   "evidence_hint": [
+    "clue:上门催收",
+    "clue:处置任务",
+    "clue:电话催收"
+   ],
+   "derivation": {
+    "tables": [
+     "B_00FT_PMC_P_DOORTASK_DTAL",
+     "B_00FT_PEAS_LN_DPSE_TASK_DTAL"
+    ],
+    "fields": [
+     "B_00FT_PMC_P_DOORTASK_DTAL.CUST_NO",
+     "B_00FT_PMC_P_DOORTASK_DTAL.PDT_RECOVERAMT",
+     "B_00FT_PMC_P_DOORTASK_DTAL.TOT_ARREA",
+     "B_00FT_PMC_P_DOORTASK_DTAL.CLTN_TASK_STS",
+     "B_00FT_PMC_P_DOORTASK_DTAL.RSK_CLS",
+     "B_00FT_PEAS_LN_DPSE_TASK_DTAL.CUST_NO",
+     "B_00FT_PEAS_LN_DPSE_TASK_DTAL.DPSE_CMPL_DAT",
+     "B_00FT_PEAS_LN_DPSE_TASK_DTAL.VCH_RSK_CLS"
+    ],
+    "logic": "上门催收与属地处置任务按 CUST_NO 合并（table-dictionary 第 5.3 节确认同体系哈希键）：上门表有 PDT_RECOVERAMT（催回金额）与 TOT_ARREA（累计欠款）可直接算回收率，处置表有 DPSE_CMPL_DAT（处置完成日期）算完成率。第三张电话催收表 P_00PMC_PMC_P_CALLTASK 未进 shared/table-dict.json，且第 5.3 节明确 PCT_VCHNO 与 FORM_NO 无交集、只能走 PCT_CONTNO ↔ 合同号，所以在字段白名单未收录前不把它列入可校验字段，仅在 metrics 里保留任务量口径。",
+    "direction": "reverse",
+    "expectation": "催收任务量大但回收率低、处置完成率低的机构，其不良率更高（反向关系）；若回收率与不良率同向，说明任务是按风险量自动派发，不能据此评价催收质量"
+   }
+  },
+  {
+   "rule_id": "D08",
+   "name": "征信覆盖度不足造成的准入盲区",
+   "essence": "征信三表只覆盖约 37% 的农户客户，未覆盖客群无法算多头与查询，这部分客户实际是在「无征信约束」下准入的",
+   "source": "derived",
+   "version": 1,
+   "expr": {
+    "all_of": [],
+    "min_hits": 0,
+    "any_of": [
+     {
+      "cont": {
+       "tool": "credit_coverage",
+       "max_npl_rate": 0.0,
+       "min_value": 0.5
+      }
+     }
+    ],
+    "min_any_hits": 1,
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "贷前准入",
+    "征信核查"
+   ],
+   "metrics": [
+    "征信覆盖客户数",
+    "建档客户数",
+    "征信覆盖率",
+    "无征信客群不良率",
+    "有征信客群不良率"
+   ],
+   "evidence_hint": [
+    "dim:征信"
+   ],
+   "derivation": {
+    "tables": [
+     "G_00PL_PEAS_DOC_INFO_DV",
+     "G_00PF_PEAS_LN_VCH_DV"
+    ],
+    "fields": [
+     "G_00PL_PEAS_DOC_INFO_DV.ID_CARD_NO",
+     "G_00PL_PEAS_DOC_INFO_DV.CUST_NO",
+     "G_00PF_PEAS_LN_VCH_DV.CUST_NO",
+     "G_00PF_PEAS_LN_VCH_DV.RSK_CLS_CD"
+    ],
+    "logic": "以建档档案 ID_CARD_NO 为分母，能匹配到征信 CERTNO 的为有征信客群、匹配不到的为盲区客群，两组分别回取凭证表算不良率。与 D06 的关系：D06 在有征信客群里找「谁更差」，D08 看没有征信的客群是否更差。征信三表未进字段字典，故此处只登记可校验的关联骨架。",
+    "direction": "reverse",
+    "expectation": "征信覆盖率越低、且无征信客群不良率高于有征信客群，说明准入依赖征信以外的信息（或干脆没有），盲区越大风险越高"
+   }
+  },
+  {
+   "rule_id": "D09",
+   "name": "接续由本机构承接 vs 跨机构接续",
+   "essence": "上年末凭证在本年接续时，若放款机构与合同经营机构不一致（跨机构接续），责任链条断开，不良率显著更高",
+   "source": "derived",
+   "version": 1,
+   "expr": {
+    "all_of": [],
+    "min_hits": 0,
+    "any_of": [
+     {
+      "cont": {
+       "tool": "cross_org_continue",
+       "min_npl_rate": 0.03
+      }
+     }
+    ],
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "到期续贷",
+    "机构管理"
+   ],
+   "metrics": [
+    "接续凭证数",
+    "跨机构接续数",
+    "跨机构接续占比",
+    "跨机构接续不良率",
+    "同机构接续不良率"
+   ],
+   "evidence_hint": [
+    "cont:chain.cross_org"
+   ],
+   "derivation": {
+    "tables": [
+     "G_00PF_PEAS_LN_LSTY_VCH_CONT_SITU_INFO",
+     "G_00PF_PEAS_LN_VCH_DV"
+    ],
+    "fields": [
+     "G_00PF_PEAS_LN_LSTY_VCH_CONT_SITU_INFO.VCH_DISB_ORG_NO",
+     "G_00PF_PEAS_LN_LSTY_VCH_CONT_SITU_INFO.CTRT_ADMI_ORG_NO",
+     "G_00PF_PEAS_LN_LSTY_VCH_CONT_SITU_INFO.FORM_NO",
+     "G_00PF_PEAS_LN_LSTY_VCH_CONT_SITU_INFO.CONTINUE_FLAG",
+     "G_00PF_PEAS_LN_VCH_DV.FORM_NO",
+     "G_00PF_PEAS_LN_VCH_DV.RSK_CLS_CD"
+    ],
+    "logic": "接续表自带两个机构字段：VCH_DISB_ORG_NO（凭证放款机构）与 CTRT_ADMI_ORG_NO（合同经营机构）。两者不等即跨机构接续。按 FORM_NO 关联凭证表取 RSK_CLS_CD 算不良率，与同机构接续组对比。这是唯一能在客户级直接区分「谁放的、谁管的」的字段组合。",
+    "direction": "same",
+    "expectation": "跨机构接续组不良率高于同机构接续组；若差异不明显，说明跨机构接续只是行政区划调整，并非管理真空"
+   }
+  },
+  {
+   "rule_id": "D10",
+   "name": "循环额度长期未使用：授信空挂与额度复用",
+   "essence": "循环额度合同已用金额远低于额度、且额度到期日临近仍未动用，这类「空挂额度」在客户出险时会被一次性提空",
+   "source": "derived",
+   "version": 1,
+   "expr": {
+    "all_of": [],
+    "min_hits": 0,
+    "any_of": [
+     {
+      "cont": {
+       "tool": "quot_unused",
+       "min_npl_rate": 0.03
+      }
+     }
+    ],
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "贷前准入",
+    "贷后管理"
+   ],
+   "metrics": [
+    "循环合同数",
+    "额度利用率",
+    "空挂额度合同数",
+    "空挂额度占比"
+   ],
+   "evidence_hint": [
+    "cont:tools.quot_unused",
+    "dim:循环标识"
+   ],
+   "derivation": {
+    "tables": [
+     "G_00PF_IDV_LN_CTRT_DV",
+     "B_00DT_CYC_QUOT_INFO_H"
+    ],
+    "fields": [
+     "G_00PF_IDV_LN_CTRT_DV.LN_CTRT_NO",
+     "G_00PF_IDV_LN_CTRT_DV.CYC_LN_IND",
+     "G_00PF_IDV_LN_CTRT_DV.CYC_QUOT",
+     "G_00PF_IDV_LN_CTRT_DV.USG_AMT",
+     "G_00PF_IDV_LN_CTRT_DV.AVL_AMT",
+     "B_00DT_CYC_QUOT_INFO_H.QUOT_MATU_DAT",
+     "B_00DT_CYC_QUOT_INFO_H.QUOT_STS"
+    ],
+    "logic": "合同表自带 CYC_QUOT/USG_AMT/AVL_AMT 三件套，可直接算利用率 USG_AMT/CYC_QUOT；额度表补 QUOT_MATU_DAT（额度到期日）与 QUOT_STS（额度状态）。利用率低且额度未到期即「空挂额度」。与 D03 的区别：D03 看自助额度占比（渠道失控），D10 看总体利用率（授信虚设）。",
+    "direction": "same",
+    "expectation": "空挂额度客户在出险前一年内用信陡增，其后不良率高于正常使用组；若空挂组不良率反而低，说明额度未被滥用，可下调该类授信"
+   }
+  },
+  {
+   "rule_id": "D11",
+   "name": "评分通过但分数贴线：准入阈值执行不严",
+   "essence": "A 卡评分通过（WON_SCRE_PASS=1）但分数仅略高于准入阈值（SCRE_APRIN_TRHD）的客户，不良率明显高于高分通过组——阈值被「擦边放行」",
+   "source": "derived",
+   "version": 1,
+   "expr": {
+    "all_of": [
+     3
+    ],
+    "min_hits": 1,
+    "any_of": [
+     {
+      "cont": {
+       "tool": "score_margin",
+       "min_npl_rate": 0.03
+      }
+     }
+    ],
+    "min_any_hits": 2,
+    "scale_max": 5
+   },
+   "cross_stage": false,
+   "stages": [
+    "贷前准入"
+   ],
+   "metrics": [
+    "贴线通过占比",
+    "贴线通过不良率",
+    "高分通过不良率",
+    "评分通过率"
+   ],
+   "evidence_hint": [
+    "clue:评分结果",
+    "dim:评分分段"
+   ],
+   "derivation": {
+    "tables": [
+     "G_00PL_IDV_LN_CUST_ACARD_SCRE_DV"
+    ],
+    "fields": [
+     "G_00PL_IDV_LN_CUST_ACARD_SCRE_DV.SCRE",
+     "G_00PL_IDV_LN_CUST_ACARD_SCRE_DV.SCRE_APRIN_TRHD",
+     "G_00PL_IDV_LN_CUST_ACARD_SCRE_DV.WON_SCRE_PASS",
+     "G_00PL_IDV_LN_CUST_ACARD_SCRE_DV.CUST_NO",
+     "G_00PL_IDV_LN_CUST_ACARD_SCRE_DV.FNC_PROD_NAM"
+    ],
+    "logic": "同一张表里同时有分数 SCRE、准入阈值 SCRE_APRIN_TRHD、是否通过 WON_SCRE_PASS，可以直接算「贴线幅度」= SCRE - SCRE_APRIN_TRHD。贴线（0~50 分区间）客户按 CUST_NO 关联凭证表算不良率，与高分通过组（>200 分）对比。这是唯一能在一个字段组内完成「阈值—通过—结果」闭环的表。",
+    "direction": "same",
+    "expectation": "贴线通过组不良率显著高于高分通过组；若两组无差异，说明评分卡本身区分度不足，应重建模型而非收紧阈值"
+   }
+  },
+  {
+   "rule_id": "D12",
+   "name": "白名单审批单人闭环：审查与审批同人",
+   "essence": "白名单流程中审查人与审批人为同一人（EXMN_CARD_NO = APR_CARD_NO），或审查与审批时间间隔极短，独立复核被绕过",
+   "source": "derived",
+   "version": 1,
+   "expr": {
+    "all_of": [],
+    "min_hits": 0,
+    "any_of": [
+     {
+      "cont": {
+       "tool": "single_reviewer",
+       "min_npl_rate": 0.03
+      }
+     }
+    ],
+    "scale_max": 5
+   },
+   "cross_stage": true,
+   "stages": [
+    "贷中审查",
+    "机构管理"
+   ],
+   "metrics": [
+    "白名单流程数",
+    "审查审批同人占比",
+    "同人审批合同不良率",
+    "多人审批合同不良率"
+   ],
+   "evidence_hint": [
+    "clue:白名单审查审批",
+    "dim:机构"
+   ],
+   "derivation": {
+    "tables": [
+     "G_00PF_PEAS_LN_WHT_CHK_FLOW_INFO",
+     "G_00PF_PEAS_LN_VCH_DV"
+    ],
+    "fields": [
+     "G_00PF_PEAS_LN_WHT_CHK_FLOW_INFO.EXMN_CARD_NO",
+     "G_00PF_PEAS_LN_WHT_CHK_FLOW_INFO.APR_CARD_NO",
+     "G_00PF_PEAS_LN_WHT_CHK_FLOW_INFO.EXMN_OPR_TIME",
+     "G_00PF_PEAS_LN_WHT_CHK_FLOW_INFO.APR_OPR_TIME",
+     "G_00PF_PEAS_LN_WHT_CHK_FLOW_INFO.CTRT_AMT_RMB",
+     "G_00PF_PEAS_LN_VCH_DV.CTRT_NO",
+     "G_00PF_PEAS_LN_VCH_DV.RSK_CLS_CD"
+    ],
+    "logic": "白名单流程表是「一人一节点」宽表（SPSR/AUDT/EXMN/APR 四组人员与时点字段并列）。EXMN_CARD_NO = APR_CARD_NO 即审查审批同人；(APR_OPR_TIME - EXMN_OPR_TIME) 极短即形式复核。注意该表时间字段是 DECIMAL 类型（EXMN_TIME），解析需容错。按 LN_CTRT_NO ↔ 凭证表 CTRT_NO 关联取不良。",
+    "direction": "same",
+    "expectation": "同人审批组的合同不良率高于多人审批组；若同人组量很小（<1%），说明制度执行到位，该线索不成立"
+   }
+  }
+ ]
+}

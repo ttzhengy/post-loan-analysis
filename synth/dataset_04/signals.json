@@ -1,0 +1,1462 @@
+{
+  "schema_version": "3.0",
+  "slice": "20260831",
+  "profile": "p4",
+  "profile_desc": "缺客群校验数据：线索命中但无法验证不良差异，应降级为「一般」",
+  "overall": {
+    "bal": 8620000000.0,
+    "npl_bal": 341000000.0,
+    "npl_rate": 0.0396,
+    "cnt": 412877,
+    "cust_cnt": 286431,
+    "person_cnt": 271058,
+    "vch_cnt": 398442,
+    "exd_bal": 512000000.0
+  },
+  "dimensions": {
+    "guarantee": {
+      "name": "担保方式",
+      "stage": "贷前",
+      "buckets": [
+        {
+          "bucket": "信用",
+          "bal": 4741000000.0,
+          "npl_bal": 488133360.0,
+          "npl_rate": 0.10296,
+          "npl_share": 0.55,
+          "offset_pp": 6.336,
+          "reference_ctl": {
+            "normal_share": 0.897,
+            "npl_share": 0.103
+          },
+          "valid": true
+        },
+        {
+          "bucket": "保证",
+          "bal": 2643466666.67,
+          "npl_bal": 75526908.29,
+          "npl_rate": 0.028571,
+          "npl_share": 0.3067,
+          "offset_pp": -1.1029,
+          "reference_ctl": {
+            "normal_share": 0.9714,
+            "npl_share": 0.0286
+          },
+          "valid": true
+        },
+        {
+          "bucket": "抵押",
+          "bal": 2643466666.67,
+          "npl_bal": 90922178.45,
+          "npl_rate": 0.034395,
+          "npl_share": 0.3067,
+          "offset_pp": -0.5205,
+          "reference_ctl": {
+            "normal_share": 0.9656,
+            "npl_share": 0.0344
+          },
+          "valid": true
+        },
+        {
+          "bucket": "质押",
+          "bal": 2643466666.67,
+          "npl_bal": 103202572.11,
+          "npl_rate": 0.039041,
+          "npl_share": 0.3067,
+          "offset_pp": -0.0559,
+          "reference_ctl": {
+            "normal_share": 0.961,
+            "npl_share": 0.039
+          },
+          "valid": true
+        }
+      ]
+    },
+    "cust_type": {
+      "name": "客户类型",
+      "stage": "贷前",
+      "buckets": [
+        {
+          "bucket": "新客户",
+          "bal": 1982600000.0,
+          "npl_bal": 66176321.6,
+          "npl_rate": 0.033379,
+          "npl_share": 0.23,
+          "offset_pp": -0.6221,
+          "reference_ctl": {
+            "normal_share": 0.9666,
+            "npl_share": 0.0334
+          },
+          "valid": true
+        },
+        {
+          "bucket": "存量客户",
+          "bal": 1982600000.0,
+          "npl_bal": 44555343.47,
+          "npl_rate": 0.022473,
+          "npl_share": 0.23,
+          "offset_pp": -1.7127,
+          "reference_ctl": {
+            "normal_share": 0.9775,
+            "npl_share": 0.0225
+          },
+          "valid": true
+        },
+        {
+          "bucket": "脱贫户",
+          "bal": 1982600000.0,
+          "npl_bal": 63470182.98,
+          "npl_rate": 0.032014,
+          "npl_share": 0.23,
+          "offset_pp": -0.7586,
+          "reference_ctl": {
+            "normal_share": 0.968,
+            "npl_share": 0.032
+          },
+          "valid": true
+        },
+        {
+          "bucket": "新型经营主体",
+          "bal": 1982600000.0,
+          "npl_bal": 74742677.31,
+          "npl_rate": 0.037699,
+          "npl_share": 0.23,
+          "offset_pp": -0.1901,
+          "reference_ctl": {
+            "normal_share": 0.9623,
+            "npl_share": 0.0377
+          },
+          "valid": true
+        }
+      ]
+    },
+    "industry": {
+      "name": "投向行业",
+      "stage": "贷前",
+      "buckets": [
+        {
+          "bucket": "种植业",
+          "bal": 1586080000.0,
+          "npl_bal": 49507983.41,
+          "npl_rate": 0.031214,
+          "npl_share": 0.184,
+          "offset_pp": -0.8386,
+          "reference_ctl": {
+            "normal_share": 0.9688,
+            "npl_share": 0.0312
+          },
+          "valid": true
+        },
+        {
+          "bucket": "养殖业",
+          "bal": 1586080000.0,
+          "npl_bal": 56766962.87,
+          "npl_rate": 0.035791,
+          "npl_share": 0.184,
+          "offset_pp": -0.3809,
+          "reference_ctl": {
+            "normal_share": 0.9642,
+            "npl_share": 0.0358
+          },
+          "valid": true
+        },
+        {
+          "bucket": "农产品加工",
+          "bal": 1586080000.0,
+          "npl_bal": 54102907.07,
+          "npl_rate": 0.034111,
+          "npl_share": 0.184,
+          "offset_pp": -0.5489,
+          "reference_ctl": {
+            "normal_share": 0.9659,
+            "npl_share": 0.0341
+          },
+          "valid": true
+        },
+        {
+          "bucket": "商贸流通",
+          "bal": 1586080000.0,
+          "npl_bal": 59194637.09,
+          "npl_rate": 0.037321,
+          "npl_share": 0.184,
+          "offset_pp": -0.2279,
+          "reference_ctl": {
+            "normal_share": 0.9627,
+            "npl_share": 0.0373
+          },
+          "valid": true
+        },
+        {
+          "bucket": "其他",
+          "bal": 1586080000.0,
+          "npl_bal": 65148807.46,
+          "npl_rate": 0.041075,
+          "npl_share": 0.184,
+          "offset_pp": 0.1475,
+          "reference_ctl": {
+            "normal_share": 0.9589,
+            "npl_share": 0.0411
+          },
+          "valid": true
+        }
+      ]
+    },
+    "term": {
+      "name": "贷款期限",
+      "stage": "贷前",
+      "buckets": [
+        {
+          "bucket": "1年以内",
+          "bal": 2643466666.67,
+          "npl_bal": 64775415.59,
+          "npl_rate": 0.024504,
+          "npl_share": 0.3067,
+          "offset_pp": -1.5096,
+          "reference_ctl": {
+            "normal_share": 0.9755,
+            "npl_share": 0.0245
+          },
+          "valid": true
+        },
+        {
+          "bucket": "1-3年",
+          "bal": 2643466666.67,
+          "npl_bal": 75908626.52,
+          "npl_rate": 0.028716,
+          "npl_share": 0.3067,
+          "offset_pp": -1.0884,
+          "reference_ctl": {
+            "normal_share": 0.9713,
+            "npl_share": 0.0287
+          },
+          "valid": true
+        },
+        {
+          "bucket": "3年以上",
+          "bal": 2643466666.67,
+          "npl_bal": 63234253.41,
+          "npl_rate": 0.023921,
+          "npl_share": 0.3067,
+          "offset_pp": -1.5679,
+          "reference_ctl": {
+            "normal_share": 0.9761,
+            "npl_share": 0.0239
+          },
+          "valid": true
+        }
+      ]
+    },
+    "amount": {
+      "name": "放款金额",
+      "stage": "贷前",
+      "buckets": [
+        {
+          "bucket": "5万以下",
+          "bal": 1982600000.0,
+          "npl_bal": 77113405.31,
+          "npl_rate": 0.038895,
+          "npl_share": 0.23,
+          "offset_pp": -0.0705,
+          "reference_ctl": {
+            "normal_share": 0.9611,
+            "npl_share": 0.0389
+          },
+          "valid": true
+        },
+        {
+          "bucket": "5-20万",
+          "bal": 1982600000.0,
+          "npl_bal": 63867637.59,
+          "npl_rate": 0.032214,
+          "npl_share": 0.23,
+          "offset_pp": -0.7386,
+          "reference_ctl": {
+            "normal_share": 0.9678,
+            "npl_share": 0.0322
+          },
+          "valid": true
+        },
+        {
+          "bucket": "20-50万",
+          "bal": 1982600000.0,
+          "npl_bal": 52443737.89,
+          "npl_rate": 0.026452,
+          "npl_share": 0.23,
+          "offset_pp": -1.3148,
+          "reference_ctl": {
+            "normal_share": 0.9735,
+            "npl_share": 0.0265
+          },
+          "valid": true
+        },
+        {
+          "bucket": "50万以上",
+          "bal": 1982600000.0,
+          "npl_bal": 71615552.5,
+          "npl_rate": 0.036122,
+          "npl_share": 0.23,
+          "offset_pp": -0.3478,
+          "reference_ctl": {
+            "normal_share": 0.9639,
+            "npl_share": 0.0361
+          },
+          "valid": true
+        }
+      ]
+    },
+    "year": {
+      "name": "放款年份",
+      "stage": "贷后",
+      "buckets": [
+        {
+          "bucket": "2023以前",
+          "bal": 1586080000.0,
+          "npl_bal": 51894186.34,
+          "npl_rate": 0.032719,
+          "npl_share": 0.184,
+          "offset_pp": -0.6881,
+          "reference_ctl": {
+            "normal_share": 0.9673,
+            "npl_share": 0.0327
+          },
+          "valid": true
+        },
+        {
+          "bucket": "2023",
+          "bal": 1586080000.0,
+          "npl_bal": 45971451.17,
+          "npl_rate": 0.028984,
+          "npl_share": 0.184,
+          "offset_pp": -1.0616,
+          "reference_ctl": {
+            "normal_share": 0.971,
+            "npl_share": 0.029
+          },
+          "valid": true
+        },
+        {
+          "bucket": "2024",
+          "bal": 1586080000.0,
+          "npl_bal": 42019294.69,
+          "npl_rate": 0.026493,
+          "npl_share": 0.184,
+          "offset_pp": -1.3107,
+          "reference_ctl": {
+            "normal_share": 0.9735,
+            "npl_share": 0.0265
+          },
+          "valid": true
+        },
+        {
+          "bucket": "2025",
+          "bal": 1586080000.0,
+          "npl_bal": 47419096.98,
+          "npl_rate": 0.029897,
+          "npl_share": 0.184,
+          "offset_pp": -0.9703,
+          "reference_ctl": {
+            "normal_share": 0.9701,
+            "npl_share": 0.0299
+          },
+          "valid": true
+        },
+        {
+          "bucket": "2026",
+          "bal": 1586080000.0,
+          "npl_bal": 37487975.9,
+          "npl_rate": 0.023636,
+          "npl_share": 0.184,
+          "offset_pp": -1.5964,
+          "reference_ctl": {
+            "normal_share": 0.9764,
+            "npl_share": 0.0236
+          },
+          "valid": true
+        }
+      ]
+    },
+    "score": {
+      "name": "评分分段",
+      "stage": "贷前",
+      "buckets": [
+        {
+          "bucket": "低分段",
+          "bal": 4741000000.0,
+          "npl_bal": 488133360.0,
+          "npl_rate": 0.10296,
+          "npl_share": 0.55,
+          "offset_pp": 6.336,
+          "reference_ctl": {
+            "normal_share": 0.897,
+            "npl_share": 0.103
+          },
+          "valid": true
+        },
+        {
+          "bucket": "中分段",
+          "bal": 3965200000.0,
+          "npl_bal": 95518887.98,
+          "npl_rate": 0.024089,
+          "npl_share": 0.46,
+          "offset_pp": -1.5511,
+          "reference_ctl": {
+            "normal_share": 0.9759,
+            "npl_share": 0.0241
+          },
+          "valid": true
+        },
+        {
+          "bucket": "高分段",
+          "bal": 3965200000.0,
+          "npl_bal": 118728366.87,
+          "npl_rate": 0.029943,
+          "npl_share": 0.46,
+          "offset_pp": -0.9657,
+          "reference_ctl": {
+            "normal_share": 0.9701,
+            "npl_share": 0.0299
+          },
+          "valid": true
+        }
+      ]
+    },
+    "org": {
+      "name": "机构分布",
+      "stage": "管理",
+      "buckets": [
+        {
+          "bucket": "高风险机构",
+          "bal": 3965200000.0,
+          "npl_bal": 107890730.97,
+          "npl_rate": 0.027209,
+          "npl_share": 0.46,
+          "offset_pp": -1.2391,
+          "reference_ctl": {
+            "normal_share": 0.9728,
+            "npl_share": 0.0272
+          },
+          "valid": true
+        },
+        {
+          "bucket": "正常机构",
+          "bal": 3965200000.0,
+          "npl_bal": 156578398.92,
+          "npl_rate": 0.039488,
+          "npl_share": 0.46,
+          "offset_pp": -0.0112,
+          "reference_ctl": {
+            "normal_share": 0.9605,
+            "npl_share": 0.0395
+          },
+          "valid": true
+        }
+      ]
+    }
+  },
+  "clue_matrix": {
+    "零散获客": {
+      "trigger_ctrt_cnt": 51558,
+      "trigger_ctrt_pptn": 0.124876,
+      "trigger_cust_cnt": 32191,
+      "trigger_bal": 1184069691.81,
+      "trigger_npl_ctrt_cnt": 6308,
+      "trigger_npl_pptn": 0.12235,
+      "verify_false_pptn": 0.151325,
+      "npl_lift": 3.0897,
+      "base_rate": 0.0396,
+      "basis": "contract",
+      "coverage_bal_pptn": 0.137363
+    },
+    "无抵押缓释": {
+      "trigger_ctrt_cnt": 12710,
+      "trigger_ctrt_pptn": 0.030786,
+      "trigger_cust_cnt": 7936,
+      "trigger_bal": 291913442.95,
+      "trigger_npl_ctrt_cnt": 559,
+      "trigger_npl_pptn": 0.04399,
+      "verify_false_pptn": 0.345678,
+      "npl_lift": 1.1109,
+      "base_rate": 0.0396,
+      "basis": "contract",
+      "coverage_bal_pptn": 0.033865
+    },
+    "低评分准入": {
+      "trigger_ctrt_cnt": 65062,
+      "trigger_ctrt_pptn": 0.157584,
+      "trigger_cust_cnt": 40623,
+      "trigger_bal": 1494208550.74,
+      "trigger_npl_ctrt_cnt": 9186,
+      "trigger_npl_pptn": 0.141201,
+      "verify_false_pptn": 0.142499,
+      "npl_lift": 3.5657,
+      "base_rate": 0.0396,
+      "basis": "contract",
+      "coverage_bal_pptn": 0.173342
+    },
+    "建档不规范": {
+      "trigger_ctrt_cnt": 4222,
+      "trigger_ctrt_pptn": 0.010226,
+      "trigger_cust_cnt": 2636,
+      "trigger_bal": 96962163.6,
+      "trigger_npl_ctrt_cnt": 187,
+      "trigger_npl_pptn": 0.044351,
+      "verify_false_pptn": 0.344453,
+      "npl_lift": 1.12,
+      "base_rate": 0.0396,
+      "basis": "contract",
+      "coverage_bal_pptn": 0.011249
+    },
+    "欺诈风险敞口": {
+      "trigger_ctrt_cnt": 6728,
+      "trigger_ctrt_pptn": 0.016296,
+      "trigger_cust_cnt": 4200,
+      "trigger_bal": 154519825.15,
+      "trigger_npl_ctrt_cnt": 246,
+      "trigger_npl_pptn": 0.036609,
+      "verify_false_pptn": 0.530795,
+      "npl_lift": 0.9245,
+      "base_rate": 0.0396,
+      "basis": "contract",
+      "coverage_bal_pptn": 0.017926
+    },
+    "超额授信": {
+      "trigger_ctrt_cnt": 19986,
+      "trigger_ctrt_pptn": 0.048407,
+      "trigger_cust_cnt": 12478,
+      "trigger_bal": 458999393.06,
+      "trigger_npl_ctrt_cnt": 487,
+      "trigger_npl_pptn": 0.024372,
+      "verify_false_pptn": 0.441848,
+      "npl_lift": 0.6155,
+      "base_rate": 0.0396,
+      "basis": "contract",
+      "coverage_bal_pptn": 0.053248
+    },
+    "审查质量": {
+      "trigger_ctrt_cnt": 7486,
+      "trigger_ctrt_pptn": 0.018131,
+      "trigger_cust_cnt": 4674,
+      "trigger_bal": 171921119.45,
+      "trigger_npl_ctrt_cnt": 293,
+      "trigger_npl_pptn": 0.039241,
+      "verify_false_pptn": 0.41947,
+      "npl_lift": 0.9909,
+      "base_rate": 0.0396,
+      "basis": "contract",
+      "coverage_bal_pptn": 0.019944
+    },
+    "贷后管理不到位": {
+      "trigger_ctrt_cnt": 11475,
+      "trigger_ctrt_pptn": 0.027794,
+      "trigger_cust_cnt": 7164,
+      "trigger_bal": 263544018.81,
+      "trigger_npl_ctrt_cnt": 438,
+      "trigger_npl_pptn": 0.038241,
+      "verify_false_pptn": 0.373348,
+      "npl_lift": 0.9657,
+      "base_rate": 0.0396,
+      "basis": "contract",
+      "coverage_bal_pptn": 0.030574
+    },
+    "接续不到位": {
+      "trigger_ctrt_cnt": 17254,
+      "trigger_ctrt_pptn": 0.041792,
+      "trigger_cust_cnt": 10773,
+      "trigger_bal": 396271847.54,
+      "trigger_npl_ctrt_cnt": 459,
+      "trigger_npl_pptn": 0.026608,
+      "verify_false_pptn": 0.508297,
+      "npl_lift": 0.6719,
+      "base_rate": 0.0396,
+      "basis": "contract",
+      "coverage_bal_pptn": 0.045971
+    },
+    "高风险客户经理": {
+      "trigger_ctrt_cnt": 13526,
+      "trigger_ctrt_pptn": 0.032762,
+      "trigger_cust_cnt": 8445,
+      "trigger_bal": 310649865.49,
+      "trigger_npl_ctrt_cnt": 429,
+      "trigger_npl_pptn": 0.031732,
+      "verify_false_pptn": 0.25332,
+      "npl_lift": 0.8013,
+      "base_rate": 0.0396,
+      "basis": "contract",
+      "coverage_bal_pptn": 0.036038
+    },
+    "高风险产品": {
+      "trigger_ctrt_cnt": 14737,
+      "trigger_ctrt_pptn": 0.035694,
+      "trigger_cust_cnt": 9201,
+      "trigger_bal": 338446537.68,
+      "trigger_npl_ctrt_cnt": 545,
+      "trigger_npl_pptn": 0.037026,
+      "verify_false_pptn": 0.251259,
+      "npl_lift": 0.935,
+      "base_rate": 0.0396,
+      "basis": "contract",
+      "coverage_bal_pptn": 0.039263
+    },
+    "大额信用风险": {
+      "trigger_ctrt_cnt": 6220,
+      "trigger_ctrt_pptn": 0.015066,
+      "trigger_cust_cnt": 3883,
+      "trigger_bal": 142855913.51,
+      "trigger_npl_ctrt_cnt": 268,
+      "trigger_npl_pptn": 0.043201,
+      "verify_false_pptn": 0.531164,
+      "npl_lift": 1.0909,
+      "base_rate": 0.0396,
+      "basis": "contract",
+      "coverage_bal_pptn": 0.016573
+    },
+    "多头借贷": {
+      "trigger_ctrt_cnt": 16388,
+      "trigger_ctrt_pptn": 0.039693,
+      "trigger_cust_cnt": 10232,
+      "trigger_bal": 376370957.28,
+      "trigger_npl_ctrt_cnt": 687,
+      "trigger_npl_pptn": 0.041929,
+      "verify_false_pptn": 0.538409,
+      "npl_lift": 1.0588,
+      "base_rate": 0.0396,
+      "basis": "contract",
+      "coverage_bal_pptn": 0.043663
+    },
+    "征信查询过多": {
+      "trigger_ctrt_cnt": 5217,
+      "trigger_ctrt_pptn": 0.012637,
+      "trigger_cust_cnt": 3257,
+      "trigger_bal": 119822370.58,
+      "trigger_npl_ctrt_cnt": 158,
+      "trigger_npl_pptn": 0.030344,
+      "verify_false_pptn": 0.344316,
+      "npl_lift": 0.7663,
+      "base_rate": 0.0396,
+      "basis": "contract",
+      "coverage_bal_pptn": 0.013901
+    },
+    "涉诉": {
+      "trigger_ctrt_cnt": 7060,
+      "trigger_ctrt_pptn": 0.017102,
+      "trigger_cust_cnt": 4408,
+      "trigger_bal": 162157919.18,
+      "trigger_npl_ctrt_cnt": 301,
+      "trigger_npl_pptn": 0.042712,
+      "verify_false_pptn": 0.360362,
+      "npl_lift": 1.0786,
+      "base_rate": 0.0396,
+      "basis": "contract",
+      "coverage_bal_pptn": 0.018812
+    },
+    "风险信号未处置": {
+      "trigger_ctrt_cnt": 9874,
+      "trigger_ctrt_pptn": 0.023917,
+      "trigger_cust_cnt": 6165,
+      "trigger_bal": 226780484.16,
+      "trigger_npl_ctrt_cnt": 247,
+      "trigger_npl_pptn": 0.025062,
+      "verify_false_pptn": 0.411605,
+      "npl_lift": 0.6329,
+      "base_rate": 0.0396,
+      "basis": "contract",
+      "coverage_bal_pptn": 0.026309
+    },
+    "裸贷户": {
+      "trigger_ctrt_cnt": 19524,
+      "trigger_ctrt_pptn": 0.047289,
+      "trigger_cust_cnt": 12190,
+      "trigger_bal": 448391871.69,
+      "trigger_npl_ctrt_cnt": 647,
+      "trigger_npl_pptn": 0.033175,
+      "verify_false_pptn": 0.298314,
+      "npl_lift": 0.8377,
+      "base_rate": 0.0396,
+      "basis": "contract",
+      "coverage_bal_pptn": 0.052018
+    },
+    "资金挪用": {
+      "trigger_ctrt_cnt": 19950,
+      "trigger_ctrt_pptn": 0.048322,
+      "trigger_cust_cnt": 12456,
+      "trigger_bal": 458185762.35,
+      "trigger_npl_ctrt_cnt": 533,
+      "trigger_npl_pptn": 0.026749,
+      "verify_false_pptn": 0.481009,
+      "npl_lift": 0.6755,
+      "base_rate": 0.0396,
+      "basis": "contract",
+      "coverage_bal_pptn": 0.053154
+    }
+  },
+  "features": [
+    {
+      "feature_id": 1,
+      "name": "零散获客",
+      "dimension": "机构",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "零散获客强度": 3.4
+      },
+      "baseline": {
+        "零散获客强度": 1.0
+      },
+      "numerator": 118908,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 2,
+      "name": "无抵押缓释",
+      "dimension": "机构",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "无抵押缓释强度": 3.1
+      },
+      "baseline": {
+        "无抵押缓释强度": 1.0
+      },
+      "numerator": 104045,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 3,
+      "name": "低评分准入",
+      "dimension": "机构",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "低评分准入强度": 2.9
+      },
+      "baseline": {
+        "低评分准入强度": 1.0
+      },
+      "numerator": 94135,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 4,
+      "name": "建档不规范",
+      "dimension": "机构",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "建档不规范强度": 1.1286
+      },
+      "baseline": {
+        "建档不规范强度": 1.0
+      },
+      "numerator": 6371,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 5,
+      "name": "欺诈风险敞口",
+      "dimension": "机构",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "欺诈风险敞口强度": 2.4
+      },
+      "baseline": {
+        "欺诈风险敞口强度": 1.0
+      },
+      "numerator": 69363,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 6,
+      "name": "信用负债敞口",
+      "dimension": "机构",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "信用负债敞口强度": 0.8148
+      },
+      "baseline": {
+        "信用负债敞口强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 7,
+      "name": "超额授信",
+      "dimension": "机构",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "超额授信强度": 1.0066
+      },
+      "baseline": {
+        "超额授信强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 8,
+      "name": "审查质量",
+      "dimension": "机构",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "审查质量强度": 2.6
+      },
+      "baseline": {
+        "审查质量强度": 1.0
+      },
+      "numerator": 79272,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 9,
+      "name": "贷后管理不到位",
+      "dimension": "机构",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "贷后管理不到位强度": 1.0035
+      },
+      "baseline": {
+        "贷后管理不到位强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 10,
+      "name": "接续不到位",
+      "dimension": "机构",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "接续不到位强度": 0.8339
+      },
+      "baseline": {
+        "接续不到位强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 11,
+      "name": "高风险客户经理",
+      "dimension": "客户经理",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "高风险客户经理强度": 0.9483
+      },
+      "baseline": {
+        "高风险客户经理强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 12,
+      "name": "高风险产品",
+      "dimension": "机构",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "高风险产品强度": 1.0561
+      },
+      "baseline": {
+        "高风险产品强度": 1.0
+      },
+      "numerator": 2779,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 13,
+      "name": "大额信用风险",
+      "dimension": "机构",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "大额信用风险强度": 1.0908
+      },
+      "baseline": {
+        "大额信用风险强度": 1.0
+      },
+      "numerator": 4498,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 14,
+      "name": "批量建档",
+      "dimension": "客户经理",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "批量建档强度": 2.5
+      },
+      "baseline": {
+        "批量建档强度": 1.0
+      },
+      "numerator": 74317,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 15,
+      "name": "调查造假",
+      "dimension": "客户经理",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "调查造假强度": 1.1052
+      },
+      "baseline": {
+        "调查造假强度": 1.0
+      },
+      "numerator": 5212,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 16,
+      "name": "信息录入失真",
+      "dimension": "客户经理",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "信息录入失真强度": 0.8417
+      },
+      "baseline": {
+        "信息录入失真强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 17,
+      "name": "与客户资金往来",
+      "dimension": "客户经理",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "与客户资金往来强度": 1.0525
+      },
+      "baseline": {
+        "与客户资金往来强度": 1.0
+      },
+      "numerator": 2601,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 18,
+      "name": "贷后检查流于形式",
+      "dimension": "客户经理",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "贷后检查流于形式强度": 0.8656
+      },
+      "baseline": {
+        "贷后检查流于形式强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 19,
+      "name": "管户负担过重",
+      "dimension": "客户经理",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "管户负担过重强度": 0.9192
+      },
+      "baseline": {
+        "管户负担过重强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 20,
+      "name": "虚假经营流水",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "虚假经营流水强度": 0.8081
+      },
+      "baseline": {
+        "虚假经营流水强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 21,
+      "name": "短期资金异常",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "短期资金异常强度": 0.9245
+      },
+      "baseline": {
+        "短期资金异常强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 22,
+      "name": "共用经营场所",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "共用经营场所强度": 0.9568
+      },
+      "baseline": {
+        "共用经营场所强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 23,
+      "name": "频繁试探申请",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "频繁试探申请强度": 1.0243
+      },
+      "baseline": {
+        "频繁试探申请强度": 1.0
+      },
+      "numerator": 1203,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 24,
+      "name": "押品高评高贷",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "押品高评高贷强度": 1.0679
+      },
+      "baseline": {
+        "押品高评高贷强度": 1.0
+      },
+      "numerator": 3364,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 25,
+      "name": "买壳新注册",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "买壳新注册强度": 0.8013
+      },
+      "baseline": {
+        "买壳新注册强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 26,
+      "name": "AUM不匹配",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "AUM不匹配强度": 1.1211
+      },
+      "baseline": {
+        "AUM不匹配强度": 1.0
+      },
+      "numerator": 5999,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 27,
+      "name": "异地风险",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "异地风险强度": 0.9312
+      },
+      "baseline": {
+        "异地风险强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 28,
+      "name": "行业性风险",
+      "dimension": "机构",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "行业性风险强度": 0.8679
+      },
+      "baseline": {
+        "行业性风险强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 29,
+      "name": "地址频繁变更",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "地址频繁变更强度": 1.0955
+      },
+      "baseline": {
+        "地址频繁变更强度": 1.0
+      },
+      "numerator": 4731,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 30,
+      "name": "经营年限不足",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "经营年限不足强度": 0.9034
+      },
+      "baseline": {
+        "经营年限不足强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 31,
+      "name": "虚增面积收入",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "虚增面积收入强度": 0.989
+      },
+      "baseline": {
+        "虚增面积收入强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 32,
+      "name": "多头借贷",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "多头借贷强度": 0.8773
+      },
+      "baseline": {
+        "多头借贷强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 33,
+      "name": "负债不匹配",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "负债不匹配强度": 1.0247
+      },
+      "baseline": {
+        "负债不匹配强度": 1.0
+      },
+      "numerator": 1223,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 34,
+      "name": "征信查询过多",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "征信查询过多强度": 0.9948
+      },
+      "baseline": {
+        "征信查询过多强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 35,
+      "name": "被拒贷记录",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "被拒贷记录强度": 0.971
+      },
+      "baseline": {
+        "被拒贷记录强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 36,
+      "name": "N年内不良记录",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "N年内不良记录强度": 0.8549
+      },
+      "baseline": {
+        "N年内不良记录强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 37,
+      "name": "赌博嗜好",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "赌博嗜好强度": 1.0374
+      },
+      "baseline": {
+        "赌博嗜好强度": 1.0
+      },
+      "numerator": 1852,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 38,
+      "name": "家庭劣变",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "家庭劣变强度": 0.9585
+      },
+      "baseline": {
+        "家庭劣变强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 39,
+      "name": "收入覆盖不足",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "收入覆盖不足强度": 0.9867
+      },
+      "baseline": {
+        "收入覆盖不足强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 40,
+      "name": "涉税强执",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "涉税强执强度": 1.0019
+      },
+      "baseline": {
+        "涉税强执强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 41,
+      "name": "涉诉",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "涉诉强度": 0.9588
+      },
+      "baseline": {
+        "涉诉强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 42,
+      "name": "资金挪用",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "资金挪用强度": 0.8692
+      },
+      "baseline": {
+        "资金挪用强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 43,
+      "name": "风险信号未处置",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "风险信号未处置强度": 1.0686
+      },
+      "baseline": {
+        "风险信号未处置强度": 1.0
+      },
+      "numerator": 3398,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 44,
+      "name": "还款行为恶化",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "还款行为恶化强度": 1.0915
+      },
+      "baseline": {
+        "还款行为恶化强度": 1.0
+      },
+      "numerator": 4533,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 45,
+      "name": "裸贷户",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "裸贷户强度": 1.1242
+      },
+      "baseline": {
+        "裸贷户强度": 1.0
+      },
+      "numerator": 6153,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    }
+  ],
+  "continuation": {
+    "tools": {
+      "no_principal_renew": {
+        "label": "无还本续贷",
+        "bal": 228805721.71,
+        "npl_bal": 7979362.96,
+        "npl_rate": 0.034874
+      },
+      "one_click_renew": {
+        "label": "一键续贷",
+        "bal": 427078417.44,
+        "npl_bal": 9056203.11,
+        "npl_rate": 0.021205
+      },
+      "extension": {
+        "label": "展期",
+        "bal": 422113276.5,
+        "npl_bal": 10487061.44,
+        "npl_rate": 0.024844
+      },
+      "restructure_normal": {
+        "label": "非不良重组",
+        "bal": 305929375.43,
+        "npl_bal": 8483829.28,
+        "npl_rate": 0.027731
+      },
+      "restructure_bad": {
+        "label": "不良重组",
+        "bal": 165957282.97,
+        "npl_bal": 5067515.4,
+        "npl_rate": 0.030535
+      }
+    },
+    "chain": {
+      "rolling": {
+        "cnt": 16515,
+        "npl_rate": 0.03564
+      },
+      "resolving": {
+        "cnt": 12386,
+        "npl_rate": 0.02178
+      }
+    }
+  },
+  "cohort_available": false,
+  "warnings": [
+    "无客群级校验数据，线索级结论降级"
+  ]
+}

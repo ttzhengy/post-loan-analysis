@@ -1,0 +1,445 @@
+{
+  "schema_version": "3.0",
+  "slice": "20260831",
+  "dimensions": {
+    "guarantee": {
+      "name": "担保方式",
+      "stage": "贷前",
+      "buckets": [
+        {
+          "bucket": "信用",
+          "bal": 4741000000.0,
+          "npl_bal": 488133360.0,
+          "npl_rate": 0.10296,
+          "npl_share": 0.55,
+          "offset_pp": 6.336,
+          "reference_ctl": {
+            "normal_share": 0.897,
+            "npl_share": 0.103
+          },
+          "valid": true
+        },
+        {
+          "bucket": "保证",
+          "bal": 2643466666.67,
+          "npl_bal": 109437665.26,
+          "npl_rate": 0.041399,
+          "npl_share": 0.3067,
+          "offset_pp": 0.1799,
+          "reference_ctl": {
+            "normal_share": 0.9586,
+            "npl_share": 0.0414
+          },
+          "valid": true
+        },
+        {
+          "bucket": "抵押",
+          "bal": 2643466666.67,
+          "npl_bal": 59296055.66,
+          "npl_rate": 0.022431,
+          "npl_share": 0.3067,
+          "offset_pp": -1.7169,
+          "reference_ctl": {
+            "normal_share": 0.9776,
+            "npl_share": 0.0224
+          },
+          "valid": true
+        },
+        {
+          "bucket": "质押",
+          "bal": 2643466666.67,
+          "npl_bal": 64357162.84,
+          "npl_rate": 0.024346,
+          "npl_share": 0.3067,
+          "offset_pp": -1.5254,
+          "reference_ctl": {
+            "normal_share": 0.9757,
+            "npl_share": 0.0243
+          },
+          "valid": true
+        }
+      ]
+    },
+    "cust_type": {
+      "name": "客户类型",
+      "stage": "贷前",
+      "buckets": [
+        {
+          "bucket": "新客户",
+          "bal": 4741000000.0,
+          "npl_bal": 488133360.0,
+          "npl_rate": 0.10296,
+          "npl_share": 0.55,
+          "offset_pp": 6.336,
+          "reference_ctl": {
+            "normal_share": 0.897,
+            "npl_share": 0.103
+          },
+          "valid": true
+        },
+        {
+          "bucket": "存量客户",
+          "bal": 2643466666.67,
+          "npl_bal": 100477079.57,
+          "npl_rate": 0.03801,
+          "npl_share": 0.3067,
+          "offset_pp": -0.159,
+          "reference_ctl": {
+            "normal_share": 0.962,
+            "npl_share": 0.038
+          },
+          "valid": true
+        },
+        {
+          "bucket": "脱贫户",
+          "bal": 2643466666.67,
+          "npl_bal": 75970508.99,
+          "npl_rate": 0.028739,
+          "npl_share": 0.3067,
+          "offset_pp": -1.0861,
+          "reference_ctl": {
+            "normal_share": 0.9713,
+            "npl_share": 0.0287
+          },
+          "valid": true
+        },
+        {
+          "bucket": "新型经营主体",
+          "bal": 2643466666.67,
+          "npl_bal": 80899448.0,
+          "npl_rate": 0.030604,
+          "npl_share": 0.3067,
+          "offset_pp": -0.8996,
+          "reference_ctl": {
+            "normal_share": 0.9694,
+            "npl_share": 0.0306
+          },
+          "valid": true
+        }
+      ]
+    },
+    "industry": {
+      "name": "投向行业",
+      "stage": "贷前",
+      "buckets": [
+        {
+          "bucket": "种植业",
+          "bal": 1586080000.0,
+          "npl_bal": 42675740.85,
+          "npl_rate": 0.026906,
+          "npl_share": 0.184,
+          "offset_pp": -1.2694,
+          "reference_ctl": {
+            "normal_share": 0.9731,
+            "npl_share": 0.0269
+          },
+          "valid": true
+        },
+        {
+          "bucket": "养殖业",
+          "bal": 1586080000.0,
+          "npl_bal": 61287020.76,
+          "npl_rate": 0.038641,
+          "npl_share": 0.184,
+          "offset_pp": -0.0959,
+          "reference_ctl": {
+            "normal_share": 0.9614,
+            "npl_share": 0.0386
+          },
+          "valid": true
+        },
+        {
+          "bucket": "农产品加工",
+          "bal": 1586080000.0,
+          "npl_bal": 53961092.55,
+          "npl_rate": 0.034022,
+          "npl_share": 0.184,
+          "offset_pp": -0.5578,
+          "reference_ctl": {
+            "normal_share": 0.966,
+            "npl_share": 0.034
+          },
+          "valid": true
+        },
+        {
+          "bucket": "商贸流通",
+          "bal": 1586080000.0,
+          "npl_bal": 51597698.2,
+          "npl_rate": 0.032532,
+          "npl_share": 0.184,
+          "offset_pp": -0.7068,
+          "reference_ctl": {
+            "normal_share": 0.9675,
+            "npl_share": 0.0325
+          },
+          "valid": true
+        },
+        {
+          "bucket": "其他",
+          "bal": 1586080000.0,
+          "npl_bal": 38286002.21,
+          "npl_rate": 0.024139,
+          "npl_share": 0.184,
+          "offset_pp": -1.5461,
+          "reference_ctl": {
+            "normal_share": 0.9759,
+            "npl_share": 0.0241
+          },
+          "valid": true
+        }
+      ]
+    },
+    "term": {
+      "name": "贷款期限",
+      "stage": "贷前",
+      "buckets": [
+        {
+          "bucket": "1年以内",
+          "bal": 2643466666.67,
+          "npl_bal": 65758289.99,
+          "npl_rate": 0.024876,
+          "npl_share": 0.3067,
+          "offset_pp": -1.4724,
+          "reference_ctl": {
+            "normal_share": 0.9751,
+            "npl_share": 0.0249
+          },
+          "valid": true
+        },
+        {
+          "bucket": "1-3年",
+          "bal": 2643466666.67,
+          "npl_bal": 66665780.64,
+          "npl_rate": 0.025219,
+          "npl_share": 0.3067,
+          "offset_pp": -1.4381,
+          "reference_ctl": {
+            "normal_share": 0.9748,
+            "npl_share": 0.0252
+          },
+          "valid": true
+        },
+        {
+          "bucket": "3年以上",
+          "bal": 2643466666.67,
+          "npl_bal": 109382749.18,
+          "npl_rate": 0.041379,
+          "npl_share": 0.3067,
+          "offset_pp": 0.1779,
+          "reference_ctl": {
+            "normal_share": 0.9586,
+            "npl_share": 0.0414
+          },
+          "valid": true
+        }
+      ]
+    },
+    "amount": {
+      "name": "放款金额",
+      "stage": "贷前",
+      "buckets": [
+        {
+          "bucket": "5万以下",
+          "bal": 1982600000.0,
+          "npl_bal": 64547897.29,
+          "npl_rate": 0.032557,
+          "npl_share": 0.23,
+          "offset_pp": -0.7043,
+          "reference_ctl": {
+            "normal_share": 0.9674,
+            "npl_share": 0.0326
+          },
+          "valid": true
+        },
+        {
+          "bucket": "5-20万",
+          "bal": 1982600000.0,
+          "npl_bal": 49614596.82,
+          "npl_rate": 0.025025,
+          "npl_share": 0.23,
+          "offset_pp": -1.4575,
+          "reference_ctl": {
+            "normal_share": 0.975,
+            "npl_share": 0.025
+          },
+          "valid": true
+        },
+        {
+          "bucket": "20-50万",
+          "bal": 1982600000.0,
+          "npl_bal": 70501274.1,
+          "npl_rate": 0.03556,
+          "npl_share": 0.23,
+          "offset_pp": -0.404,
+          "reference_ctl": {
+            "normal_share": 0.9644,
+            "npl_share": 0.0356
+          },
+          "valid": true
+        },
+        {
+          "bucket": "50万以上",
+          "bal": 1982600000.0,
+          "npl_bal": 75865624.62,
+          "npl_rate": 0.038266,
+          "npl_share": 0.23,
+          "offset_pp": -0.1334,
+          "reference_ctl": {
+            "normal_share": 0.9617,
+            "npl_share": 0.0383
+          },
+          "valid": true
+        }
+      ]
+    },
+    "year": {
+      "name": "放款年份",
+      "stage": "贷后",
+      "buckets": [
+        {
+          "bucket": "2023以前",
+          "bal": 1586080000.0,
+          "npl_bal": 61907186.86,
+          "npl_rate": 0.039032,
+          "npl_share": 0.184,
+          "offset_pp": -0.0568,
+          "reference_ctl": {
+            "normal_share": 0.961,
+            "npl_share": 0.039
+          },
+          "valid": true
+        },
+        {
+          "bucket": "2023",
+          "bal": 1586080000.0,
+          "npl_bal": 64078693.45,
+          "npl_rate": 0.040401,
+          "npl_share": 0.184,
+          "offset_pp": 0.0801,
+          "reference_ctl": {
+            "normal_share": 0.9596,
+            "npl_share": 0.0404
+          },
+          "valid": true
+        },
+        {
+          "bucket": "2024",
+          "bal": 1586080000.0,
+          "npl_bal": 54926480.29,
+          "npl_rate": 0.03463,
+          "npl_share": 0.184,
+          "offset_pp": -0.497,
+          "reference_ctl": {
+            "normal_share": 0.9654,
+            "npl_share": 0.0346
+          },
+          "valid": true
+        },
+        {
+          "bucket": "2025",
+          "bal": 1586080000.0,
+          "npl_bal": 36027378.03,
+          "npl_rate": 0.022715,
+          "npl_share": 0.184,
+          "offset_pp": -1.6885,
+          "reference_ctl": {
+            "normal_share": 0.9773,
+            "npl_share": 0.0227
+          },
+          "valid": true
+        },
+        {
+          "bucket": "2026",
+          "bal": 1586080000.0,
+          "npl_bal": 36712221.14,
+          "npl_rate": 0.023147,
+          "npl_share": 0.184,
+          "offset_pp": -1.6453,
+          "reference_ctl": {
+            "normal_share": 0.9769,
+            "npl_share": 0.0231
+          },
+          "valid": true
+        }
+      ]
+    },
+    "score": {
+      "name": "评分分段",
+      "stage": "贷前",
+      "buckets": [
+        {
+          "bucket": "低分段",
+          "bal": 4741000000.0,
+          "npl_bal": 488133360.0,
+          "npl_rate": 0.10296,
+          "npl_share": 0.55,
+          "offset_pp": 6.336,
+          "reference_ctl": {
+            "normal_share": 0.897,
+            "npl_share": 0.103
+          },
+          "valid": true
+        },
+        {
+          "bucket": "中分段",
+          "bal": 3965200000.0,
+          "npl_bal": 157021458.55,
+          "npl_rate": 0.0396,
+          "npl_share": 0.46,
+          "offset_pp": -0.0,
+          "reference_ctl": {
+            "normal_share": 0.9604,
+            "npl_share": 0.0396
+          },
+          "valid": true
+        },
+        {
+          "bucket": "高分段",
+          "bal": 3965200000.0,
+          "npl_bal": 111609559.9,
+          "npl_rate": 0.028147,
+          "npl_share": 0.46,
+          "offset_pp": -1.1453,
+          "reference_ctl": {
+            "normal_share": 0.9719,
+            "npl_share": 0.0281
+          },
+          "valid": true
+        }
+      ]
+    },
+    "org": {
+      "name": "机构分布",
+      "stage": "管理",
+      "buckets": [
+        {
+          "bucket": "高风险机构",
+          "bal": 3965200000.0,
+          "npl_bal": 161045144.08,
+          "npl_rate": 0.040615,
+          "npl_share": 0.46,
+          "offset_pp": 0.1015,
+          "reference_ctl": {
+            "normal_share": 0.9594,
+            "npl_share": 0.0406
+          },
+          "valid": true
+        },
+        {
+          "bucket": "正常机构",
+          "bal": 3965200000.0,
+          "npl_bal": 133923405.59,
+          "npl_rate": 0.033775,
+          "npl_share": 0.46,
+          "offset_pp": -0.5825,
+          "reference_ctl": {
+            "normal_share": 0.9662,
+            "npl_share": 0.0338
+          },
+          "valid": true
+        }
+      ]
+    }
+  },
+  "warnings": []
+}

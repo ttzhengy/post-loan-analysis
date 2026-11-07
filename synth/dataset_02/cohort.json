@@ -1,0 +1,41 @@
+{
+  "schema_version": "3.0",
+  "cohorts": [
+    {
+      "feature_id": 10,
+      "name": "接续不到位",
+      "size": 13370,
+      "npl_rate": 0.16344,
+      "lift": 2.4,
+      "incremental_lift": 1.35,
+      "npl_share": 0.0981
+    },
+    {
+      "feature_id": 11,
+      "name": "高风险客户经理",
+      "size": 13507,
+      "npl_rate": 0.19068,
+      "lift": 2.8,
+      "incremental_lift": 1.45,
+      "npl_share": 0.1144
+    },
+    {
+      "feature_id": 17,
+      "name": "与客户资金往来",
+      "size": 14329,
+      "npl_rate": 0.21111,
+      "lift": 3.1,
+      "incremental_lift": 1.525,
+      "npl_share": 0.1267
+    },
+    {
+      "feature_id": 44,
+      "name": "还款行为恶化",
+      "size": 18028,
+      "npl_rate": 0.1362,
+      "lift": 2.0,
+      "incremental_lift": 1.25,
+      "npl_share": 0.0817
+    }
+  ]
+}

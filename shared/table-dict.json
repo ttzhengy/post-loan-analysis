@@ -1,0 +1,10802 @@
+{
+ "source": "references/table-dictionary.md",
+ "table_count": 43,
+ "tables": {
+  "G_00PF_PEAS_LN_VCH_DV": [
+   {
+    "field": "FNCL_ENT_NO",
+    "cn": "金融实体代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FORM_NO",
+    "cn": "凭证编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_NO",
+    "cn": "合同编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_NO",
+    "cn": "客户编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "REQSI_NO",
+    "cn": "申请书编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_FORM_ORI_NO",
+    "cn": "借款凭证原始号码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BUS_BREED_CD",
+    "cn": "业务品种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_PROP_CLS_CD",
+    "cn": "贷款性质分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_TERM_CLS_CD",
+    "cn": "贷款期限分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_USE_CD",
+    "cn": "借款用途",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "GRTE_MOD_CD",
+    "cn": "担保方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "GRTE_CTRT_NO",
+    "cn": "担保合同编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_USE_CLS_CD",
+    "cn": "借款用途分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_CMPHSV_CLS_CD",
+    "cn": "贷款综合分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_IVST_DIRE_OCPCLS_CD",
+    "cn": "贷款投向行业分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_IVDIR_NATECO_OCPCLS_CD",
+    "cn": "贷款投向国民经济行业分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PBC_ARGI_LN_CLS_CD",
+    "cn": "人行涉农贷款分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LOW_RSK_BUS_IND",
+    "cn": "是否低风险业务",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RSK_BUS_CTG",
+    "cn": "低风险业务类别",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CYC_LN_IND",
+    "cn": "是否可循环贷款",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUBSD_INTS_LN_IND",
+    "cn": "是否贴息贷款",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUBSD_INTS_END_DAT",
+    "cn": "贴息截止日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUBSD_INTS_RATE",
+    "cn": "贴息率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_DAT",
+    "cn": "借款日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MATU_DAT",
+    "cn": "到期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ADJ_MATU_DAT",
+    "cn": "调整后到期日",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ACTNG_ENT_ACCT_DAT",
+    "cn": "会计入账日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RNEW_APTMT_IND",
+    "cn": "展期约期标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RNEW_MATU_DAT",
+    "cn": "展期到期日",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RPAY_MOD_CD",
+    "cn": "还款方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CCY_CD",
+    "cn": "币种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CCY_CD_STD",
+    "cn": "币种_标准化",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_AMT",
+    "cn": "借款金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_AMT_RMB",
+    "cn": "借款金额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FORM_BAL",
+    "cn": "凭证余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FORM_BAL_RMB",
+    "cn": "凭证余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "IN_BLNC_ARREA_INTS",
+    "cn": "表内欠息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "OFF_BLNC_ARREA_INTS",
+    "cn": "表外欠息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TOT_CAN_CAP",
+    "cn": "累计核销本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TOT_CAN_INTS",
+    "cn": "累计核销利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TOT_DBT_OS_CAP",
+    "cn": "累计抵债本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TOT_DBT_OS_INTS",
+    "cn": "累计抵债利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CAP_CNTRC_DBT_IND",
+    "cn": "以资抵债标志",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RSK_CLS_CD",
+    "cn": "风险分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "INTL_GRD_CLS_CD",
+    "cn": "内部评级分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FST_FORM_NO",
+    "cn": "首笔凭证编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FST_FORM_PRVD_DAT",
+    "cn": "首笔凭证发放日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ABIS_BRCH_NO",
+    "cn": "ABIS机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ABIS_BUS_BREED",
+    "cn": "ABIS业务品种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_ACCT_NO",
+    "cn": "贷款账号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RPAY_TYP_CD",
+    "cn": "还款类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "WON_AUTO_DDCT_CAP",
+    "cn": "是否自动扣收本金",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AUTO_DDCT_CAP_STRT_AMT",
+    "cn": "自动扣收本金起点金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CLTN_ACCT_NO",
+    "cn": "收款账号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RPAY_ACCT_NO_1",
+    "cn": "还款账号1",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RPAY_ACCT_NO_2",
+    "cn": "还款账号2",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SELF_RPAY_ACCT_NO",
+    "cn": "自由还账号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SELF_RPAY_ACCT_NO_RETQUOT",
+    "cn": "自由还账号留存额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "PRGS_TLMT_MSG_DAT",
+    "cn": "诉讼时效提示日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_FLOW_STS_CD",
+    "cn": "放款流程状态标志",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FORM_STS_CD",
+    "cn": "凭证状态",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DEL_IND",
+    "cn": "删除标志",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_ORG_COD",
+    "cn": "放款机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_ORG_COD_STD",
+    "cn": "机构备用字段",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MAGR_CD",
+    "cn": "客户经理代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_ORG_COD",
+    "cn": "操作机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPT_CD",
+    "cn": "操作员代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FST_OPR_DAT",
+    "cn": "首次操作日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FST_OPR_TIME",
+    "cn": "首次操作时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_DAT",
+    "cn": "操作日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_TIME",
+    "cn": "操作时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AGENT_CTG_CD",
+    "cn": "委托人类别",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DPRT_FTR_CLS_CD",
+    "cn": "部门特色分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FRN_EXCH_PLGE_LN_CLS_CD",
+    "cn": "外汇保证贷款分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CLTN_PSN_ISBN",
+    "cn": "收款人代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MARG_CTRL_IND",
+    "cn": "是否控制保证金",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MARG_CTRL_MOD_CD",
+    "cn": "保证金控制方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MARG_CTRL_PPTN",
+    "cn": "保证金控制比例",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MARG_FIX_QUOT",
+    "cn": "保证金固定额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MARG_CCY_CD",
+    "cn": "保证金币种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SELF_LOWT_RPAY_QUOT",
+    "cn": "自由还最低还款额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "SELF_HGST_RPAY_QUOT",
+    "cn": "自由还最高还款额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FNC_PROD_CLS_CD",
+    "cn": "信贷产品分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PAY_MOD_CD",
+    "cn": "支付方式代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "NTRL_DSTR_EFCT_CD",
+    "cn": "自然灾害影响代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXD_DAT",
+    "cn": "逾期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXD_DAYS",
+    "cn": "逾期天数",
+    "type": "INT"
+   },
+   {
+    "field": "EXD_TYP",
+    "cn": "逾期类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CAN_STS_CD",
+    "cn": "核销状态代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CAN_ACTNG_DAT",
+    "cn": "核销会计日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DAT_SOR_CD",
+    "cn": "数据来源代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LAST_UPD_DAT",
+    "cn": "最后更新日期",
+    "type": "DATE"
+   },
+   {
+    "field": "CONT_LN_IND",
+    "cn": "是否接续贷款",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CONTINUE_FLAG",
+    "cn": "从前手凭证接续方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RMOT_HLDR_CTRT_NO",
+    "cn": "前手合同号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RMOT_HLDR_FORM_NO",
+    "cn": "前手凭证号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RMOT_HLDR_LN_ARG_NO",
+    "cn": "前手贷款合约号",
+    "type": "VARCHAR"
+   }
+  ],
+  "G_00PF_IDV_LN_VCH_DV": [
+   {
+    "field": "FNCL_ENT_NO",
+    "cn": "金融实体代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FORM_NO",
+    "cn": "凭证编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_NO",
+    "cn": "合同编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_NO",
+    "cn": "客户编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "REQSI_NO",
+    "cn": "申请书编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_FORM_ORI_NO",
+    "cn": "借款凭证原始号码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BUS_BREED_CD",
+    "cn": "业务品种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_PROP_CLS_CD",
+    "cn": "贷款性质分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_TERM_CLS_CD",
+    "cn": "贷款期限分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_USE_CD",
+    "cn": "借款用途",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "GRTE_MOD_CD",
+    "cn": "担保方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "GRTE_CTRT_NO",
+    "cn": "担保合同编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_USE_CLS_CD",
+    "cn": "借款用途分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_CMPHSV_CLS_CD",
+    "cn": "贷款综合分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_IVST_DIRE_OCPCLS_CD",
+    "cn": "贷款投向行业分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_IVDIR_NATECO_OCPCLS_CD",
+    "cn": "贷款投向国民经济行业分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PBC_ARGI_LN_CLS_CD",
+    "cn": "人行涉农贷款分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LOW_RSK_BUS_IND",
+    "cn": "是否低风险业务",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RSK_BUS_CTG",
+    "cn": "低风险业务类别",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CYC_LN_IND",
+    "cn": "是否可循环贷款",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUBSD_INTS_LN_IND",
+    "cn": "是否贴息贷款",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUBSD_INTS_END_DAT",
+    "cn": "贴息截止日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUBSD_INTS_RATE",
+    "cn": "贴息率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_DAT",
+    "cn": "借款日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MATU_DAT",
+    "cn": "到期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ADJ_MATU_DAT",
+    "cn": "调整后到期日",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ACTNG_ENT_ACCT_DAT",
+    "cn": "会计入账日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RNEW_APTMT_IND",
+    "cn": "展期约期标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RNEW_MATU_DAT",
+    "cn": "展期到期日",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RPAY_MOD_CD",
+    "cn": "还款方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CCY_CD",
+    "cn": "币种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CCY_CD_STD",
+    "cn": "币种_标准化",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_AMT",
+    "cn": "借款金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_AMT_RMB",
+    "cn": "借款金额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FORM_BAL",
+    "cn": "凭证余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FORM_BAL_RMB",
+    "cn": "凭证余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "IN_BLNC_ARREA_INTS",
+    "cn": "表内欠息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "OFF_BLNC_ARREA_INTS",
+    "cn": "表外欠息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TOT_CAN_CAP",
+    "cn": "累计核销本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TOT_CAN_INTS",
+    "cn": "累计核销利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TOT_DBT_OS_CAP",
+    "cn": "累计抵债本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TOT_DBT_OS_INTS",
+    "cn": "累计抵债利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CAP_CNTRC_DBT_IND",
+    "cn": "以资抵债标志",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RSK_CLS_CD",
+    "cn": "风险分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "INTL_GRD_CLS_CD",
+    "cn": "内部评级分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FST_FORM_NO",
+    "cn": "首笔凭证编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FST_FORM_PRVD_DAT",
+    "cn": "首笔凭证发放日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ABIS_BRCH_NO",
+    "cn": "ABIS机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ABIS_BUS_BREED",
+    "cn": "ABIS业务品种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_ACCT_NO",
+    "cn": "贷款账号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RPAY_TYP_CD",
+    "cn": "还款类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "WON_AUTO_DDCT_CAP",
+    "cn": "是否自动扣收本金",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AUTO_DDCT_CAP_STRT_AMT",
+    "cn": "自动扣收本金起点金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CLTN_ACCT_NO",
+    "cn": "收款账号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RPAY_ACCT_NO_1",
+    "cn": "还款账号1",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RPAY_ACCT_NO_2",
+    "cn": "还款账号2",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SELF_RPAY_ACCT_NO",
+    "cn": "自由还账号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SELF_RPAY_ACCT_NO_RETQUOT",
+    "cn": "自由还账号留存额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "PRGS_TLMT_MSG_DAT",
+    "cn": "诉讼时效提示日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_FLOW_STS_CD",
+    "cn": "放款流程状态标志",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FORM_STS_CD",
+    "cn": "凭证状态",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DEL_IND",
+    "cn": "删除标志",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_ORG_COD",
+    "cn": "放款机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_ORG_COD_STD",
+    "cn": "放款EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MAGR_CD",
+    "cn": "首贷客户经理代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_ORG_COD",
+    "cn": "操作机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_EIMO_ORG_COD",
+    "cn": "操作机构EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPT_CD",
+    "cn": "操作员代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FST_OPR_DAT",
+    "cn": "首次操作日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FST_OPR_TIME",
+    "cn": "首次操作时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_DAT",
+    "cn": "操作日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_TIME",
+    "cn": "操作时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AGENT_CTG_CD",
+    "cn": "委托人类别",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DPRT_FTR_CLS_CD",
+    "cn": "部门特色分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FRN_EXCH_PLGE_LN_CLS_CD",
+    "cn": "外汇保证贷款分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CLTN_PSN_ISBN",
+    "cn": "收款人代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MARG_CTRL_IND",
+    "cn": "是否控制保证金",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MARG_CTRL_MOD_CD",
+    "cn": "保证金控制方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MARG_CTRL_PPTN",
+    "cn": "保证金控制比例",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MARG_FIX_QUOT",
+    "cn": "保证金固定额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MARG_CCY_CD",
+    "cn": "保证金币种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SELF_LOWT_RPAY_QUOT",
+    "cn": "自由还最低还款额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "SELF_HGST_RPAY_QUOT",
+    "cn": "自由还最高还款额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FNC_PROD_CLS_CD",
+    "cn": "信贷产品分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PAY_MOD_CD",
+    "cn": "支付方式代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "NTRL_DSTR_EFCT_CD",
+    "cn": "自然灾害影响代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXD_DAT",
+    "cn": "逾期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXD_DAYS",
+    "cn": "逾期天数",
+    "type": "INT"
+   },
+   {
+    "field": "EXD_TYP",
+    "cn": "逾期类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CAN_STS_CD",
+    "cn": "核销状态代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CAN_ACTNG_DAT",
+    "cn": "核销会计日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DAT_SOR_CD",
+    "cn": "数据来源代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LAST_UPD_DAT",
+    "cn": "最后更新日期",
+    "type": "DATE"
+   }
+  ],
+  "G_00PL_IDV_LN_ARG_EXD_DV": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FNCL_ENT_NO",
+    "cn": "金融实体代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ARG_NO",
+    "cn": "合约号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FORM_NO",
+    "cn": "凭证号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AR_LCS_CD",
+    "cn": "合约生命周期状态码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_CAN_STS_IND",
+    "cn": "核销状态标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ALR_PRVD_AMT",
+    "cn": "贷款发放额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BOE_CAP_BAL",
+    "cn": "本金余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "EXD_CAP",
+    "cn": "逾期本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "REV_NONPAY_NML_INTS",
+    "cn": "逾期正常息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "REV_NONPAY_DEF_INTS",
+    "cn": "逾期罚息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "REV_NONPAY_COM_INTS",
+    "cn": "逾期复利",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BILL_EXD_DAT",
+    "cn": "逾期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BILL_EXD_DAYS",
+    "cn": "逾期天数",
+    "type": "INT"
+   },
+   {
+    "field": "ALR_CLTN_CAP",
+    "cn": "本金还款",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALR_CLTN_NML_INTS",
+    "cn": "正常息还款",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALR_CLTN_DEF_INTS",
+    "cn": "罚息还款",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALR_CLTN_COM_INTS",
+    "cn": "复利还款",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALR_SQUA_BILL_CNT",
+    "cn": "已结清账单数",
+    "type": "INT"
+   },
+   {
+    "field": "EXD_NON_SQUA_BILL_CNT",
+    "cn": "逾期未结清账单数",
+    "type": "INT"
+   },
+   {
+    "field": "H_TOT_EXD_BILL_CNT",
+    "cn": "历史上累计逾期账单数",
+    "type": "INT"
+   }
+  ],
+  "G_00PL_IDV_LN_BILL_AMT": [
+   {
+    "field": "FNCL_ENT_NO",
+    "cn": "金融实体编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ARG_NO",
+    "cn": "合约号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BILL_NO",
+    "cn": "账单号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_NO",
+    "cn": "客户ID",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FORM_NO",
+    "cn": "凭证编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CCY_CD_STD",
+    "cn": "币种_标准化",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BUS_BREED",
+    "cn": "业务品种代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_IVDIR_NATECO_OCPCLS",
+    "cn": "贷款投向国民经济行业分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_AMT_RMB",
+    "cn": "借款金额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FORM_BAL_RMB",
+    "cn": "凭证余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BILL_TYP",
+    "cn": "账单类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RPAY_DAY_SER_NO",
+    "cn": "还款期顺序号",
+    "type": "INT"
+   },
+   {
+    "field": "BILL_RPAY_TYP_CD",
+    "cn": "账单还款类型代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BILL_CRT_DAT",
+    "cn": "账单生成日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BILL_RPAY_DAT",
+    "cn": "账单还款日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BILL_EXD_DAT",
+    "cn": "账单转逾期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BILL_SQUA_DAT",
+    "cn": "账单结清日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TOLE_DAY_MATU_DAT",
+    "cn": "宽限期到期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUTPD_SHD_REPAY_DP_DAY",
+    "cn": "本期应还款日",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUBSD_DCLR_DAT",
+    "cn": "补贴申报日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CLAM_DCLR_DAT",
+    "cn": "理赔申报日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BILL_ATTR_INFO",
+    "cn": "账单属性信息",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BILL_STS_CD",
+    "cn": "账单状态代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BILL_FORM_CD",
+    "cn": "账单形态代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BILL_RSK_FORM_IND",
+    "cn": "账单风险形态标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BILL_CAP_SQUA_STS_IND",
+    "cn": "账单本金结清状态标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BILL_INTS_SQUA_STS_IND",
+    "cn": "账单利息结清状态标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUBSD_STS_IND",
+    "cn": "补贴状态标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ADRPY_IND",
+    "cn": "提前还款标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ALR_CAP",
+    "cn": "已收本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "REV_NONPAY_CAP",
+    "cn": "应收未收本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ADRPY_CAP",
+    "cn": "提前还款本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALR_CLTN_NML_INTS",
+    "cn": "已收正常息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NML_INTS_ARREA_INTS",
+    "cn": "正常息欠息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "REV_NONPAY_NML_INTS",
+    "cn": "应收未收正常息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALR_CLTN_DEF_INTS",
+    "cn": "已收罚息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "DEF_INTS_ARREA_INTS",
+    "cn": "罚息欠息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "REV_NONPAY_DEF_INTS",
+    "cn": "应收未收罚息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALR_CLTN_COM_INTS",
+    "cn": "已收复利",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "COM_INTS_ARREA_INTS",
+    "cn": "复利欠息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "REV_NONPAY_COM_INTS",
+    "cn": "应收未收复利",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CUTPD_SHD_REPAY_CAP",
+    "cn": "本期应还本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CUTPD_SHD_REPAY_NML_INTS",
+    "cn": "本期应还正常息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CUTPD_SHD_REPAY_DEF_INTS",
+    "cn": "本期应还罚息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CUTPD_SHD_REPAY_COM_INTS",
+    "cn": "本期应还复利",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "StartDt",
+    "cn": "开始日期",
+    "type": "DATE"
+   },
+   {
+    "field": "EndDt",
+    "cn": "结束日期",
+    "type": "DATE"
+   },
+   {
+    "field": "ValidDt",
+    "cn": "有效时间",
+    "type": "DATE"
+   },
+   {
+    "field": "Timestamp",
+    "cn": "时间戳",
+    "type": "DATETIME"
+   }
+  ],
+  "G_00PL_PEAS_DOC_INFO_DV": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ID_CARD_NO",
+    "cn": "身份证号码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_NO",
+    "cn": "客户编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BUS_DPRT",
+    "cn": "C4营业部门",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BUS_DPRT_STD",
+    "cn": "C4营业部门备用字段",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FSBRH_ORG",
+    "cn": "C4一级分行机构号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FSBRH_ORG_STD",
+    "cn": "一级分行机构备用字段",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SCBRH_ORG",
+    "cn": "C4二级分行机构号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SCBRH_ORG_STD",
+    "cn": "二级分行机构备用字段",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SBRH_ORG",
+    "cn": "C4支行机构号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SBRH_ORG_STD",
+    "cn": "支行机构备用字段",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "NAM",
+    "cn": "姓名",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SEX",
+    "cn": "性别",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MP_NO",
+    "cn": "手机号码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CERT_VALD_END_DAT",
+    "cn": "证件有效截止日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PERM_ADDR",
+    "cn": "常住地址",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LOCAL_PERM_ADDR",
+    "cn": "本地常住",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUR_PLCE_RES_YEAR",
+    "cn": "本地居住年限",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RES_STS",
+    "cn": "居住状况",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ADMI_SUBJ_TYP",
+    "cn": "经营主体类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MEMBER_SHIP_STATU",
+    "cn": "农民专业合作社社员身份",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "IDV_OCP",
+    "cn": "个人职业",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FMLY_MB_HLTH_STS",
+    "cn": "家庭成员健康状况",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EVAL_CHARACTER",
+    "cn": "个人品质",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MRGE_STS",
+    "cn": "婚姻状况",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PLC_STS",
+    "cn": "政治面貌",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "WON_HNT_SRV_PONT",
+    "cn": "是否惠农通服务点",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CULT_DGR",
+    "cn": "文化程度",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EN_PSN",
+    "cn": "录入人",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EN_TIME",
+    "cn": "录入时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MNG_MAGR",
+    "cn": "管户经理",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CLAIM_TIME",
+    "cn": "认领时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ARCHIVE_TIME",
+    "cn": "建档时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "STS",
+    "cn": "状态",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OWN_RURA_ID",
+    "cn": "所属村编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OWN_RURA_NAME",
+    "cn": "所属村名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DATA_SOR",
+    "cn": "数据来源",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "COLLECT_CHANL",
+    "cn": "采集渠道",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "COLLECT_PLACE",
+    "cn": "采集地",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "IS_CREDIT_CHEK",
+    "cn": "是否已查征信",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BUS_DPRT_ORG_NAM",
+    "cn": "营业部门机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "REM",
+    "cn": "备注",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "IS_FACE_RECOG",
+    "cn": "是否人脸识别",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PROV_NO",
+    "cn": "省号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EN_PSN_NAM",
+    "cn": "录入人姓名",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MNG_MAGR_NAM",
+    "cn": "管户经理姓名",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "IMP_ORG",
+    "cn": "C4导入机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "IMP_ORG_NAM",
+    "cn": "导入机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "IMP_SBRH_ORG",
+    "cn": "C4导入支行机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "IMP_SBRH_ORG_NAM",
+    "cn": "导入支行机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DOC_TYP",
+    "cn": "建档方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MOV_TN_DOC_IND",
+    "cn": "移动端建档标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TYPE_YX",
+    "cn": "精准营销客群分类",
+    "type": "VARCHAR"
+   }
+  ],
+  "G_00PL_IDV_LN_CUST_ACARD_SCRE_DV": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "APLY_SER_NO",
+    "cn": "申请单序号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FNC_PROD_NAM",
+    "cn": "信贷产品名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_NO",
+    "cn": "客户编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ORG_NO_C4",
+    "cn": "申请机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ORG_NO_C4_EIMO",
+    "cn": "申请机构EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SCRE_MDL_NO",
+    "cn": "评分卡模型编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SCRE_MDL_NAM",
+    "cn": "评分卡名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "GRD_DAT",
+    "cn": "评级日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "GRD_TIME",
+    "cn": "评级时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SCRE",
+    "cn": "分值",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "WON_OLD_CUST",
+    "cn": "是否老客户",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "WON_GOV_OR_PEAS_GRTE",
+    "cn": "是否政府增信或农担公司担保",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SCRE_APRIN_TRHD",
+    "cn": "评分卡准入阈值",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "WON_SCRE_PASS",
+    "cn": "评分是否通过",
+    "type": "VARCHAR"
+   }
+  ],
+  "B_00DT_FAS_ANL_SITU_DOC_H": [
+   {
+    "field": "FNCL_ENT_NO",
+    "cn": "金融实体编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ID_CARD_NO",
+    "cn": "身份证号码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TOT_AST",
+    "cn": "总资产 ( 万元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FARM_LAND",
+    "cn": "农地 ( 亩 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FARM_VALUE",
+    "cn": "农地价值",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CONTRACTED",
+    "cn": "承包经营 ( 亩 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FLOW2OBTAIN",
+    "cn": "流转取得 ( 亩 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALPAY_FLOW_TFRNT_MATU_DAT",
+    "cn": "已支付流转租金到期日",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LND_FLOW_TF_PRIC",
+    "cn": "土地流转价格",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "COMM_HOUSE_QUANT",
+    "cn": "商品房数量 ( 套/幢 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "COMM_HOUSE_AREA",
+    "cn": "商品房面积 ( m2 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "COMM_HOUSE_VALUE",
+    "cn": "商品房价值 ( 万元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FARM_HOUSE_QUANT",
+    "cn": "农房数量 ( 套/幢 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FARM_HOUSE_AREA",
+    "cn": "农房面积 ( m2 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FARM_HOUSE_VALUE",
+    "cn": "农房价值 ( 万元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CAR_QUANT",
+    "cn": "汽车数量 ( 辆 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "AUTO_MBL_VLU",
+    "cn": "汽车价值 ( 万元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FARM_MACHIN_QUANT",
+    "cn": "农用机械数量 ( 台 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FARM_MACHIN_VALUE",
+    "cn": "农用机械价值 ( 万元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "PRIT_ERP_NAME",
+    "cn": "私人企业名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PRIT_ERP_VALUE",
+    "cn": "私人企业价值",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "IDV_ADMI_NAM",
+    "cn": "个体经营名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "IDV_ADMI_VLU",
+    "cn": "个体经营价值 ( 万元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BIO_AST_VLU",
+    "cn": "生物资产价值 ( 万元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ABC_FNCL_AST",
+    "cn": "农行金融资产 ( 万元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "OTH_BANK_FNCL_AST",
+    "cn": "他行金融资产 ( 万元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "OTH_AST",
+    "cn": "其他资产",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TOT_DPS",
+    "cn": "总负债 ( 万元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FMLY_DPS_ANNL_RPAMT",
+    "cn": "家庭负债年还款额 ( 万元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ABC_LN",
+    "cn": "农行贷款 ( 万元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "OTH_BANK_LN",
+    "cn": "他行贷款 ( 万元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FOLK_LOAN",
+    "cn": "民间借款 ( 万元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "EXT_GRTE",
+    "cn": "对外担保 ( 万元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "OTH_DPS",
+    "cn": "其他负债 ( 万元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "PROV_NO",
+    "cn": "省号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MSME_UNIT_SOCL_CR_CD",
+    "cn": "社会统一信用代码 ( 小微企业 )",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "IDV_UNIT_SOCL_CR_CD",
+    "cn": "统一社会信用代码 ( 个体工商户 )",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PEAS_FNCL_AST_QRY_DAT",
+    "cn": "农户金融资产查询日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PRIT_ERP_NUM",
+    "cn": "私人企业数量",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "IDV_ADMI_NUM",
+    "cn": "个体经营数量",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "DPS_QRY_EVT",
+    "cn": "负债查询事件",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SYS_SOR_CD",
+    "cn": "系统来源代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "STARTDT",
+    "cn": "开始日期",
+    "type": "DATE"
+   },
+   {
+    "field": "ENDDT",
+    "cn": "结束日期",
+    "type": "DATE"
+   },
+   {
+    "field": "VALIDDT",
+    "cn": "有效日期",
+    "type": "DATE"
+   },
+   {
+    "field": "TIMESTAMP",
+    "cn": "时间戳",
+    "type": "DATETIME"
+   }
+  ],
+  "B_00DT_FAS_FMLY_SITU_DOC_H": [
+   {
+    "field": "FNCL_ENT_NO",
+    "cn": "金融实体编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ID_CARD_NO",
+    "cn": "身份证号码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FMLY_NUM_PPL",
+    "cn": "家庭人数",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LAB_PSN",
+    "cn": "劳动人口",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "SUP_PSN",
+    "cn": "供养人口",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FMLY_ANNL_INCM",
+    "cn": "家庭年收入 ( 万元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "VARS_ADMI_INCM",
+    "cn": "各项经营收入 ( 万元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "OTH_INCM",
+    "cn": "其他收入 ( 万元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FMLY_ANNL_DISB",
+    "cn": "家庭年支出 ( 万元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "VARS_ADMI_FEE_DISB",
+    "cn": "各项经营成本、税费支出 ( 万元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LIV_DISB",
+    "cn": "生活支出 ( 万元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "PROV_NO",
+    "cn": "省号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SYS_SOR_CD",
+    "cn": "系统来源代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "STARTDT",
+    "cn": "开始日期",
+    "type": "DATE"
+   },
+   {
+    "field": "ENDDT",
+    "cn": "结束日期",
+    "type": "DATE"
+   },
+   {
+    "field": "VALIDDT",
+    "cn": "有效日期",
+    "type": "DATE"
+   },
+   {
+    "field": "TIMESTAMP",
+    "cn": "时间戳",
+    "type": "DATETIME"
+   }
+  ],
+  "B_00DT_FAS_IDV_BUS_INFO_H": [
+   {
+    "field": "SEQ_NO",
+    "cn": "序列号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ID_CARD_NO",
+    "cn": "身份证号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "WON_HAVE_BULS",
+    "cn": "是否有营业执照",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "UNIT_SOCL_CR_CD",
+    "cn": "统一社会信用代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ETRP_NAM",
+    "cn": "企业名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ETRP_REG_NO",
+    "cn": "企业注册号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ORG_CODE",
+    "cn": "组织机构代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ADMI_RGE",
+    "cn": "经营范围",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CRT_DAT",
+    "cn": "成立日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ADMI_SCN_ADDR",
+    "cn": "经营场所地址",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PROP_OWNR",
+    "cn": "产权人",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FMLY_CAP_CNTRB_PPTN",
+    "cn": "家庭出资比例",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "INV_ACQ_COST",
+    "cn": "存货购置成本/自制成本",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "SAVE_STS",
+    "cn": "保存状态",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MACH_PURC_CFG_CST",
+    "cn": "机器设备购置成本",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "PURC_CFG_TIME",
+    "cn": "购置时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ETRP_RENT_BULD_PPTN",
+    "cn": "企业租赁房屋建筑面积",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MKT_ANNL_RENT",
+    "cn": "市场年租金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALR_DISB_RENT_MATU_DAT",
+    "cn": "已支付租金的到期日",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ETRP_TOT_DPS",
+    "cn": "企业总负债",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ITGT_PMT",
+    "cn": "智能提示",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PROV_NO",
+    "cn": "省号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SYS_SOR_CD",
+    "cn": "系统来源代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "StartDt",
+    "cn": "开始日期",
+    "type": "DATE"
+   },
+   {
+    "field": "EndDt",
+    "cn": "结束日期",
+    "type": "DATE"
+   },
+   {
+    "field": "ValidDt",
+    "cn": "有效日期",
+    "type": "DATE"
+   },
+   {
+    "field": "Timestamp",
+    "cn": "时间戳",
+    "type": "DATETIME"
+   }
+  ],
+  "G_00PF_PEAS_LN_WHT_CHK_FLOW_INFO": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FLOW_NO",
+    "cn": "流程编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SERNO",
+    "cn": "细项流水",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TYPE",
+    "cn": "细项类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "WHT_NO",
+    "cn": "白名单编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FLOW_TYP",
+    "cn": "流程类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SPSR_CARD_NO",
+    "cn": "发起人员身份证号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SPSR_ATCH_C4_ORG_NO",
+    "cn": "发起人员归属机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SPSR_ATCH_EIMO_ORG_NO",
+    "cn": "发起人员归属机构EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SPSR_OPR_TIME",
+    "cn": "发起人员操作时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SPSR_OPR_NAM",
+    "cn": "发起操作人名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SPSR_C4_ORG_NO",
+    "cn": "发起机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SPSR_EIMO_ORG_NO",
+    "cn": "发起机构EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SPSR_ORG_NAM",
+    "cn": "发起机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AUDT_CARD_NO",
+    "cn": "审核人员身份证号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AUDT_ATCH_C4_ORG_NO",
+    "cn": "审核人员归属机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AUDT_ATCH_EIMO_ORG_NO",
+    "cn": "审核人员归属机构EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AUDT_OPR_TIME",
+    "cn": "审核人员操作时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AUDT_OPR_NAM",
+    "cn": "审核操作人名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AUDT_C4_ORG_NO",
+    "cn": "审核机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AUDT_EIMO_ORG_NO",
+    "cn": "审核机构EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AUDT_ORG_NAM",
+    "cn": "审核机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXMN_CARD_NO",
+    "cn": "审查人员身份证号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXMN_ATCH_C4_ORG_NO",
+    "cn": "审查人员归属机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXMN_ATCH_EIMO_ORG_NO",
+    "cn": "审查人员归属机构EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXMN_OPR_TIME",
+    "cn": "审查人员操作时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXMN_OPR_NAM",
+    "cn": "审查操作人名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXMN_C4_ORG_NO",
+    "cn": "审查机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXMN_EIMO_ORG_NO",
+    "cn": "审查机构EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXMN_ORG_NAM",
+    "cn": "审查机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTEN_APR_OPIN",
+    "cn": "审查意见",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXMN_TIME",
+    "cn": "审查时间",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "APR_CARD_NO",
+    "cn": "审批人员身份证号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "APR_ATCH_C4_ORG_NO",
+    "cn": "审批人员归属机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "APR_ATCH_EIMO_ORG_NO",
+    "cn": "审批人员归属机构EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "APR_OPR_TIME",
+    "cn": "审批人员操作时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "APR_OPR_NAM",
+    "cn": "审批操作人名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "APR_C4_ORG_NO",
+    "cn": "审批机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "APR_EIMO_ORG_NO",
+    "cn": "审批机构EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "APR_ORG_NAM",
+    "cn": "审批机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "APR_OPIN",
+    "cn": "审批意见",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_CTRT_NO",
+    "cn": "合同编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_NO",
+    "cn": "客户编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "REQSI_NO",
+    "cn": "申请书编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_PROP_CLS_CD",
+    "cn": "贷款性质分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BUS_BREED_CD",
+    "cn": "业务品种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_AMT",
+    "cn": "借款金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CTRT_AMT_RMB",
+    "cn": "借款金额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "USG_AMT",
+    "cn": "已用金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "AVL_AMT",
+    "cn": "可用金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_DAT",
+    "cn": "借款日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MATU_DAT",
+    "cn": "到期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PRVD_TRMN_DAT",
+    "cn": "发放终止日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SIGD_DAT",
+    "cn": "签约日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_STS_CD",
+    "cn": "合同状态",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DEL_IND",
+    "cn": "删除标志",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_ORG_NO",
+    "cn": "经营机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_ORG_NO_STD",
+    "cn": "经营机构编码_标准化",
+    "type": "VARCHAR"
+   }
+  ],
+  "B_00FT_PEAS_LN_DPSE_TASK_DTAL": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DPSE_TASK_ID",
+    "cn": "处置任务ID",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CENT_CHK_TASK_ID",
+    "cn": "集中检查任务ID",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "POST_LEND_CHK_TASK_ID",
+    "cn": "贷后检查任务ID",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DPSE_SOR",
+    "cn": "处置来源",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DPSE_MOD",
+    "cn": "处置方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DPSE_SITU_DSC",
+    "cn": "处置情况详述",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CENT_CHK_RST",
+    "cn": "集中检查结论",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "POST_LEND_CHK_RST",
+    "cn": "贷后检查结论",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "WON_OVR_THRW_CENT_POST_CHK_RST",
+    "cn": "是否推翻集中贷后检查结论",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BUS_TYP",
+    "cn": "业务类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_NO",
+    "cn": "客户编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_BUS_BREED",
+    "cn": "合同业务品种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_NO",
+    "cn": "合同编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_LN_AMT",
+    "cn": "合同借款金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CTRT_LN_DAT",
+    "cn": "合同借款日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_MATU_DAT",
+    "cn": "合同到期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_RPAY_MOD",
+    "cn": "合同还款方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_GRTE",
+    "cn": "合同担保方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_WON_LOW_RSK",
+    "cn": "合同是否低风险",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "VCH_VCH_NO",
+    "cn": "凭证编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "VCH_LN_AMT",
+    "cn": "凭证借款金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "VCH_VCH_BAL",
+    "cn": "凭证余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "VCH_LN_DAT",
+    "cn": "凭证借款日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "VCH_MATU_DAT",
+    "cn": "凭证到期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "VCH_BUS_PROC_CHANL",
+    "cn": "凭证业务办理渠道",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "VCH_RSK_CLS",
+    "cn": "凭证风险分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "VCH_AC_MDL",
+    "cn": "凭证授信模型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CRT_TIME",
+    "cn": "创建时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CRT_PER_ORG_COD",
+    "cn": "创建者机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CRT_PER_EIMO_ORG_COD",
+    "cn": "创建者机构EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CRT_PER_ORG_NAM",
+    "cn": "创建者机构C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CRT_PER_CENTER_CITY",
+    "cn": "创建者所属城市",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CRT_DAT",
+    "cn": "创建日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BUS_STS",
+    "cn": "业务状态",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FLOW_TF_SER_NO",
+    "cn": "流转序号",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "DPSE_CMPL_DAT",
+    "cn": "处置完成日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DPSE_CMPL_TIME",
+    "cn": "处置完成时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LNK_NAM",
+    "cn": "环节名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RGLR_BUS_NO",
+    "cn": "规则业务编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LMT_DUE_DATE",
+    "cn": "限办结时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SYS_SOR_CD",
+    "cn": "系统来源代码",
+    "type": "VARCHAR"
+   }
+  ],
+  "B_00FT_PMC_P_DOORTASK_DTAL": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CLTN_TASK_NO",
+    "cn": "催收任务编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CLTN_FLOW_NO",
+    "cn": "催收流程编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ARG_NO",
+    "cn": "合约编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "VCH_NO",
+    "cn": "凭证编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_NO",
+    "cn": "合同编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_ARG_NOBOEING",
+    "cn": "贷款合约编号BOEING",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_NO",
+    "cn": "客户编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_NAM",
+    "cn": "客户名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CERT_TYP",
+    "cn": "证件类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CERT_NO",
+    "cn": "证件号码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_SEX",
+    "cn": "客户性别",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_MP_NO",
+    "cn": "客户手机号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_PHO",
+    "cn": "客户固定电话",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PDT_CONTADDR",
+    "cn": "客户常用通讯地址",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_UNIT_ADDR",
+    "cn": "客户单位地址",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_LNG_RES",
+    "cn": "客户长期居住地址",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PRLN_TYP",
+    "cn": "个贷类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BUS_BREED",
+    "cn": "业务品种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_C4_ORG_CD",
+    "cn": "放款机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_EMIO_ORG_CD",
+    "cn": "放款机构EMIO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_ORG_NAM",
+    "cn": "放款机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OGU_CD",
+    "cn": "组织单元代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MNG_MAGR_ID",
+    "cn": "管户经理编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MNG_MAGR_NAM",
+    "cn": "管户经理名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MNG_C4_ORG_CD",
+    "cn": "管户机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MNG_EMIO_ORG_CD",
+    "cn": "管户机构EMIO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MNG_ORG_NAM",
+    "cn": "管户机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_ORG_ATCH_ROW_CD",
+    "cn": "放款机构所属行编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_ORG_ATCH_NAM",
+    "cn": "放款机构所属行名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_DAT",
+    "cn": "贷款日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MATU_DAT",
+    "cn": "到期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AADJ_MATU_DAT",
+    "cn": "调整后到期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CCY",
+    "cn": "币种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_AMT",
+    "cn": "贷款金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_BAL",
+    "cn": "贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "EXD_TMS",
+    "cn": "逾期期数",
+    "type": "INT"
+   },
+   {
+    "field": "EXD_DAYS",
+    "cn": "逾期天数",
+    "type": "INT"
+   },
+   {
+    "field": "EXD_CAP",
+    "cn": "逾期本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "EXD_INTS",
+    "cn": "逾期利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "EXD_COM_INTS",
+    "cn": "逾期复利",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "DEF_INTS",
+    "cn": "罚息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TOT_ARREA",
+    "cn": "累计欠款",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "PDT_RECOVERAMT",
+    "cn": "催回金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_CLS",
+    "cn": "风险分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LAST_EXD_DAT",
+    "cn": "最近逾期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PDT_EARLYODUE",
+    "cn": "最远逾期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PDT_TASKDATE",
+    "cn": "入催日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PDT_TASKTIME",
+    "cn": "入催时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_LOCT_ORG_NAM",
+    "cn": "任务所在机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_LOCT_ORG_C4_ORG_CD",
+    "cn": "任务所在机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_LOCT_ORG_EMIO_ORG_CD",
+    "cn": "任务所在机构EMIO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_PROC_PSN_CD",
+    "cn": "任务处理人员编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_PROC_PSN_NAM",
+    "cn": "任务处理人员姓名",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CLTN_TASK_STS",
+    "cn": "催收任务状态",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PDT_NEXTWORK",
+    "cn": "下一步催收建议",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PDT_DEADDATE",
+    "cn": "限时办结日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "GRTE",
+    "cn": "担保方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PENY_DIVY_IND",
+    "cn": "分派标志",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_GNRT_TYP",
+    "cn": "任务生成方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_CD",
+    "cn": "任务分发人编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_NAM",
+    "cn": "任务分发人名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_C4_ORG_ID",
+    "cn": "任务分发人所在机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_EMIO_ORG_ID",
+    "cn": "任务分发人所在机构EMIO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_NAME",
+    "cn": "任务分发人所在机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PRVD_SPC",
+    "cn": "分发说明",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_DATE",
+    "cn": "任务分发日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_TIME",
+    "cn": "任务分发时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "VALIDDT",
+    "cn": "有效日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SYS_SOR_CD",
+    "cn": "系统来源代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CLTN_TASK_NO",
+    "cn": "催收任务编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CLTN_FLOW_NO",
+    "cn": "催收流程编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ARG_NO",
+    "cn": "合约编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "VCH_NO",
+    "cn": "凭证编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_NO",
+    "cn": "合同编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_ARG_NOBOEING",
+    "cn": "贷款合约编号BOEING",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_NO",
+    "cn": "客户编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_NAM",
+    "cn": "客户名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CERT_TYP",
+    "cn": "证件类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CERT_NO",
+    "cn": "证件号码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_SEX",
+    "cn": "客户性别",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_MP_NO",
+    "cn": "客户手机号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_PHO",
+    "cn": "客户固定电话",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PDT_CONTADDR",
+    "cn": "客户常用通讯地址",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_UNIT_ADDR",
+    "cn": "客户单位地址",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_LNG_RES",
+    "cn": "客户长期居住地址",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PRLN_TYP",
+    "cn": "个贷类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BUS_BREED",
+    "cn": "业务品种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_C4_ORG_CD",
+    "cn": "放款机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_EMIO_ORG_CD",
+    "cn": "放款机构EMIO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_ORG_NAM",
+    "cn": "放款机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OGU_CD",
+    "cn": "组织单元代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MNG_MAGR_ID",
+    "cn": "管户经理编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MNG_MAGR_NAM",
+    "cn": "管户经理名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MNG_C4_ORG_CD",
+    "cn": "管户机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MNG_EMIO_ORG_CD",
+    "cn": "管户机构EMIO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MNG_ORG_NAM",
+    "cn": "管户机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_ORG_ATCH_ROW_CD",
+    "cn": "放款机构所属行编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_ORG_ATCH_NAM",
+    "cn": "放款机构所属行名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_DAT",
+    "cn": "贷款日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MATU_DAT",
+    "cn": "到期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AADJ_MATU_DAT",
+    "cn": "调整后到期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CCY",
+    "cn": "币种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_AMT",
+    "cn": "贷款金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_BAL",
+    "cn": "贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "EXD_TMS",
+    "cn": "逾期期数",
+    "type": "INT"
+   },
+   {
+    "field": "EXD_DAYS",
+    "cn": "逾期天数",
+    "type": "INT"
+   },
+   {
+    "field": "EXD_CAP",
+    "cn": "逾期本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "EXD_INTS",
+    "cn": "逾期利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "EXD_COM_INTS",
+    "cn": "逾期复利",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "DEF_INTS",
+    "cn": "罚息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TOT_ARREA",
+    "cn": "累计欠款",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "PDT_RECOVERAMT",
+    "cn": "催回金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_CLS",
+    "cn": "风险分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LAST_EXD_DAT",
+    "cn": "最近逾期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PDT_EARLYODUE",
+    "cn": "最远逾期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PDT_TASKDATE",
+    "cn": "入催日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PDT_TASKTIME",
+    "cn": "入催时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_LOCT_ORG_NAM",
+    "cn": "任务所在机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_LOCT_ORG_C4_ORG_CD",
+    "cn": "任务所在机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_LOCT_ORG_EMIO_ORG_CD",
+    "cn": "任务所在机构EMIO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_PROC_PSN_CD",
+    "cn": "任务处理人员编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_PROC_PSN_NAM",
+    "cn": "任务处理人员姓名",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CLTN_TASK_STS",
+    "cn": "催收任务状态",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PDT_NEXTWORK",
+    "cn": "下一步催收建议",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PDT_DEADDATE",
+    "cn": "限时办结日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "GRTE",
+    "cn": "担保方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PENY_DIVY_IND",
+    "cn": "分派标志",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_GNRT_TYP",
+    "cn": "任务生成方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_CD",
+    "cn": "任务分发人编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_NAM",
+    "cn": "任务分发人名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_C4_ORG_ID",
+    "cn": "任务分发人所在机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_EMIO_ORG_ID",
+    "cn": "任务分发人所在机构EMIO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_NAME",
+    "cn": "任务分发人所在机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PRVD_SPC",
+    "cn": "分发说明",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_DATE",
+    "cn": "任务分发日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TASK_TIME",
+    "cn": "任务分发时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "VALIDDT",
+    "cn": "有效日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SYS_SOR_CD",
+    "cn": "系统来源代码",
+    "type": "VARCHAR"
+   }
+  ],
+  "S_00PF_PEAS_MGR_LN_RISK_C4": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_ID_NO",
+    "cn": "客户经理身份证号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BLG_C4_ORG_CD",
+    "cn": "客户经理归属机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BLG_EIMO_ORG_CD",
+    "cn": "客户经理归属机构EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "HDL_PEAS_LN_YRS",
+    "cn": "客户经理办理农户贷款年限",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUR_IND_PEAS_LN",
+    "cn": "客户经理当前是否还在办理农户贷款",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TOT_CNT_PEAS_LN",
+    "cn": "客户经理累计办理农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "TOT_CNT_UNM_PEAS_LN",
+    "cn": "客户经理累计办理非婚客户农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "TOT_CUST_PEAS_LN",
+    "cn": "客户经理累计办理农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "TOT_CUST_UNM_PEAS_LN",
+    "cn": "客户经理累计办理非婚客户农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "TOT_LMT_PEAS_LN",
+    "cn": "客户经理累计办理农户贷款授信额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TOT_LMT_UNM_PEAS_LN",
+    "cn": "客户经理累计办理非婚客户农户贷款授信额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CUR_CNT_PEAS_LN",
+    "cn": "客户经理已办理农户贷款当前有贷合同数",
+    "type": "INT"
+   },
+   {
+    "field": "CUR_CNT_UNM_PEAS_LN",
+    "cn": "客户经理累计办理非婚客户农户贷款当前有贷合同数",
+    "type": "INT"
+   },
+   {
+    "field": "CUR_CUST_PEAS_LN",
+    "cn": "客户经理已办理农户贷款当前有贷客户数",
+    "type": "INT"
+   },
+   {
+    "field": "CUR_CUST_UNM_PEAS_LN",
+    "cn": "客户经理已办理非婚客户农户贷款当前有贷客户数",
+    "type": "INT"
+   },
+   {
+    "field": "CUR_BAL_PEAS_LN",
+    "cn": "客户经理已办理农户贷款当前余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CUR_BAL_UNM_PEAS_LN",
+    "cn": "客户经理已办理非婚客户农户贷款当前余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CUR_CNT_NPL_PEAS",
+    "cn": "客户经理已办理农户贷款当前不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "CUR_CNT_NPL_UNM",
+    "cn": "客户经理已办理非婚客户农户贷款当前不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "CUR_CUST_NPL_PEAS",
+    "cn": "客户经理已办理农户贷款当前不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "CUR_CUST_NPL_UNM",
+    "cn": "客户经理已办理非婚客户农户贷款当前不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "CUR_BAL_NPL_PEAS",
+    "cn": "客户经理已办理农户贷款当前不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CUR_BAL_NPL_UNM",
+    "cn": "客户经理已办理非婚客户农户贷款当前不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CUR_RAT_NPL_PEAS",
+    "cn": "客户经理已办理农户贷款当前不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CUR_RAT_NPL_UNM",
+    "cn": "客户经理已办理非婚客户农户贷款当前不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ADJ_RAT_NPL_CAN_CUR",
+    "cn": "客户经理已办理农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ADJ_RAT_NPL_CAN_UNM",
+    "cn": "客户经理已办理非婚客户农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ADJ_RAT_NPL_CAN_4YR",
+    "cn": "客户经理已办理农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ADJ_RAT_NPL_CAN_U4Y",
+    "cn": "客户经理已办理非婚客户农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "GEN_RAT_NPL_CAN_CUR",
+    "cn": "客户经理已办理农户贷款当年不良生成率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "GEN_RAT_NPL_EXC_COL",
+    "cn": "客户经理已办理农户贷款当年剔除清收后不良生成率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "GEN_RAT_NPL_12M_RT",
+    "cn": "客户经理已办理农户贷款近12个月不良生成率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "GEN_RAT_NPL_EXC_12M",
+    "cn": "客户经理已办理农户贷款近12个月剔除清收后不良生成率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CUR_BAL_OD_PEAS",
+    "cn": "客户经理已办理农户贷款当前逾期余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CUR_RAT_OD_PEAS",
+    "cn": "客户经理已办理农户贷款当前逾期率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MAX_YEA_NPL_CON_PEA",
+    "cn": "客户经理已办理农户贷款不良发生最多的合同签约年份",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FND_CLU_CNT_PEAS",
+    "cn": "客户经理已办理农户贷款触发与客户资金往来模型累计线索量",
+    "type": "INT"
+   },
+   {
+    "field": "SAME_DAT_CUST_CNT",
+    "cn": "客户经理当年建立数据雷同的客户档案数",
+    "type": "INT"
+   }
+  ],
+  "S_00PF_PEAS_DIVR_RSK_C4": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO",
+    "cn": "C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO",
+    "cn": "EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAM",
+    "cn": "C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_LVL",
+    "cn": "C4机构层级",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_CTRY_RGN_CTG_CD",
+    "cn": "C4机构县域标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NO",
+    "cn": "上一级C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NAME",
+    "cn": "上一级C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RGN_NUM",
+    "cn": "辖内有农户贷款行政村数",
+    "type": "INT"
+   },
+   {
+    "field": "RGN_BLO_5_NUM",
+    "cn": "辖内有5户及以下农户贷款行政村数",
+    "type": "INT"
+   },
+   {
+    "field": "RGN_BLO_5_RATE",
+    "cn": "辖内5户及以下农户贷款行政村占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CTRT_NUM",
+    "cn": "辖内全部农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "DIVR_CTRT_NUM",
+    "cn": "辖内零散获客农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "DIVR_CTRT_RATE",
+    "cn": "辖内零散获客农户贷款合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CUST_NUM",
+    "cn": "辖内全部农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "DIVR_CUST_NUM",
+    "cn": "辖内零散获客农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "DIVR_CUST_RATE",
+    "cn": "辖内零散获客农户贷款客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_BAL",
+    "cn": "辖内全部农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "DIVR_LN_BAL",
+    "cn": "辖内零散获客农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "DIVR_LN_BAL_RATE",
+    "cn": "辖内零散获客农户贷款余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UHLTH_CTRT_NUM",
+    "cn": "辖内全部农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "DIVR_UHLTH_CTRT_NUM",
+    "cn": "辖内零散获客农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "DIVR_UHLTH_CTRT_RATE",
+    "cn": "辖内零散获客农户贷款不良合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UHLTH_CUST_NUM",
+    "cn": "辖内全部农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "DIVR_UHLTH_CUST_NUM",
+    "cn": "辖内零散获客农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "DIVR_UHLTH_CUST_RATE",
+    "cn": "辖内零散获客农户贷款不良客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UHLTH_LN_BAL",
+    "cn": "辖内全部农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "DIVR_UHLTH_LN_BAL",
+    "cn": "辖内零散获客农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "DIVR_UHLTH_LN_BAL_RATE",
+    "cn": "辖内零散获客农户贷款不良余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UHLTH_LN_RATE",
+    "cn": "辖内全部农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "DIVR_UHLTH_LN_RATE",
+    "cn": "辖内零散获客农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CAN_UP_UHLTH_RATE_YEAR",
+    "cn": "辖内全部农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "DIVR_CAN_UP_UHLTH_RATE_YEAR",
+    "cn": "辖内零散获客农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CAN_UP_UHLTH_RATE_LST_4Y",
+    "cn": "辖内全部农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "DIVR_CAN_UP_UHLTH_RATE_LST_4Y",
+    "cn": "辖内零散获客农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   }
+  ],
+  "S_00PF_PEAS_NMGG_RLSE_RSK_ORG_C4": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO",
+    "cn": "C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO",
+    "cn": "EMIO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAM",
+    "cn": "C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_LVL",
+    "cn": "C4机构层级",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_CTRY_RGN_CTG_CD",
+    "cn": "C4机构县域标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NO",
+    "cn": "上一级C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NAME",
+    "cn": "上一级C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "GRTE_TYP",
+    "cn": "担保方式 ( 自定义 )",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ALL_CTRT_NUM",
+    "cn": "辖内全部农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "GRTE_CTRT_NUM",
+    "cn": "辖内此类担保方式农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "GRTE_CTRT_PPTN",
+    "cn": "辖内此类担保方式农户贷款合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALL_CUST_NUM",
+    "cn": "辖内全部农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "GRTE_CUST_NUM",
+    "cn": "辖内此类担保方式农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "GRTE_CUST_PPTN",
+    "cn": "辖内此类担保方式农户贷款客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALL_BAL",
+    "cn": "辖内全部农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "GRTE_BAL",
+    "cn": "辖内此类担保方式农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "GRTE_BAL_PPTN",
+    "cn": "辖内此类担保方式农户贷款余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALL_UHLTH_CTRT_NUM",
+    "cn": "辖内全部农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "GRTE_UHLTH_CTRT_NUM",
+    "cn": "辖内此类担保方式农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "GRTE_UHLTH_CTRT_PPTN",
+    "cn": "辖内此类担保方式农户贷款不良合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALL_UHLTH_CUST_NUM",
+    "cn": "辖内全部农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "GRTE_UHLTH_CUST_NUM",
+    "cn": "辖内此类担保方式农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "GRTE_UHLTH_CUST_PPTN",
+    "cn": "辖内此类担保方式农户贷款不良客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALL_UHLTH_BAL",
+    "cn": "辖内全部农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "GRTE_UHLTH_BAL",
+    "cn": "辖内此类担保方式农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "GRTE_UHLTH_BAL_PPTN",
+    "cn": "辖内此类担保方式农户贷款不良余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALL_UHLTH_RATE",
+    "cn": "辖内全部农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "GRTE_UHLTH_RATE",
+    "cn": "辖内此类担保方式农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALL_REST_CAN_UHLTH_RATE_YEAR",
+    "cn": "辖内全部农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "GRTE_REST_CAN_UHLTH_RATE_YEAR",
+    "cn": "辖内此类担保方式农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALL_REST_CAN_UHLTH_RATE_LST_4_YEAR",
+    "cn": "辖内全部农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "GRTE_REST_CAN_UHLTH_RATE_LST_4_YEAR",
+    "cn": "辖内此类担保方式农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALL_ANNL_UHLTH_GNRT_RATE_YEAR",
+    "cn": "辖内全部农户贷款当年年化不良生成率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "GRTE_ANNL_UHLTH_GNRT_RATE_YEAR",
+    "cn": "辖内此类担保方式农户贷款当年年化不良生成率",
+    "type": "DECIMAL"
+   }
+  ],
+  "S_00PF_PEAS_ACARD_SCRE_RSK_ORG_C4": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO",
+    "cn": "C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO",
+    "cn": "EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAM",
+    "cn": "C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_LVL",
+    "cn": "C4机构层级",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_CTRY_RGN_CTG_CD",
+    "cn": "C4机构县域标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NO",
+    "cn": "上一级C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NAME",
+    "cn": "上一级C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ACARD_SCRE_ACTN_RSK_TYP",
+    "cn": "A卡评分行为风险类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ALL_ACARD_SCRE_AVER_VLU",
+    "cn": "辖内全部农户贷款A卡评分均值",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALL_CTRT_NUM",
+    "cn": "辖内全部农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_CTRT_NUM",
+    "cn": "辖内此类风险类型农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_CTRT_PPTN",
+    "cn": "辖内此类风险类型农户贷款合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALL_CUST_NUM",
+    "cn": "辖内全部农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_CUST_NUM",
+    "cn": "辖内此类风险类型农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_CUST_PPTN",
+    "cn": "辖内此类风险类型农户贷款客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALL_BAL",
+    "cn": "辖内全部农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_BAL",
+    "cn": "辖内此类风险类型农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_BAL_PPTN",
+    "cn": "辖内此类风险类型农户贷款余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_CR_BAL",
+    "cn": "辖内此类风险类型信用类农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_CR_BAL_PPTN",
+    "cn": "辖内此类风险类型信用类农户贷款余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALL_UHLTH_CTRT_NUM",
+    "cn": "辖内全部农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_UHLTH_CTRT_NUM",
+    "cn": "辖内此类风险类型农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_UHLTH_CTRT_PPTN",
+    "cn": "辖内此类风险类型农户贷款不良合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALL_UHLTH_CUST_NUM",
+    "cn": "辖内全部农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_UHLTH_CUST_NUM",
+    "cn": "辖内此类风险类型农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_UHLTH_CUST_PPTN",
+    "cn": "辖内此类风险类型农户贷款不良客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALL_UHLTH_BAL",
+    "cn": "辖内全部农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_UHLTH_BAL",
+    "cn": "辖内此类风险类型农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_UHLTH_BAL_PPTN",
+    "cn": "辖内此类风险类型农户贷款不良余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALL_UHLTH_RATE",
+    "cn": "辖内全部农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_UHLTH_RATE",
+    "cn": "辖内此类风险类型农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALL_REST_CAN_UHLTH_RATE_YEAR",
+    "cn": "辖内全部农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_REST_CAN_UHLTH_RATE_YEAR",
+    "cn": "辖内此类风险类型农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALL_REST_CAN_UHLTH_RATE_LST_4_YEAR",
+    "cn": "辖内全部农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_REST_CAN_UHLTH_RATE_LST_4_YEAR",
+    "cn": "辖内此类风险类型农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALL_CTRT_AVER_AC_QUOT_LST_4_YEAR",
+    "cn": "辖内全部农户贷款近4个自然年合同平均授信额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_CTRT_AVER_AC_QUOT_LST_4_YEAR",
+    "cn": "辖内此类风险类型农户贷款近4个自然年合同平均授信额度",
+    "type": "DECIMAL"
+   }
+  ],
+  "S_00PF_PEAS_LN_ARC_QLT_RSK_ORG_ANL_C4": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO",
+    "cn": "C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO",
+    "cn": "EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAM",
+    "cn": "C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_LVL",
+    "cn": "C4机构层级",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_CTRY_RGN_CTG_CD",
+    "cn": "C4机构县域标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NO",
+    "cn": "上一级C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NAME",
+    "cn": "上一级C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ARC_QLT_RSK_TYP",
+    "cn": "建档质量风险类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TTL_CNT_PEAS_LN",
+    "cn": "辖内全部农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "TRS_CNT_PEAS_LN",
+    "cn": "辖内此类风险类型农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "TRS_RAT_CNT_PEAS",
+    "cn": "辖内此类风险类型农户贷款合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_CUST_PEAS_LN",
+    "cn": "辖内全部农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "TRS_CUST_PEAS_LN",
+    "cn": "辖内此类风险类型农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "TRS_RAT_CUST_PEA",
+    "cn": "辖内此类风险类型农户贷款客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_BAL_PEAS_LN",
+    "cn": "辖内全部农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TRS_BAL_PEAS_LN",
+    "cn": "辖内此类风险类型农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TRS_RAT_BAL_PEAS",
+    "cn": "辖内此类风险类型农户贷款余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_CNT_NPL_PEAS",
+    "cn": "辖内全部农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "TRS_CNT_NPL_PEAS",
+    "cn": "辖内此类风险类型农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "TRS_RAT_NPL_CNT",
+    "cn": "辖内此类风险类型农户贷款不良合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_CUST_NPL_PEA",
+    "cn": "辖内全部农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "TRS_CUST_NPL_PEA",
+    "cn": "辖内此类风险类型农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "TRS_RAT_NPL_CST",
+    "cn": "辖内此类风险类型农户贷款不良客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_BAL_NPL_PEAS",
+    "cn": "辖内全部农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TRS_BAL_NPL_PEAS",
+    "cn": "辖内此类风险类型农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TRS_RAT_NPL_BAL",
+    "cn": "辖内此类风险类型农户贷款不良余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_RAT_NPL_PEAS",
+    "cn": "辖内全部农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TRS_RAT_NPL_PEAS",
+    "cn": "辖内此类风险类型农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_ADJ_RAT_CAN_CUR",
+    "cn": "辖内全部农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TRS_ADJ_RAT_CAN_CUR",
+    "cn": "辖内此类风险类型农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_ADJ_RAT_NPL_CAN",
+    "cn": "辖内全部农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TRS_ADJ_RAT_NPL_CAN",
+    "cn": "辖内此类风险类型农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   }
+  ],
+  "S_00PF_PEAS_OVER_FL_AC_RSK_C4": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO",
+    "cn": "C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO",
+    "cn": "EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAM",
+    "cn": "C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_LVL",
+    "cn": "C4机构层级",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_CTRY_RGN_CTG_CD",
+    "cn": "C4机构县域标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NO",
+    "cn": "上一级C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NAME",
+    "cn": "上一级C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OVER_FL_AC_RSK_TYP",
+    "cn": "超额授信风险类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_NUM",
+    "cn": "辖内全部农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_CTRT_NUM",
+    "cn": "辖内此类风险类型农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_CTRT_PPTN",
+    "cn": "辖内此类风险类型农户贷款合同数占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CUST_NUM",
+    "cn": "辖内全部农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_CUST_NUM",
+    "cn": "辖内此类风险类型农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_CUST_PPTN",
+    "cn": "辖内此类风险类型农户贷款客户数占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_BAL",
+    "cn": "辖内全部农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_LN_BAL",
+    "cn": "辖内此类风险类型农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_LN_BAL_PPTN",
+    "cn": "辖内此类风险类型农户贷款余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UHLTH_CTRT_NUM",
+    "cn": "辖内全部农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_UHLTH_CTRT_NUM",
+    "cn": "辖内此类风险类型农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_UHLTH_CTRT_PPTN",
+    "cn": "辖内此类风险类型农户贷款不良合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UHLTH_CUST_NUM",
+    "cn": "辖内全部农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_UHLTH_CUST_NUM",
+    "cn": "辖内此类风险类型农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_UHLTH_CUST_PPTN",
+    "cn": "辖内此类风险类型农户贷款不良客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UHLTH_LN_BAL",
+    "cn": "辖内全部农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_UHLTH_LN_BAL",
+    "cn": "辖内此类风险类型农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_UHLTH_LN_BAL_PPTN",
+    "cn": "辖内此类风险类型农户贷款不良余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UHLTH_RATE",
+    "cn": "辖内全部农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_UHLTH_RATE",
+    "cn": "辖内此类风险类型农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UP_UHLTH_RATE_1Y",
+    "cn": "辖内全部农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_UP_UHLTH_RATE_1Y",
+    "cn": "辖内此类风险类型农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UP_UHLTH_RATE_4Y",
+    "cn": "辖内全部农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_UP_UHLTH_RATE_4Y",
+    "cn": "辖内此类风险类型农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   }
+  ],
+  "S_00PF_PEAS_LN_LRG_CR_ORG_ANL_C4": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO",
+    "cn": "C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO",
+    "cn": "EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAM",
+    "cn": "C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_LVL",
+    "cn": "C4机构层级",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_CTRY_RGN_CTG_CD",
+    "cn": "C4机构县域标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NO",
+    "cn": "上一级C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NAME",
+    "cn": "上一级C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TTL_CNT_PEAS_LN",
+    "cn": "辖内全部农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "LRG_CNT_PEAS_LN",
+    "cn": "辖内大额农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "LRG_RAT_CNT_PEAS",
+    "cn": "辖内大额农户贷款合同数占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_CUST_PEAS_LN",
+    "cn": "辖内全部农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "LRG_CUST_PEAS_LN",
+    "cn": "辖内大额农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "LRG_RAT_CUST_PEA",
+    "cn": "辖内大额农户贷款客户数占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_BAL_PEAS_LN",
+    "cn": "辖内全部农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LRG_BAL_PEAS_LN",
+    "cn": "辖内大额农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LRG_RAT_BAL_PEAS",
+    "cn": "辖内大额农户贷款余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_CNT_NPL_PEAS",
+    "cn": "辖内全部农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "LRG_CNT_NPL_PEAS",
+    "cn": "辖内大额农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "LRG_RAT_NPL_CNT",
+    "cn": "辖内大额农户贷款不良合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_CUST_NPL_PEA",
+    "cn": "辖内全部农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "LRG_CUST_NPL_PEA",
+    "cn": "辖内大额农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "LRG_RAT_NPL_CST",
+    "cn": "辖内大额农户贷款不良客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_BAL_NPL_PEAS",
+    "cn": "辖内全部农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LRG_BAL_NPL_PEAS",
+    "cn": "辖内大额农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LRG_RAT_NPL_BAL",
+    "cn": "辖内大额农户贷款不良余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_RAT_NPL_PEAS",
+    "cn": "辖内全部农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LRG_RAT_NPL_PEAS",
+    "cn": "辖内大额农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_ADJ_RAT_CAN_CUR",
+    "cn": "辖内全部农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LRG_ADJ_RAT_CAN_CUR",
+    "cn": "辖内大额农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_ADJ_RAT_NPL_CAN",
+    "cn": "辖内全部农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LRG_ADJ_RAT_NPL_CAN",
+    "cn": "辖内大额农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   }
+  ],
+  "S_00PF_PEAS_LN_BIZ_TYP_ORG_ANL_C4": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO",
+    "cn": "C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO",
+    "cn": "EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAM",
+    "cn": "C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_LVL",
+    "cn": "C4机构层级",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_CTRY_RGN_CTG_CD",
+    "cn": "C4机构县域标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NO",
+    "cn": "上一级C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NAME",
+    "cn": "上一级C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PEAS_LN_C4_BIZ",
+    "cn": "农户贷款C4业务品种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TTL_CNT_PEAS_LN",
+    "cn": "辖内全部农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "BIZ_CNT_PEAS_LN",
+    "cn": "辖内此类业务品种农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "BIZ_RAT_CNT_PEAS",
+    "cn": "辖内此类业务品种农户贷款合同数占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_CUST_PEAS_LN",
+    "cn": "辖内全部农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "BIZ_CUST_PEAS_LN",
+    "cn": "辖内此类业务品种农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "BIZ_RAT_CUST_PEA",
+    "cn": "辖内此类业务品种农户贷款客户数占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_BAL_PEAS_LN",
+    "cn": "辖内全部农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BIZ_BAL_PEAS_LN",
+    "cn": "辖内此类业务品种农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BIZ_RAT_BAL_PEAS",
+    "cn": "辖内此类业务品种农户贷款余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_CNT_NPL_PEAS",
+    "cn": "辖内全部农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "BIZ_CNT_NPL_PEAS",
+    "cn": "辖内此类业务品种农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "BIZ_RAT_NPL_CNT",
+    "cn": "辖内此类业务品种农户贷款不良合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_CUST_NPL_PEA",
+    "cn": "辖内全部农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "BIZ_CUST_NPL_PEA",
+    "cn": "辖内此类业务品种农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "BIZ_RAT_NPL_CST",
+    "cn": "辖内此类业务品种农户贷款不良客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_BAL_NPL_PEAS",
+    "cn": "辖内全部农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BIZ_BAL_NPL_PEAS",
+    "cn": "辖内此类业务品种农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BIZ_RAT_NPL_BAL",
+    "cn": "辖内此类业务品种农户贷款不良余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_RAT_NPL_PEAS",
+    "cn": "辖内全部农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BIZ_RAT_NPL_PEAS",
+    "cn": "辖内此类业务品种农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_ADJ_RAT_CAN_CUR",
+    "cn": "辖内全部农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BIZ_ADJ_RAT_CAN_CUR",
+    "cn": "辖内此类业务品种农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_ADJ_RAT_NPL_CAN",
+    "cn": "辖内全部农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BIZ_ADJ_RAT_NPL_CAN",
+    "cn": "辖内此类业务品种农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   }
+  ],
+  "S_00PF_PEAS_OCPRSK_ORG_C4": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO",
+    "cn": "C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO",
+    "cn": "EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAME",
+    "cn": "C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_LVL",
+    "cn": "C4机构层级",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_CTRY_RGN_CTG_CD",
+    "cn": "C4机构县域标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NO",
+    "cn": "上一级C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NAME",
+    "cn": "上一级C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "KEY_OCP_COD",
+    "cn": "重点行业分类代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "KEY_OCP_NAME",
+    "cn": "重点行业分类名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_NUM",
+    "cn": "辖内全部农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "KEY_OCP_CTRT_NUM",
+    "cn": "辖内重点行业农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "KEY_OCP_CTRT_PPTN",
+    "cn": "辖内重点行业农户贷款合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CUST_NUM",
+    "cn": "辖内全部农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "KEY_OCP_CUST_NUM",
+    "cn": "辖内重点行业农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "KEY_OCP_CUST_PPTN",
+    "cn": "辖内重点行业农户贷款客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BAL",
+    "cn": "辖内全部农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "KEY_OCP_BAL",
+    "cn": "辖内重点行业农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "KEY_OCP_BAL_PPTN",
+    "cn": "辖内重点行业农户贷款余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CR_BAL",
+    "cn": "辖内全部信用类农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "KEY_OCP_CR_BAL",
+    "cn": "辖内重点行业信用类农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "KEY_OCP_CR_BAL_PPTN",
+    "cn": "辖内重点行业信用类农户贷款余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UHLTH_CTRT_NUM",
+    "cn": "辖内全部农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "KEY_OCP_UHLTH_CTRT_NUM",
+    "cn": "辖内重点行业农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "KEY_OCP_UHLTH_CTRT_PPTN",
+    "cn": "辖内重点行业农户贷款不良合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UHLTH_CUST_NUM",
+    "cn": "辖内全部农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "KEY_OCP_UHLTH_CUST_NUM",
+    "cn": "辖内重点行业农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "KEY_OCP_UHLTH_CUST_PPTN",
+    "cn": "辖内重点行业农户贷款不良客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UHLTH_BAL",
+    "cn": "辖内全部农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "KEY_OCP_UHLTH_BAL",
+    "cn": "辖内重点行业农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "KEY_OCP_UHLTH_BAL_PPTN",
+    "cn": "辖内重点行业农户贷款不良余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UHLTH_RATE",
+    "cn": "辖内全部农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "KEY_OCP_UHLTH_RATE",
+    "cn": "辖内重点行业农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "REST_YEAR_CAN_UHLTH_RATE",
+    "cn": "辖内全部农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "KEY_OCP_REST_YEAR_CAN_UHLTH_RATE",
+    "cn": "辖内重点行业农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "REST_L4YEAR_CAN_UHLTH_RATE",
+    "cn": "辖内全部农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "KEY_OCP_REST_L4YEAR_CAN_UHLTH_RATE",
+    "cn": "辖内重点行业农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "YEAR_UHLTH_CRT_RATE",
+    "cn": "辖内全部农户贷款当年年化不良生成率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "KEY_OCP_YEAR_UHLTH_CRT_RATE",
+    "cn": "辖内重点行业农户贷款当年年化不良生成率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CLR_LQDT_YEAR_UHLTH_CRT_RATE",
+    "cn": "辖内全部农户贷款当年剔除清收后年化不良生成率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "KEY_OCP_CLR_LQDT_YEAR_UHLTH_CRT_RATE",
+    "cn": "辖内重点行业农户贷款当年剔除清收后年化不良生成率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "L12MTH_UHLTH_CRT_RATE",
+    "cn": "辖内全部农户贷款近12个月不良生成率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "KEY_OCP_L12MTH_UHLTH_CRT_RATE",
+    "cn": "辖内重点行业农户贷款近12个月不良生成率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "L12MTH_CLR_LQDT_UHLTH_CRT_RATE",
+    "cn": "辖内全部农户贷款近12个月剔除清收后不良生成率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "KEY_OCP_L12MTH_CLR_LQDT_UHLTH_CRT_RATE",
+    "cn": "辖内重点行业农户贷款近12个月剔除清收后不良生成率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "L4YEAR_CTRT_AVER_AC_QUOT",
+    "cn": "辖内全部农户贷款近4个自然年合同平均授信额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "KEY_OCP_L4YEAR_CTRT_AVER_AC_QUOT",
+    "cn": "辖内重点行业农户贷款近4个自然年合同平均授信额度",
+    "type": "DECIMAL"
+   }
+  ],
+  "S_00PF_PEAS_LN_RSK_ORG_C4": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO",
+    "cn": "C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO",
+    "cn": "EMIO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAM",
+    "cn": "C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_LVL",
+    "cn": "C4机构层级",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_CTRY_RGN_CTG_CD",
+    "cn": "C4机构县域标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NO",
+    "cn": "上一级C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NAME",
+    "cn": "上一级C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RSK_LINE_TYP",
+    "cn": "风险线索类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_CTRT_CNT",
+    "cn": "辖内全部农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "PEAS_LN_CTRT_CNT",
+    "cn": "辖内触发此类风险线索农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "PEAS_LN_CTRT_PPTN",
+    "cn": "辖内触发此类风险线索农户贷款合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NO_LN_CTRT_CNT",
+    "cn": "辖内此类风险线索核查不属实农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "NO_LN_CTRT_PPTN",
+    "cn": "辖内此类风险线索核查不属实农户贷款合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_CNT",
+    "cn": "辖内全部农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "PEAS_LN_CNT",
+    "cn": "辖内触发此类风险线索农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "PEAS_LN_CUST_PPTN",
+    "cn": "辖内触发此类风险线索农户贷款客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NO_LN_CNT",
+    "cn": "辖内此类风险线索核查不属实农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "NO_LN_CUST_PPTN",
+    "cn": "辖内此类风险线索核查不属实农户贷款客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_BAL",
+    "cn": "辖内全部农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "PEAS_LN_BAL",
+    "cn": "辖内触发此类风险线索农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "PEAS_LN_BAL_PPTN",
+    "cn": "辖内触发此类风险线索农户贷款余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NO_LN_BAL",
+    "cn": "辖内此类风险线索核查不属实农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NO_LN_BAL_PPTN",
+    "cn": "辖内此类风险线索核查不属实农户贷款余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_UHLTH_CTRT_CNT",
+    "cn": "辖内全部农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "PEAS_LN_UHLTH_CTRT_CNT",
+    "cn": "辖内触发此类风险线索农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "PEAS_LN_UHLTH_CTRT_PPTN",
+    "cn": "辖内触发此类风险线索农户贷款不良合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NO_LN_UHLTH_CTRT_CNT",
+    "cn": "辖内此类风险线索核查不属实农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "NO_LN_UHLTH_CTRT_PPTN",
+    "cn": "辖内此类风险线索核查不属实农户贷款不良合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_UHLTH_CNT",
+    "cn": "辖内全部农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "PEAS_LN_UHLTH_CUST_CNT",
+    "cn": "辖内触发此类风险线索农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "PEAS_LN_UHLTH_CUST_PPTN",
+    "cn": "辖内触发此类风险线索农户贷款不良客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NO_LN_UHLTH_CNT",
+    "cn": "辖内此类风险线索核查不属实农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "NO_LN_UHLTH_CUST_PPTN",
+    "cn": "辖内此类风险线索核查不属实农户贷款不良客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_UHLTH_BAL",
+    "cn": "辖内全部农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "PEAS_LN_UHLTH_BAL",
+    "cn": "辖内触发此类风险线索农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "PEAS_LN_UHLTH_BAL_PPTN",
+    "cn": "辖内触发此类风险线索农户贷款不良余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NO_LN_UHLTH_BAL",
+    "cn": "辖内此类风险线索核查不属实农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NO_LN_UHLTH_BAL_PPTN",
+    "cn": "辖内此类风险线索核查不属实农户贷款不良余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_UHLTH_RATE",
+    "cn": "辖内全部农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "PEAS_LN_UHLTH_RATE",
+    "cn": "辖内触发此类风险线索农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NO_LN_UHLTH_RATE",
+    "cn": "辖内此类风险线索核查不属实农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "YEAR_CAN_POST_UHLTH_RATE",
+    "cn": "辖内全部农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "Y_CAN_POST_UHLTH_RATE",
+    "cn": "辖内触发此类风险线索农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NO_YEAR_CAN_POST_UHLTH_RATE",
+    "cn": "辖内此类风险线索核查不属实农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALL_4YEAR_CAN_POST_UHLTH_RATE",
+    "cn": "辖内全部农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "Y4_CAN_POST_UHLTH_RATE",
+    "cn": "辖内触发此类风险线索农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NO_4YEAR_CAN_POST_UHLTH_RATE",
+    "cn": "辖内此类风险线索核查不属实农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   }
+  ],
+  "S_00PF_PEAS_LN_CCE_RSK_PSE_ORG_C4": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO",
+    "cn": "C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO",
+    "cn": "EMIO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAM",
+    "cn": "C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_LVL",
+    "cn": "C4机构层级",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_CTRY_RGN_CTG_CD",
+    "cn": "C4机构县域标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NO",
+    "cn": "上一级C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NAME",
+    "cn": "上一级C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RSK_LINE_TYP",
+    "cn": "风险线索类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_CTRT_CNT",
+    "cn": "辖内全部农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "PEAS_LN_CTRT_CNT",
+    "cn": "辖内触发此类风险线索农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "PEAS_LN_CTRT_PPTN",
+    "cn": "辖内触发此类风险线索农户贷款合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NO_LN_CTRT_CNT",
+    "cn": "辖内此类风险线索核查不属实农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "NO_LN_CTRT_PPTN",
+    "cn": "辖内此类风险线索核查不属实农户贷款合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_CNT",
+    "cn": "辖内全部农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "PEAS_LN_CNT",
+    "cn": "辖内触发此类风险线索农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "PEAS_LN_CUST_PPTN",
+    "cn": "辖内触发此类风险线索农户贷款客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NO_LN_CNT",
+    "cn": "辖内此类风险线索核查不属实农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "NO_LN_CUST_PPTN",
+    "cn": "辖内此类风险线索核查不属实农户贷款客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_BAL",
+    "cn": "辖内全部农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "PEAS_LN_BAL",
+    "cn": "辖内触发此类风险线索农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "PEAS_LN_BAL_PPTN",
+    "cn": "辖内触发此类风险线索农户贷款余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NO_LN_BAL",
+    "cn": "辖内此类风险线索核查不属实农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NO_LN_BAL_PPTN",
+    "cn": "辖内此类风险线索核查不属实农户贷款余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_UHLTH_CTRT_CNT",
+    "cn": "辖内全部农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "PEAS_LN_UHLTH_CTRT_CNT",
+    "cn": "辖内触发此类风险线索农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "PEAS_LN_UHLTH_CTRT_PPTN",
+    "cn": "辖内触发此类风险线索农户贷款不良合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NO_LN_UHLTH_CTRT_CNT",
+    "cn": "辖内此类风险线索核查不属实农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "NO_LN_UHLTH_CTRT_PPTN",
+    "cn": "辖内此类风险线索核查不属实农户贷款不良合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_UHLTH_CNT",
+    "cn": "辖内全部农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "PEAS_LN_UHLTH_CUST_CNT",
+    "cn": "辖内触发此类风险线索农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "PEAS_LN_UHLTH_CUST_PPTN",
+    "cn": "辖内触发此类风险线索农户贷款不良客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NO_LN_UHLTH_CNT",
+    "cn": "辖内此类风险线索核查不属实农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "NO_LN_UHLTH_CUST_PPTN",
+    "cn": "辖内此类风险线索核查不属实农户贷款不良客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_UHLTH_BAL",
+    "cn": "辖内全部农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "PEAS_LN_UHLTH_BAL",
+    "cn": "辖内触发此类风险线索农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "PEAS_LN_UHLTH_BAL_PPTN",
+    "cn": "辖内触发此类风险线索农户贷款不良余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NO_LN_UHLTH_BAL",
+    "cn": "辖内此类风险线索核查不属实农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NO_LN_UHLTH_BAL_PPTN",
+    "cn": "辖内此类风险线索核查不属实农户贷款不良余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_UHLTH_RATE",
+    "cn": "辖内全部农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "PEAS_LN_UHLTH_RATE",
+    "cn": "辖内触发此类风险线索农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NO_LN_UHLTH_RATE",
+    "cn": "辖内此类风险线索核查不属实农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "YEAR_CAN_POST_UHLTH_RATE",
+    "cn": "辖内全部农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "Y_CAN_POST_UHLTH_RATE",
+    "cn": "辖内触发此类风险线索农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NO_YEAR_CAN_POST_UHLTH_RATE",
+    "cn": "辖内此类风险线索核查不属实农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ALL_4YEAR_CAN_POST_UHLTH_RATE",
+    "cn": "辖内全部农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "Y4_CAN_POST_UHLTH_RATE",
+    "cn": "辖内触发此类风险线索农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NO_4YEAR_CAN_POST_UHLTH_RATE",
+    "cn": "辖内此类风险线索核查不属实农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   }
+  ],
+  "S_00PF_PEAS_MGG_RSK_C4": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO",
+    "cn": "C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO",
+    "cn": "EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAM",
+    "cn": "C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_LVL",
+    "cn": "C4机构层级",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_CTRY_RGN_CTG_CD",
+    "cn": "C4机构县域标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NO",
+    "cn": "上一级C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NAME",
+    "cn": "上一级C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MGG_RSK_TYP",
+    "cn": "抵押物风险类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_NUM",
+    "cn": "辖内全部农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_CTRT_NUM",
+    "cn": "辖内此类风险类型农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_CTRT_PPTN",
+    "cn": "辖内此类风险类型农户贷款合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CUST_NUM",
+    "cn": "辖内全部农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_CUST_NUM",
+    "cn": "辖内此类风险类型农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_CUST_PPTN",
+    "cn": "辖内此类风险类型农户贷款客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_BAL",
+    "cn": "辖内全部农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_LN_BAL",
+    "cn": "辖内此类风险类型农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_LN_BAL_PPTN",
+    "cn": "辖内此类风险类型农户贷款余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UHLTH_CTRT_NUM",
+    "cn": "辖内全部农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_UHLTH_CTRT_NUM",
+    "cn": "辖内此类风险类型农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_UHLTH_CTRT_PPTN",
+    "cn": "辖内此类风险类型农户贷款不良合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UHLTH_CUST_NUM",
+    "cn": "辖内全部农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_UHLTH_CUST_NUM",
+    "cn": "辖内此类风险类型农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "RSK_UHLTH_CUST_PPTN",
+    "cn": "辖内此类风险类型农户贷款不良客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UHLTH_LN_BAL",
+    "cn": "辖内全部农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_UHLTH_LN_BAL",
+    "cn": "辖内此类风险类型农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_UHLTH_LN_BAL_PPTN",
+    "cn": "辖内此类风险类型农户贷款不良余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UHLTH_RATE",
+    "cn": "辖内全部农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_UHLTH_RATE",
+    "cn": "辖内此类风险类型农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UP_UHLTH_RATE_1Y",
+    "cn": "辖内全部农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_UP_UHLTH_RATE_1Y",
+    "cn": "辖内此类风险类型农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UP_UHLTH_RATE_4Y",
+    "cn": "辖内全部农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_UP_UHLTH_RATE_4Y",
+    "cn": "辖内此类风险类型农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   }
+  ],
+  "S_00PF_PEAS_ADDR_RSK_ORG_SUM_C4": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO",
+    "cn": "C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO",
+    "cn": "EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAME",
+    "cn": "C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_LVL",
+    "cn": "C4机构层级",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_CTRY_RGN_CTG_CD",
+    "cn": "C4机构县域标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NO",
+    "cn": "上一级C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NAME",
+    "cn": "上一级C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ADDR_RSK_TYP",
+    "cn": "地址异常风险类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_NUM",
+    "cn": "辖内全部农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "ADDR_RSK_CTRT_NUM",
+    "cn": "辖内此类风险类型农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "ADDR_RSK_CTRT_PPTN",
+    "cn": "辖内此类风险类型农户贷款合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CUST_NUM",
+    "cn": "辖内全部农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "ADDR_RSK_CUST_NUM",
+    "cn": "辖内此类风险类型农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "ADDR_RSK_CUST_PPTN",
+    "cn": "辖内此类风险类型农户贷款客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BAL",
+    "cn": "辖内全部农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ADDR_RSK_BAL",
+    "cn": "辖内此类风险类型农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ADDR_RSK_BAL_PPTN",
+    "cn": "辖内此类风险类型农户贷款余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UHLTH_CTRT_NUM",
+    "cn": "辖内全部农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "ADDR_RSK_UHLTH_CTRT_NUM",
+    "cn": "辖内此类风险类型农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "ADDR_RSK_UHLTH_CTRT_PPTN",
+    "cn": "辖内此类风险类型农户贷款不良合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UHLTH_CUST_NUM",
+    "cn": "辖内全部农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "ADDR_RSK_UHLTH_CUST_NUM",
+    "cn": "辖内此类风险类型农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "ADDR_RSK_UHLTH_CUST_PPTN",
+    "cn": "辖内此类风险类型农户贷款不良客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UHLTH_BAL",
+    "cn": "辖内全部农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ADDR_RSK_UHLTH_BAL",
+    "cn": "辖内此类风险类型农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ADDR_RSK_UHLTH_BAL_PPTN",
+    "cn": "辖内此类风险类型农户贷款不良余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "UHLTH_RATE",
+    "cn": "辖内全部农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ADDR_RSK_UHLTH_RATE",
+    "cn": "辖内此类风险类型农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "REST_YEAR_CAN_UHLTH_RATE",
+    "cn": "辖内全部农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ADDR_RSK_REST_YEAR_CAN_UHLTH_RATE",
+    "cn": "辖内此类风险类型农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "REST_L4YEAR_CAN_UHLTH_RATE",
+    "cn": "辖内全部农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ADDR_RSK_REST_L4YEAR_CAN_UHLTH_RATE",
+    "cn": "辖内此类风险类型农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   }
+  ],
+  "S_00PF_PEAS_HRZ_MGR_LN_ANL_C4": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO",
+    "cn": "C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO",
+    "cn": "EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAM",
+    "cn": "C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_LVL",
+    "cn": "C4机构层级",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_CTRY_RGN_CTG_CD",
+    "cn": "C4机构县域标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NO",
+    "cn": "上一级C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NAME",
+    "cn": "上一级C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "HRZ_CUST_MGR_CNT",
+    "cn": "辖内高风险客户经理数",
+    "type": "INT"
+   },
+   {
+    "field": "HRZ_TOT_CNT_PEAS_LN",
+    "cn": "辖内高风险客户经理累计办理农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "HRZ_TOT_CNT_UNM_PEAS_LN",
+    "cn": "辖内高风险客户经理累计办理非婚客户农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "HRZ_TOT_CUST_PEAS_LN",
+    "cn": "辖内高风险客户经理累计办理农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "HRZ_TOT_CUST_UNM_PEAS",
+    "cn": "辖内高风险客户经理累计办理农户非婚客户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "HRZ_TOT_LMT_PEAS_LN",
+    "cn": "辖内高风险客户经理累计办理农户贷款授信额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HRZ_TOT_LMT_UNM_PEAS",
+    "cn": "辖内高风险客户经理累计办理农户非婚客户贷款授信额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HRZ_CUR_CNT_PEAS_LN",
+    "cn": "辖内高风险客户经理已办理农户贷款当前有贷合同数",
+    "type": "INT"
+   },
+   {
+    "field": "HRZ_CUR_CNT_UNM_PEAS_LN",
+    "cn": "辖内高风险客户经理已办理非婚客户农户贷款当前有贷合同数",
+    "type": "INT"
+   },
+   {
+    "field": "HRZ_CUR_CUST_PEAS_LN",
+    "cn": "辖内高风险客户经理已办理农户贷款当前有贷客户数",
+    "type": "INT"
+   },
+   {
+    "field": "HRZ_CUR_CUST_UNM_PEAS_LN",
+    "cn": "辖内高风险客户经理已办理非婚客户农户贷款当前有贷客户数",
+    "type": "INT"
+   },
+   {
+    "field": "HRZ_CUR_BAL_PEAS_LN",
+    "cn": "辖内高风险客户经理已办理农户贷款当前余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HRZ_CUR_BAL_UNM_PEAS_LN",
+    "cn": "辖内高风险客户经理已办理非婚客户农户贷款当前余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HRZ_CUR_CNT_NPL_PEAS",
+    "cn": "辖内高风险客户经理已办理农户贷款当前不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "HRZ_CUR_CNT_NPL_UNM",
+    "cn": "辖内高风险客户经理已办理非婚客户农户贷款当前不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "HRZ_CUR_CUST_NPL_PEAS",
+    "cn": "辖内高风险客户经理已办理农户贷款当前不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "HRZ_CUR_CUST_NPL_UNM",
+    "cn": "辖内高风险客户经理已办理非婚客户农户贷款当前不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "TOT_CUR_BAL_NPL_PEAS",
+    "cn": "辖内全部农户贷款当前不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HRZ_CUR_BAL_NPL_PEAS",
+    "cn": "辖内高风险客户经理已办理农户贷款当前不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HRZ_RAT_NPL_PEAS",
+    "cn": "辖内高风险客户经理已办理农户贷款当前不良余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HRZ_CUR_BAL_NPL_UNM",
+    "cn": "辖内高风险客户经理已办理非婚客户农户贷款当前不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HRZ_RAT_NPL_UNM",
+    "cn": "辖内高风险客户经理已办理非婚客户农户贷款当前不良余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HRZ_CUR_RAT_NPL_PEAS",
+    "cn": "辖内高风险客户经理已办理农户贷款当前不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HRZ_CUR_RAT_NPL_UNM",
+    "cn": "辖内高风险客户经理已办理非婚客户农户贷款当前不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HRZ_ADJ_RAT_NPL_CAN_CUR",
+    "cn": "辖内高风险客户经理已办理农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HRZ_ADJ_RAT_NPL_CAN_UNM",
+    "cn": "辖内高风险客户经理已办理非婚客户农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HRZ_ADJ_RAT_NPL_CAN_4YR",
+    "cn": "辖内高风险客户经理已办理农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HRZ_ADJ_RAT_NPL_CAN_U4Y",
+    "cn": "辖内高风险客户经理已办理非婚客户农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HRZ_GEN_RAT_NPL_CAN_CUR",
+    "cn": "辖内高风险客户经理已办理农户贷款当年年化不良生成率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HRZ_GEN_RAT_NPL_EXC_COL",
+    "cn": "辖内高风险客户经理已办理农户贷款当年剔除清收后年化不良生成率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HRZ_GEN_RAT_NPL_12M_RT",
+    "cn": "辖内高风险客户经理已办理农户贷款近12个月不良生成率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HRZ_GEN_RAT_NPL_EXC_12M",
+    "cn": "辖内高风险客户经理已办理农户贷款近12个月剔除清收后不良生成率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HRZ_CUR_BAL_OD_PEAS",
+    "cn": "辖内高风险客户经理已办理农户贷款当前逾期余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HRZ_CUR_RAT_OD_PEAS",
+    "cn": "辖内高风险客户经理已办理农户贷款当前逾期率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HRZ_MAX_YEA_NPL_CON_PEA",
+    "cn": "辖内高风险客户经理已办理农户贷款不良发生最多的合同签约年份",
+    "type": "VARCHAR"
+   }
+  ],
+  "S_00PF_PEAS_CONT_QUAL_C4": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO",
+    "cn": "C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO",
+    "cn": "EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAM",
+    "cn": "C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_LVL",
+    "cn": "C4机构层级",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_CTRY_RGN_CTG_CD",
+    "cn": "C4机构县域标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_BAL",
+    "cn": "辖内全部农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CTNU_LN_BAL",
+    "cn": "辖内无还本续贷农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CTNU_LN_BAD_BAL",
+    "cn": "辖内无还本续贷农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CTNU_LN_BAD_RATE",
+    "cn": "辖内无还本续贷农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ONE_CTNU_LN_BAL",
+    "cn": "辖内一键续贷农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ONE_CTNU_LN_BAD_BAL",
+    "cn": "辖内一键续贷农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ONE_CTNU_LN_BAD_RATE",
+    "cn": "辖内一键续贷农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RNEW_LN_BAL",
+    "cn": "辖内展期农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RNEW_LN_BAD_BAL",
+    "cn": "辖内展期农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RNEW_LN_BAD_RATE",
+    "cn": "辖内展期农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NOT_BAD_AGN_LN_BAL",
+    "cn": "辖内非不良重组农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NOT_BAD_AGN_LN_BAD_BAL",
+    "cn": "辖内非不良重组农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NOT_BAD_AGN_LN_BAD_RATE",
+    "cn": "辖内非不良重组农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BAD_AGN_LN_BAL",
+    "cn": "辖内不良重组农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BAD_AGN_LN_BAD_BAL",
+    "cn": "辖内不良重组农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BAD_AGN_LN_BAD_RATE",
+    "cn": "辖内不良重组农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BAL_SUM",
+    "cn": "辖内以上各类接续工具农户贷款余额合计",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BAD_BAL_SUM",
+    "cn": "辖内以上各类接续工具农户贷款不良余额合计",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BAD_RATE_SUM",
+    "cn": "辖内以上各类接续工具农户贷款不良率合计",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BAL_SUM_NOT_BAD_AGN",
+    "cn": "辖内以上各类接续工具农户贷款余额合计 ( 除不良重组 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BAD_BAL_SUM_NOT_BAD_AGN",
+    "cn": "辖内以上各类接续工具农户贷款不良余额合计 ( 除不良重组 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BAD_RATE_SUM_NOT_BAD_AGN",
+    "cn": "辖内以上各类接续工具农户贷款不良率合计 ( 除不良重组 )",
+    "type": "DECIMAL"
+   }
+  ],
+  "S_00PF_PEAS_LN_SPC_ORG_ANL_C4": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO",
+    "cn": "C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO",
+    "cn": "EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAM",
+    "cn": "C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_LVL",
+    "cn": "C4机构层级",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_CTRY_RGN_CTG_CD",
+    "cn": "C4机构县域标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NO",
+    "cn": "上一级C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUPE_C4_ORG_NAME",
+    "cn": "上一级C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PEAS_LN_C4_SPC",
+    "cn": "农户贷款C4专项产品",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TTL_CNT_PEAS_LN",
+    "cn": "辖内全部农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "SPC_CNT_PEAS_LN",
+    "cn": "辖内此类专项产品农户贷款合同数",
+    "type": "INT"
+   },
+   {
+    "field": "SPC_RAT_CNT_PEAS",
+    "cn": "辖内此类专项产品农户贷款合同数占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_CUST_PEAS_LN",
+    "cn": "辖内全部农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "SPC_CUST_PEAS_LN",
+    "cn": "辖内此类专项产品农户贷款客户数",
+    "type": "INT"
+   },
+   {
+    "field": "SPC_RAT_CUST_PEA",
+    "cn": "辖内此类专项产品农户贷款客户数占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_BAL_PEAS_LN",
+    "cn": "辖内全部农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "SPC_BAL_PEAS_LN",
+    "cn": "辖内此类专项产品农户贷款余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "SPC_RAT_BAL_PEAS",
+    "cn": "辖内此类专项产品农户贷款余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_CNT_NPL_PEAS",
+    "cn": "辖内全部农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "SPC_CNT_NPL_PEAS",
+    "cn": "辖内此类专项产品农户贷款不良合同数",
+    "type": "INT"
+   },
+   {
+    "field": "SPC_RAT_NPL_CNT",
+    "cn": "辖内此类专项产品农户贷款不良合同占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_CUST_NPL_PEA",
+    "cn": "辖内全部农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "SPC_CUST_NPL_PEA",
+    "cn": "辖内此类专项产品农户贷款不良客户数",
+    "type": "INT"
+   },
+   {
+    "field": "SPC_RAT_NPL_CST",
+    "cn": "辖内此类专项产品农户贷款不良客户占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_BAL_NPL_PEAS",
+    "cn": "辖内全部农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "SPC_BAL_NPL_PEAS",
+    "cn": "辖内此类专项产品农户贷款不良余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "SPC_RAT_NPL_BAL",
+    "cn": "辖内此类专项产品农户贷款不良余额占比",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_RAT_NPL_PEAS",
+    "cn": "辖内全部农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "SPC_RAT_NPL_PEAS",
+    "cn": "辖内此类专项产品农户贷款不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_ADJ_RAT_CAN_CUR",
+    "cn": "辖内全部农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "SPC_ADJ_RAT_CAN_CUR",
+    "cn": "辖内此类专项产品农户贷款还原当年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TTL_ADJ_RAT_NPL_CAN",
+    "cn": "辖内全部农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "SPC_ADJ_RAT_NPL_CAN",
+    "cn": "辖内此类专项产品农户贷款还原近4个自然年核销后不良率",
+    "type": "DECIMAL"
+   }
+  ],
+  "S_00PF_IDV_CUST_FA_SUM": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_NO",
+    "cn": "客户编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ORG_NO",
+    "cn": "机构编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ORG_LVL",
+    "cn": "农行组织机构层级",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FST_BRCH_IND",
+    "cn": "是否一级分行标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXT_BUS_ORG_IND",
+    "cn": "是否对外营业机构标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ARP_SHARE_IND",
+    "cn": "组织机构三农分摊标识（财务会计部）",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SPE_SUBD_ORG_IND",
+    "cn": "特殊下级对外营业机构标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SPE_SUPE_ORG_IND",
+    "cn": "特殊上级对外营业机构标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FA_BAL",
+    "cn": "金融资产余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FA_MTH_ACLT",
+    "cn": "金融资产余额月积数",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FA_MAVER_BAL",
+    "cn": "月日均金融资产余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FA_BAL_LST_3_MTH",
+    "cn": "近3个月日均金融资产余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FA_BAL_LST_6_MTH",
+    "cn": "近6个月日均金融资产余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FA_BAL_LST_12_MTH",
+    "cn": "近12个月日均金融资产余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FA_BAL_SAVER",
+    "cn": "当季季日均金融资产余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FA_BAL_HAVER",
+    "cn": "半年日均金融资产余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FA_BAL_YAVER",
+    "cn": "当年年日均金融资产余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "AUM_BAL",
+    "cn": "AUM余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "AUM_MTH_ACLT",
+    "cn": "AUM月积数",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "AUM_MAVER_BAL",
+    "cn": "月日均AUM",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "AUM_BAL_LST_3_MTH",
+    "cn": "近3个月日均AUM",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "AUM_BAL_LST_6_MTH",
+    "cn": "近6个月日均AUM",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "AUM_BAL_LST_12_MTH",
+    "cn": "近12个月日均AUM",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "AUM_BAL_SAVER",
+    "cn": "当季季日均AUM",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "AUM_BAL_HAVER",
+    "cn": "半年日均AUM",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "AUM_BAL_YAVER",
+    "cn": "当年年日均AUM",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TOT_IVST_BAL",
+    "cn": "总投资余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TOT_IVST_MTH_ACLT",
+    "cn": "总投资余额月积数",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TOT_IVST_MAVER_BAL",
+    "cn": "月日均总投资余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TOT_IVST_BAL_LST_3_MTH",
+    "cn": "近3个月日均总投资余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TOT_IVST_BAL_LST_6_MTH",
+    "cn": "近6个月日均总投资余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TOT_IVST_BAL_LST_12_MTH",
+    "cn": "近12个月日均总投资余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TOT_IVST_BAL_SAVER",
+    "cn": "当季季日均总投资余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TOT_IVST_BAL_HAVER",
+    "cn": "半年日均总投资余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TOT_IVST_BAL_YAVER",
+    "cn": "当年年日均总投资余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FA_BAL_MAX",
+    "cn": "金融资产余额最大值",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FA_BAL_MAX_DATE",
+    "cn": "金融资产余额最大值日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AUM_BAL_MAX",
+    "cn": "AUM最大值",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "AUM_BAL_MAX_DATE",
+    "cn": "AUM最大值日期",
+    "type": "VARCHAR"
+   }
+  ],
+  "S_00PF_IDV_DP_CUST_SUM": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_NO",
+    "cn": "客户ID",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ORG_NO",
+    "cn": "机构编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ORG_LVL",
+    "cn": "机构层级",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FST_BRCH_IND",
+    "cn": "是否一级分行标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXT_BUS_ORG_IND",
+    "cn": "是否对外营业机构标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RMB_REG_CAP",
+    "cn": "开户本金折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_DP_BAL",
+    "cn": "存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_DP_BAL_MTH",
+    "cn": "当月日均存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_DP_BAL_SEAN",
+    "cn": "近三月日均存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_DP_BAL_HYEAR",
+    "cn": "近半年日均存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_DP_BAL_YEAR",
+    "cn": "近一年日均存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_DP_BAL_SAVER",
+    "cn": "当季日均存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_DP_BAL_HAVER",
+    "cn": "当半年日均存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_DP_BAL_YAVER",
+    "cn": "当年日均存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_DPSA_BAL",
+    "cn": "活期存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_DPSA_BAL_MTH",
+    "cn": "当月日均活期存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_DPSA_BAL_SEAN",
+    "cn": "近三月日均活期存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_DPSA_BAL_HYEAR",
+    "cn": "近半年日均活期存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_DPSA_BAL_YEAR",
+    "cn": "近一年日均活期存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_DPSA_BAL_SAVER",
+    "cn": "当季日均活期存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_DPSA_BAL_HAVER",
+    "cn": "当半年日均活期存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_DPSA_BAL_YAVER",
+    "cn": "当年日均活期存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "DPSA_LAC_DAT",
+    "cn": "活期存款最后动账日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RMB_DCARD_SA_BAL",
+    "cn": "借记卡活期余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_DCCARD_SA_BAL",
+    "cn": "准贷记卡活期余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_CCARD_SA_BAL",
+    "cn": "贷记卡活期余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_SA_PSBK_BAL",
+    "cn": "活期存折余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_TD_BAL",
+    "cn": "定期存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_TD_BAL_MTH",
+    "cn": "当月日均定期存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_TD_BAL_SEAN",
+    "cn": "近三月日均定期存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_TD_BAL_HYEAR",
+    "cn": "近半年日均定期存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_TD_BAL_YEAR",
+    "cn": "近一年日均定期存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_TD_BAL_SAVER",
+    "cn": "当季日均定期存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_TD_BAL_HAVER",
+    "cn": "当半年日均定期存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_TD_BAL_YAVER",
+    "cn": "当年日均定期存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_TMDP_BAL",
+    "cn": "整存整取余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_NTDP_BAL_MTH",
+    "cn": "当月日均通知存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_NTDP_BAL_SEAN",
+    "cn": "近三月日均通知存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_NTDP_BAL_HYEAR",
+    "cn": "近半年日均通知存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_NTDP_BAL_YEAR",
+    "cn": "近一年日均通知存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_NTDP_BAL_SAVER",
+    "cn": "当季日均通知存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_NTDP_BAL_HAVER",
+    "cn": "当半年日均通知存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_NTDP_BAL_YAVER",
+    "cn": "当年日均通知存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_DCARD_NTDP_BAL",
+    "cn": "借记卡通知存款活期余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_DCCARD_NTDP_BAL",
+    "cn": "准贷记卡存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TMDP_LAC_DAT",
+    "cn": "整存整取最后动账日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RMB_NTDP_BAL",
+    "cn": "通知存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "NTDP_LAC_DAT",
+    "cn": "通知存款最后动账日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RMB_FXDI_BAL",
+    "cn": "零存整取余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FXDI_LAC_DAT",
+    "cn": "零存整取最后动账日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RMB_TDOP_BAL",
+    "cn": "定活两便余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TDOP_LAC_DAT",
+    "cn": "定活两便最后动账日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RMB_IWDP_BAL",
+    "cn": "存本取息余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "IWDP_LAC_DAT",
+    "cn": "存本取息最后动账日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RMB_DCARD_TD_BAL",
+    "cn": "借记卡定期余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_DCCARD_TD_BAL",
+    "cn": "准贷记卡定期余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_TD_PSBK_BAL",
+    "cn": "定期一本通余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_LSSW_BAL",
+    "cn": "整存零取余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LSSW_LAC_DAT",
+    "cn": "整存零取最后动账日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RMB_LAMT_BAL",
+    "cn": "大额存单余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_LAMT_BAL_MTH",
+    "cn": "当月日均大额存单余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_LAMT_BAL_SEAN",
+    "cn": "近三月日均大额存单余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_LAMT_BAL_HYEAR",
+    "cn": "近半年日均大额存单余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_LAMT_BAL_YEAR",
+    "cn": "近一年日均大额存单余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_LAMT_BAL_SAVER",
+    "cn": "当季日均大额存单余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_LAMT_BAL_HAVER",
+    "cn": "当半年日均大额存单余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_LAMT_BAL_YAVER",
+    "cn": "当年日均大额存单余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LAMT_BAL_DAT",
+    "cn": "大额存单最后动账日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RMB_MARG_BAL",
+    "cn": "保证金余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MARG_BAL_DAT",
+    "cn": "保证金最后动账日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RMB_STRD_BAL",
+    "cn": "结构性存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_STRD_BAL_MTH",
+    "cn": "当月日均结构性存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_STRD_BAL_SEAN",
+    "cn": "近三月日均结构性存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_STRD_BAL_HYEAR",
+    "cn": "近半年日均结构性存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_STRD_BAL_YEAR",
+    "cn": "近一年日均结构性存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_STRD_BAL_SAVER",
+    "cn": "当季日均结构性存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_STRD_BAL_HAVER",
+    "cn": "当半年日均结构性存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_STRD_BAL_YAVER",
+    "cn": "当年日均结构性存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "STRD_BAL_DAT",
+    "cn": "结构性存款最后动账日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RMB_GENR_BAL",
+    "cn": "银利多余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_GENR_BAL_MTH",
+    "cn": "当月日均银利多余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_GENR_BAL_SEAN",
+    "cn": "近三月日均银利多余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_GENR_BAL_HYEAR",
+    "cn": "近半年日均银利多余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_GENR_BAL_YEAR",
+    "cn": "近一年日均银利多余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_GENR_BAL_SAVER",
+    "cn": "当季日均银利多余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_GENR_BAL_HAVER",
+    "cn": "当半年日均银利多余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_GENR_BAL_YAVER",
+    "cn": "当年日均银利多余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_NTDP_BAL_1D",
+    "cn": "一天通知存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_NTDP_BAL_7D",
+    "cn": "七天通知存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_PSBK_BAL",
+    "cn": "存折余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_RCPT_BAL",
+    "cn": "存单余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_DEP_BAL",
+    "cn": "存款余额(人民币)",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FCCY_DP_BAL",
+    "cn": "外币存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_FCCY_DP_BAL_MTH",
+    "cn": "当月日均外币存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_FCCY_DP_BAL_SEAN",
+    "cn": "近三月日均外币存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_FCCY_DP_BAL_HYEAR",
+    "cn": "近半年日均外币存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_FCCY_DP_BAL_YEAR",
+    "cn": "近一年日均外币存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_FCCY_DP_BAL_SAVER",
+    "cn": "当季日均外币存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_FCCY_DP_BAL_HAVER",
+    "cn": "半年日均外币存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RMB_FCCY_DP_BAL_YAVER",
+    "cn": "当年日均外币存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FCCY_DPSA_BAL",
+    "cn": "外币活期存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FCCY_TD_BAL",
+    "cn": "外币定期存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FCCY_NTDP_BAL",
+    "cn": "外币通知存款余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FCCY_DP_BAL_HYEAR",
+    "cn": "近6个月持有外币存款",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "DP_BAL_MAX",
+    "cn": "当月存款余额最大值",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "DP_BAL_MAX_DATE",
+    "cn": "当月存款余额最大值日期",
+    "type": "VARCHAR"
+   }
+  ],
+  "S_00PF_SA_ACCT_TR_CUST_SUM": [
+   {
+    "field": "DATA_DAT",
+    "cn": "",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_NO",
+    "cn": "",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TR_CNT",
+    "cn": "'当日交易笔数',",
+    "type": "INT"
+   },
+   {
+    "field": "TR_BAL",
+    "cn": "'当日交易金额',",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MOTH_TR_CNT",
+    "cn": "'当月交易笔数',",
+    "type": "INT"
+   },
+   {
+    "field": "MOTH_TR_BAL",
+    "cn": "'当月交易金额',",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "SEAN_TR_CNT",
+    "cn": "'当季交易笔数',",
+    "type": "INT"
+   },
+   {
+    "field": "SEAN_TR_BAL",
+    "cn": "'当季交易金额',",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HYEAR_TR_CNT",
+    "cn": "'半年交易笔数',",
+    "type": "INT"
+   },
+   {
+    "field": "HYEAR_TR_BAL",
+    "cn": "'半年交易金额',",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "YEAR_TR_CNT",
+    "cn": "'当年交易笔数',",
+    "type": "INT"
+   },
+   {
+    "field": "YEAR_TR_BAL",
+    "cn": "'当年交易金额',",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "YEAR_TR_CNT_L1YER_ACLT",
+    "cn": "'近12个月交易笔数',",
+    "type": "INT"
+   },
+   {
+    "field": "YEAR_TR_BAL_L1YER_ACLT",
+    "cn": "'近12个月交易金额',",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "DAY_TR_CNT_IN",
+    "cn": "'当日流入笔数',",
+    "type": "INT"
+   },
+   {
+    "field": "DAY_TR_BAL_IN",
+    "cn": "'当日流入金额',",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MOTH_TR_CNT_IN",
+    "cn": "'当月流入笔数',",
+    "type": "INT"
+   },
+   {
+    "field": "MOTH_TR_BAL_IN",
+    "cn": "'当月流入金额',",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "SEAN_TR_CNT_IN",
+    "cn": "'当季流入笔数',",
+    "type": "INT"
+   },
+   {
+    "field": "SEAN_TR_BAL_IN",
+    "cn": "'当季流入金额',",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HYEAR_TR_CNT_IN",
+    "cn": "'半年流入笔数',",
+    "type": "INT"
+   },
+   {
+    "field": "HYEAR_TR_BAL_IN",
+    "cn": "'半年流入金额',",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "YEAR_TR_CNT_IN",
+    "cn": "'当年流入笔数',",
+    "type": "INT"
+   },
+   {
+    "field": "YEAR_TR_BAL_IN",
+    "cn": "'当年流入金额',",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "YEAR_TR_CNT_IN_L1YER_ACLT",
+    "cn": "'近12个月流入笔数',",
+    "type": "INT"
+   },
+   {
+    "field": "YEAR_TR_BAL_IN_L1YER_ACLT",
+    "cn": "'近12个月流入金额',",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "DAY_TR_CNT_OUT",
+    "cn": "'当日流出笔数',",
+    "type": "INT"
+   },
+   {
+    "field": "DAY_TR_BAL_OUT",
+    "cn": "'当日流出金额',",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MOTH_TR_CNT_OUT",
+    "cn": "'当月流出笔数',",
+    "type": "INT"
+   },
+   {
+    "field": "MOTH_TR_BAL_OUT",
+    "cn": "'当月流出金额',",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "SEAN_TR_CNT_OUT",
+    "cn": "'当季流出笔数',",
+    "type": "INT"
+   },
+   {
+    "field": "SEAN_TR_BAL_OUT",
+    "cn": "'当季流出金额',",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "HYEAR_TR_CNT_OUT",
+    "cn": "'半年流出笔数',",
+    "type": "INT"
+   },
+   {
+    "field": "HYEAR_TR_BAL_OUT",
+    "cn": "'半年流出金额',",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "YEAR_TR_CNT_OUT",
+    "cn": "'当年流出笔数',",
+    "type": "INT"
+   },
+   {
+    "field": "YEAR_TR_BAL_OUT",
+    "cn": "'当年流出金额',",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "YEAR_TR_CNT_OUT_L1YER_ACLT",
+    "cn": "'近12个月流出笔数',",
+    "type": "INT"
+   },
+   {
+    "field": "YEAR_TR_BAL_OUT_L1YER_ACLT",
+    "cn": "'近12个月流出金额',",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MAX_DAY_TR_BAL_IN",
+    "cn": "'当日单笔最大流入交易金额',",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MAX_DAY_TR_BAL_OUT",
+    "cn": "'当日单笔最大流出交易金额',",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MAX_MOTH_TR_BAL_IN",
+    "cn": "'当月单笔最大流入交易金额',",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MAX_MOTH_TR_BAL_OUT",
+    "cn": "'当月单笔最大流出交易金额'",
+    "type": "DECIMAL"
+   }
+  ],
+  "B_00DT_C4_ORG_TREE_H": [
+   {
+    "field": "FNCL_ENT_NO",
+    "cn": "金融实体编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO",
+    "cn": "C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAM",
+    "cn": "C4机构中文名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO",
+    "cn": "EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_CN_NAM",
+    "cn": "EIMO机构中文名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_CN_SHT_NAM",
+    "cn": "EIMO机构中文简称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_EN_NAM",
+    "cn": "EIMO机构英文名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_EN_SHT_NAM",
+    "cn": "EIMO机构英文简称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_LVL",
+    "cn": "C4机构层级",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_STS_CD",
+    "cn": "C4机构状态",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_CTRY_RGN_CTG_CD",
+    "cn": "C4机构县域分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_CTG",
+    "cn": "EIMO机构类别",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_LVL",
+    "cn": "EIMO机构层级",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_TYP_CD",
+    "cn": "EIMO机构类型码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_ARP_IND",
+    "cn": "EIMO机构三农标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_CLS_IND",
+    "cn": "EIMO机构分类标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_STS",
+    "cn": "EIMO机构状态",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_DIRE_SUPE_NO",
+    "cn": "直接上级机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO_1",
+    "cn": "第1层C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAM_1",
+    "cn": "第1层C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO_1",
+    "cn": "第1层EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NAM_1",
+    "cn": "第1层EIMO机构中文名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_SHT_NAM_1",
+    "cn": "第1层EIMO机构中文简称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO_2",
+    "cn": "第2层C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAM_2",
+    "cn": "第2层C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO_2",
+    "cn": "第2层EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NAM_2",
+    "cn": "第2层EIMO机构中文名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_SHT_NAM_2",
+    "cn": "第2层EIMO机构中文简称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO_3",
+    "cn": "第3层C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAM_3",
+    "cn": "第3层C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO_3",
+    "cn": "第3层EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NAM_3",
+    "cn": "第3层EIMO机构中文名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_SHT_NAM_3",
+    "cn": "第3层EIMO机构中文简称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO_4",
+    "cn": "第4层C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAM_4",
+    "cn": "第4层C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO_4",
+    "cn": "第4层EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NAM_4",
+    "cn": "第4层EIMO机构中文名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_SHT_NAM_4",
+    "cn": "第4层EIMO机构中文简称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO_5",
+    "cn": "第5层C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAM_5",
+    "cn": "第5层C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO_5",
+    "cn": "第5层EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NAM_5",
+    "cn": "第5层EIMO机构中文名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_SHT_NAM_5",
+    "cn": "第5层EIMO机构中文简称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO_6",
+    "cn": "第6层C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAM_6",
+    "cn": "第6层C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO_6",
+    "cn": "第6层EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NAM_6",
+    "cn": "第6层EIMO机构中文名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_SHT_NAM_6",
+    "cn": "第6层EIMO机构中文简称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NO_7",
+    "cn": "第7层C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_NAM_7",
+    "cn": "第7层C4机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NO_7",
+    "cn": "第7层EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_NAM_7",
+    "cn": "第7层EIMO机构中文名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EIMO_ORG_SHT_NAM_7",
+    "cn": "第7层EIMO机构中文简称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_ORG_TREE_LVL",
+    "cn": "C4机构树层级",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SYS_SOR_CD",
+    "cn": "系统来源代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "STARTDT",
+    "cn": "开始日期",
+    "type": "DATE"
+   },
+   {
+    "field": "ENDDT",
+    "cn": "结束日期",
+    "type": "DATE"
+   },
+   {
+    "field": "VALIDDT",
+    "cn": "有效日期",
+    "type": "DATE"
+   },
+   {
+    "field": "TIMESTAMP",
+    "cn": "时间戳",
+    "type": "DATETIME"
+   }
+  ],
+  "B_00DT_UHLTH_LN_AMT_CHG_H": [
+   {
+    "field": "FNCL_ENT_NO",
+    "cn": "金融实体编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "VCH_NO",
+    "cn": "凭证编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CHG_DAT",
+    "cn": "变动日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CHG_CLS",
+    "cn": "变动种类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CHG_SER_NO",
+    "cn": "变动序号",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "SPLT_SER_NO",
+    "cn": "拆分序号",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "WON_ALR_CAN",
+    "cn": "是否已核销",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CHG_ORG",
+    "cn": "变动机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CHG_ORG_EIMO",
+    "cn": "经营EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_CD",
+    "cn": "客户ID",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FTH_LVL_CLS",
+    "cn": "五级分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CCY",
+    "cn": "币种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CHG_CAP",
+    "cn": "变动本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_NML_INTS",
+    "cn": "变动正常息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_DEF_INTS",
+    "cn": "变动罚息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_COM_INTS",
+    "cn": "变动复利",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_POST_CAP_BAL",
+    "cn": "变动后本金余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_POST_IN_INTS_BAL",
+    "cn": "变动后表内息余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_POST_OFF_INTS_BAL",
+    "cn": "变动后表外息余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "REVK_MOD",
+    "cn": "收回方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DPSE_MOD",
+    "cn": "处置方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RPAY_SOR",
+    "cn": "还款来源",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "REQSI_NO",
+    "cn": "申请书编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "REM",
+    "cn": "备注",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SPLT_STS",
+    "cn": "拆分状态",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DATA_SOR",
+    "cn": "数据来源",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ADT_REC_STS",
+    "cn": "补录状态",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_ORG_CD",
+    "cn": "操作机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_ORG_CD_EIMO",
+    "cn": "操作EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPT_CD",
+    "cn": "操作员代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_DAT",
+    "cn": "操作日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_TIME",
+    "cn": "操作时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CRDR_DBT_FINAL_IND",
+    "cn": "债权债务关系终结标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CAN_SUB_TYP_IND",
+    "cn": "核销子类型标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AUX_FLD_1",
+    "cn": "备用字段1",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AUX_FLD_2",
+    "cn": "备用字段2",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SYS_SOR_CD",
+    "cn": "系统来源代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "STARTDT",
+    "cn": "开始日期",
+    "type": "DATE"
+   },
+   {
+    "field": "ENDDT",
+    "cn": "结束日期",
+    "type": "DATE"
+   },
+   {
+    "field": "VALIDDT",
+    "cn": "有效日期",
+    "type": "DATE"
+   },
+   {
+    "field": "TIMESTAMP",
+    "cn": "时间戳",
+    "type": "DATETIME"
+   }
+  ],
+  "B_00DT_PRLN_SCRE_EVT_H": [
+   {
+    "field": "LN_VCH_NO",
+    "cn": "借款凭证编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SCRE_DAT",
+    "cn": "评分日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_COD",
+    "cn": "客户编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_C4_ORG_COD",
+    "cn": "放款机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_EMIO_ORG_COD",
+    "cn": "放款机构EMIO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MDL_COD",
+    "cn": "模型编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MDL_BASIC_PENY",
+    "cn": "模型基础分",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TRFM_SCRE",
+    "cn": "转换得分",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "TRFM_FMUL",
+    "cn": "转换公式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AUX_FLD_1",
+    "cn": "备用字段1",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AUX_FLD_2",
+    "cn": "备用字段2",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "SYS_SOR_CD",
+    "cn": "系统来源代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "STARTDT",
+    "cn": "开始日期",
+    "type": "DATE"
+   },
+   {
+    "field": "ENDDT",
+    "cn": "结束日期",
+    "type": "DATE"
+   },
+   {
+    "field": "VALIDDT",
+    "cn": "有效日期",
+    "type": "DATE"
+   },
+   {
+    "field": "TIMESTAMP",
+    "cn": "时间戳",
+    "type": "DATETIME"
+   }
+  ],
+  "P_00RLDM_RL_LOAN_SCORE": [
+   {
+    "field": "RLS_VCHNO",
+    "cn": "借款凭证编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RLS_RATE_DATE",
+    "cn": "评分日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RLS_CLICODE",
+    "cn": "客户编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RLS_INSTCODE",
+    "cn": "放款机构",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RLS_MODELCODE",
+    "cn": "模型编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RLS_BASESCORE",
+    "cn": "模型基础分",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RLS_SCORE",
+    "cn": "转换得分",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RLS_FORMULA",
+    "cn": "转换公式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RLS_RES1",
+    "cn": "备用字段1",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RLS_RES2",
+    "cn": "备用字段2",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "startdate",
+    "cn": "开始日期",
+    "type": "varchar"
+   },
+   {
+    "field": "enddate",
+    "cn": "结束日期",
+    "type": "varchar"
+   },
+   {
+    "field": "validdate",
+    "cn": "有效日期",
+    "type": "varchar"
+   },
+   {
+    "field": "SUBPRIKEY",
+    "cn": "次主键标记",
+    "type": "varchar"
+   },
+   {
+    "field": "TIMESTAMPE",
+    "cn": "时间戳",
+    "type": "datetime"
+   }
+  ],
+  "G_00PL_IDV_LN_MGG_HPROP_RSK_INFO_DV": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AST_NO",
+    "cn": "资产编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PROP_OWNR_CUST_NO",
+    "cn": "产权人客户编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_CTRT_NO",
+    "cn": "合同编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_NO",
+    "cn": "客户编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "REQSI_NO",
+    "cn": "申请书编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "APR_BAT_NO",
+    "cn": "审批批次号",
+    "type": "INT"
+   },
+   {
+    "field": "CORE_LN_CTRT_NO",
+    "cn": "合同正本编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "COPRT_BREED_NO",
+    "cn": "合作品种编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_PROP_CLS_CD",
+    "cn": "贷款性质分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_TERM_CLS_CD",
+    "cn": "贷款期限分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_USG",
+    "cn": "借款用途",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "COPRT_ITEM_NO",
+    "cn": "合作项目编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "COPRT_ITEM_NAM",
+    "cn": "合作项目名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BUS_BREED_CD",
+    "cn": "业务品种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BUS_ATCH_BAR_LINE_CD",
+    "cn": "部门归属",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_CLS_CD",
+    "cn": "合同种类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "GRTE_MOD_CD",
+    "cn": "担保方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TGTR_APR_IND",
+    "cn": "是否一并审批",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LOW_RSK_BUS_IND",
+    "cn": "是否低风险",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LOW_RSK_BUS_CTG_CD",
+    "cn": "低风险业务类别",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_AMT",
+    "cn": "借款金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CTRT_AMT_RMB",
+    "cn": "借款金额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_DAT",
+    "cn": "借款日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MATU_DAT",
+    "cn": "到期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PRVD_TRMN_DAT",
+    "cn": "发放终止日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SIGD_DAT",
+    "cn": "签约日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_STS_CD",
+    "cn": "合同状态",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DEL_IND",
+    "cn": "删除标志",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_FLOW_STS_IND",
+    "cn": "放款流程状态标志",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_REG_BNK",
+    "cn": "申请人开户银行",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_ORG_NO",
+    "cn": "经营机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_ORG_NO_STD",
+    "cn": "经营机构EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PROP_OWNR_STARTDT",
+    "cn": "产权开始日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SIGD_CTRT_PROP_HODG_DAYS",
+    "cn": "签约合同时产权持有天数",
+    "type": "INT"
+   },
+   {
+    "field": "PROP_OWNR_ENDDT",
+    "cn": "产权结束日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PROP_OWNR_AVA_CD",
+    "cn": "产权有效性代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PROP_OWNR_TYP_CD",
+    "cn": "产权类型代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PROP_OWNR_SHR",
+    "cn": "产权份额（%）",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "COMP_PROJ_DAT",
+    "cn": "竣工日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "COMP_PROJ_DAT_SIGD_CTRT_DAYS",
+    "cn": "竣工日期距合同签约日期天数",
+    "type": "INT"
+   },
+   {
+    "field": "BULD_OVRGRD_LVL",
+    "cn": "建筑物地上层数",
+    "type": "INT"
+   },
+   {
+    "field": "BULD_UNDGRD_LVL",
+    "cn": "建筑物地下层数",
+    "type": "INT"
+   },
+   {
+    "field": "HOUSE_LOCT_ACT_FLR",
+    "cn": "房屋所在实际楼层",
+    "type": "INT"
+   },
+   {
+    "field": "HOUSE_LOCT_NOM_FLR",
+    "cn": "房屋所在名义楼层",
+    "type": "INT"
+   },
+   {
+    "field": "TOP_LVL_IND",
+    "cn": "是否顶层",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "NEXT_TOP_LVL_IND",
+    "cn": "是否次顶层",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EVAL_VLU",
+    "cn": "评估价值",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "EVAL_BASE_DAT",
+    "cn": "评估基准日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EVAL_VALD_MATU_DAT",
+    "cn": "评估有效到期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MGG_BGN_EVAL_TIME",
+    "cn": "抵押物初始评估时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MGG_BGN_EVAL_VLU",
+    "cn": "抵押物初始评估价值 ( 元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MGG_BGN_LTST_TIME",
+    "cn": "抵押物最新评估时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MGG_BGN_LTST_VLU",
+    "cn": "抵押物最新评估价值 ( 元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MGG_BGN_EXT_QRY_TIME",
+    "cn": "抵押物初始外部查询时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MGG_BGN_EXT_QRY_VLU",
+    "cn": "抵押物初始外部查询价值 ( 元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MGG_LTST_EXT_QRY_TIME",
+    "cn": "抵押物最新外部查询时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MGG_LTST_EXT_QRY_VLU",
+    "cn": "抵押物最新外部查询价值 ( 元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MGG_VLU_REF_NO_IND",
+    "cn": "抵押物价值高评参考标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EVAL_MTHD_1_CD",
+    "cn": "评估方法1代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EVAL_MTHD_2_CD",
+    "cn": "评估方法2代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EVAL_MOD_CD",
+    "cn": "评估方式代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EVAL_EVT_SOR_CD",
+    "cn": "评估结果来源代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXT_EVAL_ORG_ORG_CD",
+    "cn": "外部评估机构组织机构代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXT_EVAL_ORG_NAM",
+    "cn": "外部评估机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EVAL_OPR_ORG_NO",
+    "cn": "评估操作机构编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EVAL_OPR_DAT",
+    "cn": "评估操作日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AST_NO",
+    "cn": "资产编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PROP_OWNR_CUST_NO",
+    "cn": "产权人客户编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_CTRT_NO",
+    "cn": "合同编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_NO",
+    "cn": "客户编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "REQSI_NO",
+    "cn": "申请书编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "APR_BAT_NO",
+    "cn": "审批批次号",
+    "type": "INT"
+   },
+   {
+    "field": "CORE_LN_CTRT_NO",
+    "cn": "合同正本编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "COPRT_BREED_NO",
+    "cn": "合作品种编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_PROP_CLS_CD",
+    "cn": "贷款性质分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_TERM_CLS_CD",
+    "cn": "贷款期限分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_USG",
+    "cn": "借款用途",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "COPRT_ITEM_NO",
+    "cn": "合作项目编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "COPRT_ITEM_NAM",
+    "cn": "合作项目名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BUS_BREED_CD",
+    "cn": "业务品种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BUS_ATCH_BAR_LINE_CD",
+    "cn": "部门归属",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_CLS_CD",
+    "cn": "合同种类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "GRTE_MOD_CD",
+    "cn": "担保方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TGTR_APR_IND",
+    "cn": "是否一并审批",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LOW_RSK_BUS_IND",
+    "cn": "是否低风险",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LOW_RSK_BUS_CTG_CD",
+    "cn": "低风险业务类别",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_AMT",
+    "cn": "借款金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CTRT_AMT_RMB",
+    "cn": "借款金额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_DAT",
+    "cn": "借款日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MATU_DAT",
+    "cn": "到期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PRVD_TRMN_DAT",
+    "cn": "发放终止日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SIGD_DAT",
+    "cn": "签约日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_STS_CD",
+    "cn": "合同状态",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DEL_IND",
+    "cn": "删除标志",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_FLOW_STS_IND",
+    "cn": "放款流程状态标志",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_REG_BNK",
+    "cn": "申请人开户银行",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_ORG_NO",
+    "cn": "经营机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_ORG_NO_STD",
+    "cn": "经营机构EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PROP_OWNR_STARTDT",
+    "cn": "产权开始日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SIGD_CTRT_PROP_HODG_DAYS",
+    "cn": "签约合同时产权持有天数",
+    "type": "INT"
+   },
+   {
+    "field": "PROP_OWNR_ENDDT",
+    "cn": "产权结束日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PROP_OWNR_AVA_CD",
+    "cn": "产权有效性代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PROP_OWNR_TYP_CD",
+    "cn": "产权类型代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PROP_OWNR_SHR",
+    "cn": "产权份额（%）",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "COMP_PROJ_DAT",
+    "cn": "竣工日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "COMP_PROJ_DAT_SIGD_CTRT_DAYS",
+    "cn": "竣工日期距合同签约日期天数",
+    "type": "INT"
+   },
+   {
+    "field": "BULD_OVRGRD_LVL",
+    "cn": "建筑物地上层数",
+    "type": "INT"
+   },
+   {
+    "field": "BULD_UNDGRD_LVL",
+    "cn": "建筑物地下层数",
+    "type": "INT"
+   },
+   {
+    "field": "HOUSE_LOCT_ACT_FLR",
+    "cn": "房屋所在实际楼层",
+    "type": "INT"
+   },
+   {
+    "field": "HOUSE_LOCT_NOM_FLR",
+    "cn": "房屋所在名义楼层",
+    "type": "INT"
+   },
+   {
+    "field": "TOP_LVL_IND",
+    "cn": "是否顶层",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "NEXT_TOP_LVL_IND",
+    "cn": "是否次顶层",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EVAL_VLU",
+    "cn": "评估价值",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "EVAL_BASE_DAT",
+    "cn": "评估基准日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EVAL_VALD_MATU_DAT",
+    "cn": "评估有效到期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MGG_BGN_EVAL_TIME",
+    "cn": "抵押物初始评估时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MGG_BGN_EVAL_VLU",
+    "cn": "抵押物初始评估价值 ( 元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MGG_BGN_LTST_TIME",
+    "cn": "抵押物最新评估时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MGG_BGN_LTST_VLU",
+    "cn": "抵押物最新评估价值 ( 元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MGG_BGN_EXT_QRY_TIME",
+    "cn": "抵押物初始外部查询时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MGG_BGN_EXT_QRY_VLU",
+    "cn": "抵押物初始外部查询价值 ( 元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MGG_LTST_EXT_QRY_TIME",
+    "cn": "抵押物最新外部查询时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MGG_LTST_EXT_QRY_VLU",
+    "cn": "抵押物最新外部查询价值 ( 元 )",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MGG_VLU_REF_NO_IND",
+    "cn": "抵押物价值高评参考标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EVAL_MTHD_1_CD",
+    "cn": "评估方法1代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EVAL_MTHD_2_CD",
+    "cn": "评估方法2代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EVAL_MOD_CD",
+    "cn": "评估方式代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EVAL_EVT_SOR_CD",
+    "cn": "评估结果来源代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXT_EVAL_ORG_ORG_CD",
+    "cn": "外部评估机构组织机构代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXT_EVAL_ORG_NAM",
+    "cn": "外部评估机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EVAL_OPR_ORG_NO",
+    "cn": "评估操作机构编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EVAL_OPR_DAT",
+    "cn": "评估操作日期",
+    "type": "VARCHAR"
+   }
+  ],
+  "S_00PL_IDV_LN_GRTE_RLN": [
+   {
+    "field": "FNCL_ENT_NO",
+    "cn": "金融实体代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MAIN_CTRT_NO",
+    "cn": "主合同编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_NO",
+    "cn": "客户编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_AMT_COV_RMB",
+    "cn": "借款金额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MAIN_CTRT_GRTE",
+    "cn": "主合同担保方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "GRTE_CTRT_NO",
+    "cn": "担保合同编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "GRTE_CTRT_AMT_COV_RMB",
+    "cn": "担保合同金额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "GRTE_CTRT_GRTE",
+    "cn": "担保合同担保方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "GRTR_CD",
+    "cn": "保证人代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "GRTR_GRTE",
+    "cn": "保证人担保方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "GRTR_GRTE_AMT_COV_RMB",
+    "cn": "保证人担保金额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MGG_AST_NO",
+    "cn": "担保物资产编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MGG_GRTE",
+    "cn": "担保物担保方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MGG_INSE_AMT",
+    "cn": "担保物参保金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "PLGE_PROP_OWNR_CUST_CD",
+    "cn": "押品产权人客户代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PLGE_PROP_OWNR_NAM",
+    "cn": "押品产权人名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PLGE_PROP_TYP",
+    "cn": "押品产权类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PLGE_PROP_SHR",
+    "cn": "押品产权份额",
+    "type": "DECIMAL"
+   }
+  ],
+  "G_00PF_PEAS_LN_LSTY_VCH_CONT_SITU_INFO": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FORM_NO",
+    "cn": "凭证编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_NO",
+    "cn": "合同编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_NO",
+    "cn": "客户编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_DAT",
+    "cn": "借款日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MATU_DAT",
+    "cn": "到期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ADJ_MATU_DAT",
+    "cn": "调整后到期日",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_AMT_RMB",
+    "cn": "借款金额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FORM_BAL_RMB",
+    "cn": "凭证余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CAN_STS_CD",
+    "cn": "核销状态代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CONTINUE_FLAG",
+    "cn": "后手凭证接续方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "VCH_DISB_ORG_NO",
+    "cn": "凭证放款机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_ADMI_ORG_NO",
+    "cn": "合同经营机构C4机构编码",
+    "type": "VARCHAR"
+   }
+  ],
+  "G_00PF_IDV_LN_VCH_CAN_LQDT_SECS_DV": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FORM_NO",
+    "cn": "凭证编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_NO",
+    "cn": "合同编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_NO",
+    "cn": "客户编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "REQSI_NO",
+    "cn": "申请书编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_FORM_ORI_NO",
+    "cn": "借款凭证原始号码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BUS_BREED_CD",
+    "cn": "业务品种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_PROP_CLS_CD",
+    "cn": "贷款性质分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_TERM_CLS_CD",
+    "cn": "贷款期限分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_USE_CD",
+    "cn": "借款用途",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "GRTE_MOD_CD",
+    "cn": "担保方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "GRTE_CTRT_NO",
+    "cn": "担保合同编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_USE_CLS_CD",
+    "cn": "借款用途分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_CMPHSV_CLS_CD",
+    "cn": "贷款综合分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_IVST_DIRE_OCPCLS_CD",
+    "cn": "贷款投向行业分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_IVDIR_NATECO_OCPCLS_CD",
+    "cn": "贷款投向国民经济行业分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PBC_ARGI_LN_CLS_CD",
+    "cn": "人行涉农贷款分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LOW_RSK_BUS_IND",
+    "cn": "是否低风险业务",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RSK_BUS_CTG",
+    "cn": "低风险业务类别",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CYC_LN_IND",
+    "cn": "是否可循环贷款",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUBSD_INTS_LN_IND",
+    "cn": "是否贴息贷款",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUBSD_INTS_END_DAT",
+    "cn": "贴息截止日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUBSD_INTS_RATE",
+    "cn": "贴息率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_DAT",
+    "cn": "借款日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MATU_DAT",
+    "cn": "到期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ADJ_MATU_DAT",
+    "cn": "调整后到期日",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ACTNG_ENT_ACCT_DAT",
+    "cn": "会计入账日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RNEW_APTMT_IND",
+    "cn": "展期约期标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RNEW_MATU_DAT",
+    "cn": "展期到期日",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RPAY_MOD_CD",
+    "cn": "还款方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CCY_CD",
+    "cn": "币种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CCY_CD_STD",
+    "cn": "币种_标准化",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_AMT",
+    "cn": "借款金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_AMT_RMB",
+    "cn": "借款金额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FORM_BAL",
+    "cn": "凭证余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FORM_BAL_RMB",
+    "cn": "凭证余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "IN_BLNC_ARREA_INTS",
+    "cn": "表内欠息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "OFF_BLNC_ARREA_INTS",
+    "cn": "表外欠息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_CLS_CD",
+    "cn": "风险分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "INTL_GRD_CLS_CD",
+    "cn": "内部评级分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "YEAR_AVER_RPAMT",
+    "cn": "年化平均还款额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FST_FORM_NO",
+    "cn": "首笔凭证编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FST_FORM_PRVD_DAT",
+    "cn": "首笔凭证发放日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ABIS_BRCH_NO",
+    "cn": "ABIS机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ABIS_BUS_BREED",
+    "cn": "ABIS业务品种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_ACCT_NO",
+    "cn": "贷款账号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RPAY_TYP_CD",
+    "cn": "还款类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "WON_AUTO_DDCT_CAP",
+    "cn": "是否自动扣收本金",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AUTO_DDCT_CAP_STRT_AMT",
+    "cn": "自动扣收本金起点金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CLTN_ACCT_NO",
+    "cn": "收款账号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RPAY_ACCT_NO_1",
+    "cn": "还款账号1",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RPAY_ACCT_NO_2",
+    "cn": "还款账号2",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SELF_RPAY_ACCT_NO",
+    "cn": "自由还账号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SELF_RPAY_ACCT_NO_RETQUOT",
+    "cn": "自由还账号留存额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "PRGS_TLMT_MSG_DAT",
+    "cn": "诉讼时效提示日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_FLOW_STS_CD",
+    "cn": "放款流程状态标志",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FORM_STS_CD",
+    "cn": "凭证状态",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DEL_IND",
+    "cn": "删除标志",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_ORG_COD",
+    "cn": "放款机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_ORG_COD_STD",
+    "cn": "放款机构EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "REG_MAGR_CD",
+    "cn": "建档客户经理代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MAGR_CD",
+    "cn": "首贷客户经理代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_ORG_COD",
+    "cn": "操作机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_EIMO_ORG_COD",
+    "cn": "操作机构EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPT_CD",
+    "cn": "操作员代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FST_OPR_DAT",
+    "cn": "首次操作日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FST_OPR_TIME",
+    "cn": "首次操作时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_DAT",
+    "cn": "操作日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_TIME",
+    "cn": "操作时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AGENT_CTG_CD",
+    "cn": "委托人类别",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DPRT_FTR_CLS_CD",
+    "cn": "部门特色分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FRN_EXCH_PLGE_LN_CLS_CD",
+    "cn": "外汇保证贷款分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CLTN_PSN_ISBN",
+    "cn": "收款人代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MARG_CTRL_IND",
+    "cn": "是否控制保证金",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MARG_CTRL_MOD_CD",
+    "cn": "保证金控制方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MARG_CTRL_PPTN",
+    "cn": "保证金控制比例",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MARG_FIX_QUOT",
+    "cn": "保证金固定额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MARG_CCY_CD",
+    "cn": "保证金币种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SELF_LOWT_RPAY_QUOT",
+    "cn": "自由还最低还款额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "SELF_HGST_RPAY_QUOT",
+    "cn": "自由还最高还款额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FNC_PROD_CLS_CD",
+    "cn": "信贷产品分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PAY_MOD_CD",
+    "cn": "支付方式代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "NTRL_DSTR_EFCT_CD",
+    "cn": "自然灾害影响代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXD_DAT",
+    "cn": "逾期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXD_DAYS",
+    "cn": "逾期天数",
+    "type": "INT"
+   },
+   {
+    "field": "EXD_TYP",
+    "cn": "逾期类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BASE_DAY_DAT",
+    "cn": "证券化基准日日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BASE_JP_GOLD_BAL_RMB",
+    "cn": "证券化本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BASE_DAY_INTS_RMB",
+    "cn": "证券化利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CAN_ACTNG_DAT",
+    "cn": "核销会计日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CAN_STS_CD",
+    "cn": "核销状态代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CAN_CAP",
+    "cn": "核销本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CAN_INTS",
+    "cn": "核销利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_CAP_1_YAVER",
+    "cn": "当年表内现金清收利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_INTS_1_YAVER",
+    "cn": "当年表内现金清收本息合计",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_AMT_1_YAVER",
+    "cn": "近12个月表内现金清收本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_CAP_12_MONTH",
+    "cn": "近12个月表内现金清收利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_INTS_12_MONTH",
+    "cn": "近12个月表内现金清收本息合计",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_AMT_12_MONTH",
+    "cn": "近4个自然年表内现金清收本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_CAP_4_YAVER",
+    "cn": "近4个自然年表内现金清收利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_INTS_4_YAVER",
+    "cn": "近4个自然年表内现金清收本息合计",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_AMT_4_YAVER",
+    "cn": "累计表内现金清收本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_CAP_TOT",
+    "cn": "累计表内现金清收利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_INTS_TOT",
+    "cn": "累计表内现金清收本息合计",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_AMT_TOT",
+    "cn": "累计现金清收本息合计",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_CAP_1_YAVER",
+    "cn": "当年表外现金清收本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_INTS_1_YAVER",
+    "cn": "当年表外现金清收利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_AMT_1_YAVER",
+    "cn": "当年表外现金清收本息合计",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_CAP_12_MONTH",
+    "cn": "近12个月表外现金清收本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_INTS_12_MONTH",
+    "cn": "近12个月表外现金清收利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_AMT_12_MONTH",
+    "cn": "近12个月表外现金清收本息合计",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_CAP_4_YAVER",
+    "cn": "近4个自然年表外现金清收本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_INTS_4_YAVER",
+    "cn": "近4个自然年表外现金清收利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_AMT_4_YAVER",
+    "cn": "近4个自然年表外现金清收本息合计",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_CAP_TOT",
+    "cn": "累计表外现金清收本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_INTS_TOT",
+    "cn": "累计表外现金清收利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_AMT_TOT",
+    "cn": "累计表外现金清收本息合计",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "DAT_SOR_CD",
+    "cn": "数据来源代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FORM_NO",
+    "cn": "凭证编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_NO",
+    "cn": "合同编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_NO",
+    "cn": "客户编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "REQSI_NO",
+    "cn": "申请书编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_FORM_ORI_NO",
+    "cn": "借款凭证原始号码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BUS_BREED_CD",
+    "cn": "业务品种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_PROP_CLS_CD",
+    "cn": "贷款性质分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_TERM_CLS_CD",
+    "cn": "贷款期限分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_USE_CD",
+    "cn": "借款用途",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "GRTE_MOD_CD",
+    "cn": "担保方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "GRTE_CTRT_NO",
+    "cn": "担保合同编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_USE_CLS_CD",
+    "cn": "借款用途分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_CMPHSV_CLS_CD",
+    "cn": "贷款综合分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_IVST_DIRE_OCPCLS_CD",
+    "cn": "贷款投向行业分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_IVDIR_NATECO_OCPCLS_CD",
+    "cn": "贷款投向国民经济行业分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PBC_ARGI_LN_CLS_CD",
+    "cn": "人行涉农贷款分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LOW_RSK_BUS_IND",
+    "cn": "是否低风险业务",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RSK_BUS_CTG",
+    "cn": "低风险业务类别",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CYC_LN_IND",
+    "cn": "是否可循环贷款",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUBSD_INTS_LN_IND",
+    "cn": "是否贴息贷款",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUBSD_INTS_END_DAT",
+    "cn": "贴息截止日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUBSD_INTS_RATE",
+    "cn": "贴息率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_DAT",
+    "cn": "借款日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MATU_DAT",
+    "cn": "到期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ADJ_MATU_DAT",
+    "cn": "调整后到期日",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ACTNG_ENT_ACCT_DAT",
+    "cn": "会计入账日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RNEW_APTMT_IND",
+    "cn": "展期约期标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RNEW_MATU_DAT",
+    "cn": "展期到期日",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RPAY_MOD_CD",
+    "cn": "还款方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CCY_CD",
+    "cn": "币种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CCY_CD_STD",
+    "cn": "币种_标准化",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_AMT",
+    "cn": "借款金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_AMT_RMB",
+    "cn": "借款金额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FORM_BAL",
+    "cn": "凭证余额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FORM_BAL_RMB",
+    "cn": "凭证余额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "IN_BLNC_ARREA_INTS",
+    "cn": "表内欠息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "OFF_BLNC_ARREA_INTS",
+    "cn": "表外欠息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "RSK_CLS_CD",
+    "cn": "风险分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "INTL_GRD_CLS_CD",
+    "cn": "内部评级分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "YEAR_AVER_RPAMT",
+    "cn": "年化平均还款额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FST_FORM_NO",
+    "cn": "首笔凭证编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FST_FORM_PRVD_DAT",
+    "cn": "首笔凭证发放日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ABIS_BRCH_NO",
+    "cn": "ABIS机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ABIS_BUS_BREED",
+    "cn": "ABIS业务品种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_ACCT_NO",
+    "cn": "贷款账号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RPAY_TYP_CD",
+    "cn": "还款类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "WON_AUTO_DDCT_CAP",
+    "cn": "是否自动扣收本金",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AUTO_DDCT_CAP_STRT_AMT",
+    "cn": "自动扣收本金起点金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CLTN_ACCT_NO",
+    "cn": "收款账号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RPAY_ACCT_NO_1",
+    "cn": "还款账号1",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RPAY_ACCT_NO_2",
+    "cn": "还款账号2",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SELF_RPAY_ACCT_NO",
+    "cn": "自由还账号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SELF_RPAY_ACCT_NO_RETQUOT",
+    "cn": "自由还账号留存额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "PRGS_TLMT_MSG_DAT",
+    "cn": "诉讼时效提示日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_FLOW_STS_CD",
+    "cn": "放款流程状态标志",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FORM_STS_CD",
+    "cn": "凭证状态",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DEL_IND",
+    "cn": "删除标志",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_ORG_COD",
+    "cn": "放款机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_ORG_COD_STD",
+    "cn": "放款机构EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "REG_MAGR_CD",
+    "cn": "建档客户经理代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MAGR_CD",
+    "cn": "首贷客户经理代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_ORG_COD",
+    "cn": "操作机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_EIMO_ORG_COD",
+    "cn": "操作机构EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPT_CD",
+    "cn": "操作员代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FST_OPR_DAT",
+    "cn": "首次操作日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FST_OPR_TIME",
+    "cn": "首次操作时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_DAT",
+    "cn": "操作日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_TIME",
+    "cn": "操作时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AGENT_CTG_CD",
+    "cn": "委托人类别",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DPRT_FTR_CLS_CD",
+    "cn": "部门特色分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FRN_EXCH_PLGE_LN_CLS_CD",
+    "cn": "外汇保证贷款分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CLTN_PSN_ISBN",
+    "cn": "收款人代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MARG_CTRL_IND",
+    "cn": "是否控制保证金",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MARG_CTRL_MOD_CD",
+    "cn": "保证金控制方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MARG_CTRL_PPTN",
+    "cn": "保证金控制比例",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MARG_FIX_QUOT",
+    "cn": "保证金固定额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "MARG_CCY_CD",
+    "cn": "保证金币种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SELF_LOWT_RPAY_QUOT",
+    "cn": "自由还最低还款额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "SELF_HGST_RPAY_QUOT",
+    "cn": "自由还最高还款额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "FNC_PROD_CLS_CD",
+    "cn": "信贷产品分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PAY_MOD_CD",
+    "cn": "支付方式代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "NTRL_DSTR_EFCT_CD",
+    "cn": "自然灾害影响代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXD_DAT",
+    "cn": "逾期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXD_DAYS",
+    "cn": "逾期天数",
+    "type": "INT"
+   },
+   {
+    "field": "EXD_TYP",
+    "cn": "逾期类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BASE_DAY_DAT",
+    "cn": "证券化基准日日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BASE_JP_GOLD_BAL_RMB",
+    "cn": "证券化本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "BASE_DAY_INTS_RMB",
+    "cn": "证券化利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CAN_ACTNG_DAT",
+    "cn": "核销会计日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CAN_STS_CD",
+    "cn": "核销状态代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CAN_CAP",
+    "cn": "核销本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CAN_INTS",
+    "cn": "核销利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_CAP_1_YAVER",
+    "cn": "当年表内现金清收利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_INTS_1_YAVER",
+    "cn": "当年表内现金清收本息合计",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_AMT_1_YAVER",
+    "cn": "近12个月表内现金清收本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_CAP_12_MONTH",
+    "cn": "近12个月表内现金清收利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_INTS_12_MONTH",
+    "cn": "近12个月表内现金清收本息合计",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_AMT_12_MONTH",
+    "cn": "近4个自然年表内现金清收本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_CAP_4_YAVER",
+    "cn": "近4个自然年表内现金清收利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_INTS_4_YAVER",
+    "cn": "近4个自然年表内现金清收本息合计",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_AMT_4_YAVER",
+    "cn": "累计表内现金清收本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_CAP_TOT",
+    "cn": "累计表内现金清收利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_INTS_TOT",
+    "cn": "累计表内现金清收本息合计",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_AMT_TOT",
+    "cn": "累计现金清收本息合计",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_CAP_1_YAVER",
+    "cn": "当年表外现金清收本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_INTS_1_YAVER",
+    "cn": "当年表外现金清收利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_AMT_1_YAVER",
+    "cn": "当年表外现金清收本息合计",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_CAP_12_MONTH",
+    "cn": "近12个月表外现金清收本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_INTS_12_MONTH",
+    "cn": "近12个月表外现金清收利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_AMT_12_MONTH",
+    "cn": "近12个月表外现金清收本息合计",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_CAP_4_YAVER",
+    "cn": "近4个自然年表外现金清收本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_INTS_4_YAVER",
+    "cn": "近4个自然年表外现金清收利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_AMT_4_YAVER",
+    "cn": "近4个自然年表外现金清收本息合计",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_CAP_TOT",
+    "cn": "累计表外现金清收本金",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_INTS_TOT",
+    "cn": "累计表外现金清收利息",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CHG_OFF_BLNC_AMT_TOT",
+    "cn": "累计表外现金清收本息合计",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "DAT_SOR_CD",
+    "cn": "数据来源代码",
+    "type": "VARCHAR"
+   }
+  ],
+  "B_00DT_CYC_QUOT_INFO_H": [
+   {
+    "field": "FNCL_ENT_NO",
+    "cn": "金融实体编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_CTRT_NO",
+    "cn": "借款合同编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ABIS_FNCG_CARD_NO",
+    "cn": "ABIS理财卡号/账号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "QUOT_CLS",
+    "cn": "额度种类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CYC_QUOT",
+    "cn": "循环额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "QUOT_StartDt",
+    "cn": "额度开始日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "QUOT_MATU_DAT",
+    "cn": "额度到期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SGGT_LN_LNGST_TERM",
+    "cn": "单笔贷款最长期限",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SGGT_AD_LN_LNGST_TERM",
+    "cn": "单笔自助贷款最长期限",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SGGT_AD_LN_SHTST_TERM",
+    "cn": "单笔自助贷款最短期限",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SGGT_LN_LAST_MATU_DAT",
+    "cn": "单笔贷款最后到期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ONE_ANNL_ABV_LN_RPAY_MOD",
+    "cn": "一年以上贷款还款方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ONE_ANNL_ABV_RPAY_TYP",
+    "cn": "一年以上还款类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ONE_ANNL_WITHIN_LN_RPAY_MOD",
+    "cn": "一年以内贷款还款方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ONE_ANNL_WITHIN_RPAY_TYP",
+    "cn": "一年以内还款类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ONE_ANNL_DAY_WITHIN_LN_ITST_BRNG_MOD",
+    "cn": "一年期以内贷款计息方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ONE_ANNL_DAY_ABV_LN_ITST_BRNG_MOD",
+    "cn": "一年期以上贷款计息方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "NML_RATE_FLT_MOD",
+    "cn": "正常利率浮动方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "NML_RATE_FLT_RGE",
+    "cn": "正常利率浮动幅度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "EXP_RATE_FLT_MOD",
+    "cn": "超期利率浮动方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "EXP_RATE_FLT_RGE",
+    "cn": "超期利率浮动幅度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "ONE_ANNL_WITHIN_LN_INTS_PERD",
+    "cn": "一年以内贷款结息周期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RPAY_PERD",
+    "cn": "还款周期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SETL_INTS_PERD",
+    "cn": "结息周期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ONE_ANNL_WITHIN_LN_INTS_DAY",
+    "cn": "一年以内贷款定期结息日",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ONE_ANNL_ABV_LN_RPDAY",
+    "cn": "一年以上贷款还款日",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AD_IND",
+    "cn": "自助标志",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AD_QUOT",
+    "cn": "自助额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "AD_QUOT_OCCP_IND",
+    "cn": "自助额度可占用标志",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "USG_AD_QUOT",
+    "cn": "已用自助额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "AVL_AD_QUOT",
+    "cn": "可用自助额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "WON_BUND_CLTN",
+    "cn": "是否绑定收款方",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "STRT_BASE_AMT",
+    "cn": "起贷基础金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "LN_AMPL_BASE_NUM",
+    "cn": "贷款增幅基础数",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "SSUB_ACCT_NO_QUOT_PPTN",
+    "cn": "专用子账户额度比例",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "QUOT_STS",
+    "cn": "额度状态",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_GRP_NO",
+    "cn": "合同组编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SIGD_ABIS_BRCH_NO",
+    "cn": "ABIS签约机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_ORG_COD",
+    "cn": "操作机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_ORG_COD_EIMO",
+    "cn": "操作EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPT_CD",
+    "cn": "操作员代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_DAT",
+    "cn": "操作日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SYS_SOR_CD",
+    "cn": "系统来源代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "StartDt",
+    "cn": "开始日期",
+    "type": "DATE"
+   },
+   {
+    "field": "EndDt",
+    "cn": "结束日期",
+    "type": "DATE"
+   },
+   {
+    "field": "ValidDt",
+    "cn": "有效日期",
+    "type": "DATE"
+   },
+   {
+    "field": "Timestamp",
+    "cn": "时间戳",
+    "type": "DATETIME"
+   }
+  ],
+  "G_00PF_IDV_LN_CTRT_DV": [
+   {
+    "field": "FNCL_ENT_NO",
+    "cn": "金融实体代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_CTRT_NO",
+    "cn": "合同编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_NO",
+    "cn": "客户编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "REQSI_NO",
+    "cn": "申请书编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "APR_BAT_NO",
+    "cn": "审批批次号",
+    "type": "INT"
+   },
+   {
+    "field": "CORE_LN_CTRT_NO",
+    "cn": "合同正本编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "COPRT_BREED_NO",
+    "cn": "合作品种编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_PROP_CLS_CD",
+    "cn": "贷款性质分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_TERM_CLS_CD",
+    "cn": "贷款期限分类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LN_USG",
+    "cn": "借款用途",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "COPRT_ITEM_NO",
+    "cn": "合作项目编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "COPRT_ITEM_NAM",
+    "cn": "合作项目名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BUS_BREED_CD",
+    "cn": "业务品种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "BUS_ATCH_BAR_LINE_CD",
+    "cn": "部门归属",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_CLS_CD",
+    "cn": "合同种类",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "GRTE_MOD_CD",
+    "cn": "担保方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TGTR_APR_IND",
+    "cn": "是否一并审批",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LOW_RSK_BUS_IND",
+    "cn": "是否低风险",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "LOW_RSK_BUS_CTG_CD",
+    "cn": "低风险业务类别",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CYC_LN_IND",
+    "cn": "是否可循环贷款",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "WON_HAVE_COM_BROW",
+    "cn": "是否有共同借款人",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUBSD_INTS_LN_IND",
+    "cn": "是否贴息贷款",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "SUBSD_INTS_RATE",
+    "cn": "贴息率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "SUBSD_INTS_END_DAT",
+    "cn": "贴息截止日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CCY_CD",
+    "cn": "币种",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CCY_CD_STD",
+    "cn": "币种_标准化",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PRVD_LN_MMNT_EXCG",
+    "cn": "发放贷款时汇率",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CYC_QUOT",
+    "cn": "循环额度",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "QUOT_STARTDT",
+    "cn": "循环额度开始日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "QUOT_MATU_DAT",
+    "cn": "循环额度到期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_AMT",
+    "cn": "借款金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CTRT_AMT_RMB",
+    "cn": "借款金额折人民币",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "USG_AMT",
+    "cn": "已用金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CUST_CAN_AMT",
+    "cn": "客户撤销金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "AVL_AMT",
+    "cn": "可用金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "DWN_PAMT_AMT",
+    "cn": "首付款",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "DWN_PAMT_AMT_PPTN",
+    "cn": "首付款比例",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CTRT_NONSQUA_VCH_CNT",
+    "cn": "合同下未结清凭证数",
+    "type": "INT"
+   },
+   {
+    "field": "CTRT_NONSQUA_RSK_VCH_CNT",
+    "cn": "合同下未结清风险凭证数",
+    "type": "INT"
+   },
+   {
+    "field": "CTRT_HGST_CR_USE_AMT",
+    "cn": "合同历史最高用信金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "CTRT_TOT_CR_USE_NUM",
+    "cn": "合同累计用信笔数",
+    "type": "INT"
+   },
+   {
+    "field": "LN_DAT",
+    "cn": "借款日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MATU_DAT",
+    "cn": "到期日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PRVD_TRMN_DAT",
+    "cn": "发放终止日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TOLE_MOD_CD",
+    "cn": "宽限方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "TOLE_TERM",
+    "cn": "宽限期数",
+    "type": "INT"
+   },
+   {
+    "field": "PPERD_RPDAY",
+    "cn": "每期还款日",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RPAY_MOD_CD",
+    "cn": "还款方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ITST_BRNG_MOD_CD",
+    "cn": "计息方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DIV_DAY_RPAY_PERD_CD",
+    "cn": "分期还款周期标志",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_CNT",
+    "cn": "合同份数",
+    "type": "INT"
+   },
+   {
+    "field": "SIGD_DAT",
+    "cn": "签约日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CTRT_STS_CD",
+    "cn": "合同状态",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DEL_IND",
+    "cn": "删除标志",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_FLOW_STS_IND",
+    "cn": "放款流程状态标志",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_REG_BNK",
+    "cn": "申请人开户银行",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_ORG_NO",
+    "cn": "经营机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DISB_ORG_NO_STD",
+    "cn": "经营机构编码_标准化",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MAGR_NO",
+    "cn": "客户经理代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_ORG_NO",
+    "cn": "操作机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_ORG_NO_STD",
+    "cn": "操作机构编码_标准化",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPT_NO",
+    "cn": "操作员代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "FST_OPR_DAT",
+    "cn": "首次操作日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_DAT",
+    "cn": "操作日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DAT_SOR_CD",
+    "cn": "数据来源代码",
+    "type": "VARCHAR"
+   }
+  ],
+  "G_00PF_PEAS_LN_FMLY_SITU_INFO": [
+   {
+    "field": "DATA_DAT",
+    "cn": "数据日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CUST_NO",
+    "cn": "客户编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ID_CARD_NO",
+    "cn": "身份证号码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MRGE_STS",
+    "cn": "婚姻状况",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OWN_RURA_ID",
+    "cn": "所属村编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ADMI_RURA_ATCH_ORG_NO",
+    "cn": "行政村归属机构C4机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "ADMI_RURA_ATCH_EIMO_ORG_NO",
+    "cn": "行政村归属机构EIMO机构编码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "VALD_PEAS_LN_CUST_CNT",
+    "cn": "所属村持有效农贷合同的客户数",
+    "type": "INT"
+   },
+   {
+    "field": "ATCH_MAGR_CRT_CUST_CNT",
+    "cn": "所属建档客户经理当天建档客户数",
+    "type": "INT"
+   },
+   {
+    "field": "ATCH_MAGR_12_CRT_CUST_CNT",
+    "cn": "所属建档客户经理当天建档且建档一年内有合同的客户数",
+    "type": "INT"
+   }
+  ],
+  "P_00FAS_GFAS_VAF_LOAN_MANAGE": [
+   {
+    "field": "SERNO",
+    "cn": "流水号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "APPLICANT_ID",
+    "cn": "申请书编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "IDCARD",
+    "cn": "身份证号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "NAME",
+    "cn": "名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MOBILE_NUM",
+    "cn": "移动电话",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "RESIDENT_ADDR",
+    "cn": "常住地址",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "VG_ID",
+    "cn": "所属村编号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "VG_NAME",
+    "cn": "所属村名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "COLLECT_CHANNEL",
+    "cn": "采集渠道",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "APPLY_AMT_BASE",
+    "cn": "申请金额",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "APPLY_DATE",
+    "cn": "申请日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PRODUCT_WILL",
+    "cn": "意向产品",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "STATU",
+    "cn": "状态",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "INVEST_METHOD",
+    "cn": "调查方式",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CHECK_STATUS",
+    "cn": "抽查情况",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "WF_STATUS",
+    "cn": "流程状态",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MANAGER_ID",
+    "cn": "管户经理",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MANAGER_NAME",
+    "cn": "管户经理姓名",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CLAIM_BRANCH_CODE",
+    "cn": "指派给所属机构id",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CLAIM_BRANCH_NAME",
+    "cn": "指派给所属机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CLAIM_TIME",
+    "cn": "认领时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_ID",
+    "cn": "操作员（主管客户经理）代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_NAME",
+    "cn": "操作员名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_DATE",
+    "cn": "操作日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_TIME",
+    "cn": "操作时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_INST_ID",
+    "cn": "操作机构代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_INST_NAME",
+    "cn": "操作机构名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_RINSTCODE",
+    "cn": "操作人所属行代码",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPR_RINSTNAME",
+    "cn": "操作人所属行名称",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "OPRT_TYPE",
+    "cn": "操作类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "DATA_IN_DATE",
+    "cn": "入库时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AREA_CODE",
+    "cn": "行政区划",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "INST_ADDR",
+    "cn": "机构地址",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "INST_PHONE",
+    "cn": "机构电话",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "MANAGER_PHONE",
+    "cn": "管户经理电话",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "CONTNO",
+    "cn": "合同号",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PERIOD",
+    "cn": "贷款期限",
+    "type": "DECIMAL"
+   },
+   {
+    "field": "IS_SAVED",
+    "cn": "是否已保存",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_STATUS",
+    "cn": "C4审批状态",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_STATUS_UPDDATE",
+    "cn": "C4审批状态更新日期",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "C4_STATUS_UPDTIME",
+    "cn": "C4审批状态更新时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AUTHORITY_TYPE",
+    "cn": "授权类型",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AUTHORITY_STATU",
+    "cn": "授权状态",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "AUTHORITY_TIME",
+    "cn": "授权时间",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "PROD_FEATURE",
+    "cn": "农户特色标识",
+    "type": "VARCHAR"
+   },
+   {
+    "field": "addfielddate",
+    "cn": "有效日期",
+    "type": "VARCHAR"
+   }
+  ]
+ }
+}

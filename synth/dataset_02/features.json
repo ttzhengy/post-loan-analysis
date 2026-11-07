@@ -1,0 +1,727 @@
+{
+  "schema_version": "3.0",
+  "slice": "20260831",
+  "features": [
+    {
+      "feature_id": 1,
+      "name": "零散获客",
+      "dimension": "机构",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "零散获客强度": 1.1069
+      },
+      "baseline": {
+        "零散获客强度": 1.0
+      },
+      "numerator": 5296,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 2,
+      "name": "无抵押缓释",
+      "dimension": "机构",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "无抵押缓释强度": 0.9788
+      },
+      "baseline": {
+        "无抵押缓释强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 3,
+      "name": "低评分准入",
+      "dimension": "机构",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "低评分准入强度": 1.0763
+      },
+      "baseline": {
+        "低评分准入强度": 1.0
+      },
+      "numerator": 3780,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 4,
+      "name": "建档不规范",
+      "dimension": "机构",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "建档不规范强度": 0.8465
+      },
+      "baseline": {
+        "建档不规范强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 5,
+      "name": "欺诈风险敞口",
+      "dimension": "机构",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "欺诈风险敞口强度": 0.9253
+      },
+      "baseline": {
+        "欺诈风险敞口强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 6,
+      "name": "信用负债敞口",
+      "dimension": "机构",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "信用负债敞口强度": 0.8378
+      },
+      "baseline": {
+        "信用负债敞口强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 7,
+      "name": "超额授信",
+      "dimension": "机构",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "超额授信强度": 1.0378
+      },
+      "baseline": {
+        "超额授信强度": 1.0
+      },
+      "numerator": 1872,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 8,
+      "name": "审查质量",
+      "dimension": "机构",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "审查质量强度": 0.9787
+      },
+      "baseline": {
+        "审查质量强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 9,
+      "name": "贷后管理不到位",
+      "dimension": "机构",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "贷后管理不到位强度": 3.5
+      },
+      "baseline": {
+        "贷后管理不到位强度": 1.0
+      },
+      "numerator": 123863,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 10,
+      "name": "接续不到位",
+      "dimension": "机构",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "接续不到位强度": 3.3
+      },
+      "baseline": {
+        "接续不到位强度": 1.0
+      },
+      "numerator": 113954,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 11,
+      "name": "高风险客户经理",
+      "dimension": "客户经理",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "高风险客户经理强度": 3.2
+      },
+      "baseline": {
+        "高风险客户经理强度": 1.0
+      },
+      "numerator": 108999,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 12,
+      "name": "高风险产品",
+      "dimension": "机构",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "高风险产品强度": 0.9441
+      },
+      "baseline": {
+        "高风险产品强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 13,
+      "name": "大额信用风险",
+      "dimension": "机构",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "大额信用风险强度": 0.8205
+      },
+      "baseline": {
+        "大额信用风险强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 14,
+      "name": "批量建档",
+      "dimension": "客户经理",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "批量建档强度": 0.9923
+      },
+      "baseline": {
+        "批量建档强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 15,
+      "name": "调查造假",
+      "dimension": "客户经理",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "调查造假强度": 1.0339
+      },
+      "baseline": {
+        "调查造假强度": 1.0
+      },
+      "numerator": 1679,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 16,
+      "name": "信息录入失真",
+      "dimension": "客户经理",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "信息录入失真强度": 0.9254
+      },
+      "baseline": {
+        "信息录入失真强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 17,
+      "name": "与客户资金往来",
+      "dimension": "客户经理",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "与客户资金往来强度": 3.6
+      },
+      "baseline": {
+        "与客户资金往来强度": 1.0
+      },
+      "numerator": 128817,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 18,
+      "name": "贷后检查流于形式",
+      "dimension": "客户经理",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "贷后检查流于形式强度": 2.9
+      },
+      "baseline": {
+        "贷后检查流于形式强度": 1.0
+      },
+      "numerator": 94135,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 19,
+      "name": "管户负担过重",
+      "dimension": "客户经理",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "管户负担过重强度": 2.4
+      },
+      "baseline": {
+        "管户负担过重强度": 1.0
+      },
+      "numerator": 69363,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 20,
+      "name": "虚假经营流水",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "虚假经营流水强度": 0.8993
+      },
+      "baseline": {
+        "虚假经营流水强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 21,
+      "name": "短期资金异常",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "短期资金异常强度": 0.914
+      },
+      "baseline": {
+        "短期资金异常强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 22,
+      "name": "共用经营场所",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "共用经营场所强度": 0.8949
+      },
+      "baseline": {
+        "共用经营场所强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 23,
+      "name": "频繁试探申请",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "频繁试探申请强度": 1.1146
+      },
+      "baseline": {
+        "频繁试探申请强度": 1.0
+      },
+      "numerator": 5677,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 24,
+      "name": "押品高评高贷",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "押品高评高贷强度": 1.0203
+      },
+      "baseline": {
+        "押品高评高贷强度": 1.0
+      },
+      "numerator": 1005,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 25,
+      "name": "买壳新注册",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "买壳新注册强度": 0.8999
+      },
+      "baseline": {
+        "买壳新注册强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 26,
+      "name": "AUM不匹配",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "AUM不匹配强度": 0.9317
+      },
+      "baseline": {
+        "AUM不匹配强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 27,
+      "name": "异地风险",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "异地风险强度": 0.9997
+      },
+      "baseline": {
+        "异地风险强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 28,
+      "name": "行业性风险",
+      "dimension": "机构",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "行业性风险强度": 0.974
+      },
+      "baseline": {
+        "行业性风险强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 29,
+      "name": "地址频繁变更",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "地址频繁变更强度": 0.9553
+      },
+      "baseline": {
+        "地址频繁变更强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 30,
+      "name": "经营年限不足",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "经营年限不足强度": 0.8051
+      },
+      "baseline": {
+        "经营年限不足强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 31,
+      "name": "虚增面积收入",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "虚增面积收入强度": 1.0008
+      },
+      "baseline": {
+        "虚增面积收入强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 32,
+      "name": "多头借贷",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "多头借贷强度": 0.9043
+      },
+      "baseline": {
+        "多头借贷强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 33,
+      "name": "负债不匹配",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "负债不匹配强度": 0.9656
+      },
+      "baseline": {
+        "负债不匹配强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 34,
+      "name": "征信查询过多",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "征信查询过多强度": 1.1431
+      },
+      "baseline": {
+        "征信查询过多强度": 1.0
+      },
+      "numerator": 7089,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 35,
+      "name": "被拒贷记录",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "被拒贷记录强度": 0.961
+      },
+      "baseline": {
+        "被拒贷记录强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 36,
+      "name": "N年内不良记录",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "N年内不良记录强度": 0.9438
+      },
+      "baseline": {
+        "N年内不良记录强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 37,
+      "name": "赌博嗜好",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "赌博嗜好强度": 0.8549
+      },
+      "baseline": {
+        "赌博嗜好强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 38,
+      "name": "家庭劣变",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "家庭劣变强度": 1.1135
+      },
+      "baseline": {
+        "家庭劣变强度": 1.0
+      },
+      "numerator": 5623,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 39,
+      "name": "收入覆盖不足",
+      "dimension": "客户",
+      "stage": "贷前",
+      "status": "ok",
+      "metric": {
+        "收入覆盖不足强度": 0.81
+      },
+      "baseline": {
+        "收入覆盖不足强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 40,
+      "name": "涉税强执",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "涉税强执强度": 1.0701
+      },
+      "baseline": {
+        "涉税强执强度": 1.0
+      },
+      "numerator": 3473,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 41,
+      "name": "涉诉",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "涉诉强度": 2.2
+      },
+      "baseline": {
+        "涉诉强度": 1.0
+      },
+      "numerator": 59454,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 42,
+      "name": "资金挪用",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "资金挪用强度": 2.8
+      },
+      "baseline": {
+        "资金挪用强度": 1.0
+      },
+      "numerator": 89181,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 43,
+      "name": "风险信号未处置",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "风险信号未处置强度": 3.0
+      },
+      "baseline": {
+        "风险信号未处置强度": 1.0
+      },
+      "numerator": 99090,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 44,
+      "name": "还款行为恶化",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "还款行为恶化强度": 3.1
+      },
+      "baseline": {
+        "还款行为恶化强度": 1.0
+      },
+      "numerator": 104045,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    },
+    {
+      "feature_id": 45,
+      "name": "裸贷户",
+      "dimension": "客户",
+      "stage": "贷后",
+      "status": "ok",
+      "metric": {
+        "裸贷户强度": 0.9658
+      },
+      "baseline": {
+        "裸贷户强度": 1.0
+      },
+      "numerator": 495,
+      "denominator": 412877,
+      "note": "合成数据：metric 为倍数型强度（实测/正常水平），baseline=1.0"
+    }
+  ],
+  "warnings": []
+}

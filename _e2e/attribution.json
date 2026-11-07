@@ -1,0 +1,736 @@
+{
+  "schema_version": "3.0",
+  "generated_at": "2026-11-06T00:00:00",
+  "overall": {
+    "bal": 8640000000,
+    "npl_bal": 268000000,
+    "npl_rate": 0.03102,
+    "cnt": 156800,
+    "cust_cnt": 121400,
+    "person_cnt": 118900
+  },
+  "rules": {
+    "manual": [
+      {
+        "rule_id": "C01",
+        "name": "获客激进扩张",
+        "essence": "机构为冲规模批量获客，准入标准被稀释",
+        "source": "manual",
+        "version": 1,
+        "expr": {
+          "all_of": [
+            1,
+            2,
+            3
+          ],
+          "min_hits": 2,
+          "any_of": []
+        },
+        "cross_stage": false,
+        "stages": [
+          "贷前"
+        ],
+        "metrics": [
+          "零散客户占比均值",
+          "信用类余额占比均值",
+          "低分段(<600)占比"
+        ],
+        "evidence_hint": [
+          "dim:guarantee",
+          "dim:score",
+          "dim:org",
+          "clue:资金往来",
+          "feat:1",
+          "feat:2",
+          "feat:3"
+        ]
+      },
+      {
+        "rule_id": "C05",
+        "name": "贷后管理空转",
+        "essence": "贷后监控缺失、风险信号漏处置",
+        "source": "manual",
+        "version": 1,
+        "expr": {
+          "all_of": [
+            9,
+            18,
+            19
+          ],
+          "min_hits": 1,
+          "any_of": []
+        },
+        "cross_stage": true,
+        "stages": [
+          "贷前",
+          "贷后"
+        ],
+        "metrics": [
+          "未办结率"
+        ],
+        "evidence_hint": [
+          "feat:9",
+          "clue:逾期预警",
+          "clue_matrix:逾期预警",
+          "dim:year"
+        ]
+      },
+      {
+        "rule_id": "C06",
+        "name": "续贷接续断裂",
+        "essence": "到期续贷环节风险滚动",
+        "source": "manual",
+        "version": 1,
+        "expr": {
+          "all_of": [
+            10,
+            44
+          ],
+          "min_hits": 1,
+          "any_of": []
+        },
+        "cross_stage": true,
+        "stages": [
+          "贷后"
+        ],
+        "metrics": [
+          "无还本续贷不良率均值",
+          "平均逾期天数"
+        ],
+        "evidence_hint": [
+          "feat:10",
+          "feat:44",
+          "clue:46",
+          "clue:亲属代还"
+        ]
+      },
+      {
+        "rule_id": "C07",
+        "name": "人员道德风险",
+        "essence": "客户经理能力/尽责/道德问题",
+        "source": "manual",
+        "version": 1,
+        "expr": {
+          "all_of": [
+            11,
+            17
+          ],
+          "min_hits": 1,
+          "any_of": []
+        },
+        "cross_stage": false,
+        "stages": [
+          "贷后"
+        ],
+        "metrics": [
+          "高风险经理数",
+          "触发资金往来线索经理数"
+        ],
+        "evidence_hint": [
+          "feat:11",
+          "feat:17",
+          "clue:资金往来",
+          "clue:亲属代还",
+          "clue:49"
+        ]
+      },
+      {
+        "rule_id": "C10",
+        "name": "客户经营恶化",
+        "essence": "主业造血能力下降",
+        "source": "manual",
+        "version": 1,
+        "expr": {
+          "all_of": [
+            28,
+            29,
+            30,
+            31
+          ],
+          "min_hits": 1,
+          "any_of": []
+        },
+        "cross_stage": false,
+        "stages": [
+          "贷前"
+        ],
+        "metrics": [
+          "重点行业不良率均值"
+        ],
+        "evidence_hint": [
+          "feat:28",
+          "dim:industry",
+          "clue:交易异常"
+        ]
+      }
+    ],
+    "mined": [
+      {
+        "rule_id": "M01",
+        "name": "低分小额客群叠加信用敞口",
+        "essence": "低评分准入 + 小额高频 + 纯信用，三重弱点叠加",
+        "source": "mined",
+        "version": 1,
+        "expr": {
+          "all_of": [
+            3,
+            2
+          ],
+          "min_hits": 2,
+          "any_of": []
+        },
+        "cross_stage": false,
+        "stages": [
+          "贷前"
+        ],
+        "cohort_lift": 2.86,
+        "cohort_npl_rate": 0.0891,
+        "cohort_size": 4820,
+        "incremental_lift": 1.34,
+        "metrics": [
+          "低分段(<600)占比"
+        ],
+        "evidence_hint": [
+          "dim:score",
+          "dim:amount_band",
+          "clue:资金往来"
+        ]
+      }
+    ]
+  },
+  "insights": [
+    {
+      "rule_id": "C07",
+      "name": "人员道德风险",
+      "essence": "客户经理能力/尽责/道德问题",
+      "members": [
+        {
+          "feature_id": 11,
+          "name": "高风险客户经理",
+          "metric": {
+            "高风险经理数": 37
+          }
+        },
+        {
+          "feature_id": 17,
+          "name": "与客户资金往来",
+          "metric": {
+            "触发资金往来线索经理数": 22
+          }
+        }
+      ],
+      "hit_count": 2,
+      "member_total": 2,
+      "hit_ratio": 1.0,
+      "strength": 0.72,
+      "level": "显著",
+      "source": "manual",
+      "cross_stage": false,
+      "stages": [
+        "贷后"
+      ],
+      "cohort_lift": null,
+      "cohort_npl_rate": null,
+      "cohort_size": null,
+      "incremental_lift": null,
+      "evidence_hint": [
+        "feat:11",
+        "feat:17",
+        "clue:资金往来",
+        "clue:亲属代还",
+        "clue:49"
+      ],
+      "clues": []
+    },
+    {
+      "rule_id": "C06",
+      "name": "续贷接续断裂",
+      "essence": "到期续贷环节风险滚动",
+      "members": [
+        {
+          "feature_id": 10,
+          "name": "接续不到位",
+          "metric": {
+            "无还本续贷不良率均值": 0.0672
+          }
+        },
+        {
+          "feature_id": 44,
+          "name": "还款行为恶化",
+          "metric": {
+            "平均逾期天数": 46.2
+          }
+        }
+      ],
+      "hit_count": 2,
+      "member_total": 2,
+      "hit_ratio": 1.0,
+      "strength": 0.61,
+      "level": "显著",
+      "source": "manual",
+      "cross_stage": true,
+      "stages": [
+        "贷后"
+      ],
+      "cohort_lift": null,
+      "cohort_npl_rate": null,
+      "cohort_size": null,
+      "incremental_lift": null,
+      "evidence_hint": [
+        "feat:10",
+        "feat:44",
+        "clue:46",
+        "clue:亲属代还"
+      ],
+      "clues": []
+    },
+    {
+      "rule_id": "C05",
+      "name": "贷后管理空转",
+      "essence": "贷后监控缺失、风险信号漏处置",
+      "members": [
+        {
+          "feature_id": 9,
+          "name": "贷后管理不到位",
+          "metric": {
+            "未办结率": 0.318
+          }
+        }
+      ],
+      "hit_count": 1,
+      "member_total": 3,
+      "hit_ratio": 0.3333,
+      "strength": 0.55,
+      "level": "显著",
+      "source": "manual",
+      "cross_stage": true,
+      "stages": [
+        "贷前",
+        "贷后"
+      ],
+      "cohort_lift": null,
+      "cohort_npl_rate": null,
+      "cohort_size": null,
+      "incremental_lift": null,
+      "evidence_hint": [
+        "feat:9",
+        "clue:逾期预警",
+        "clue_matrix:逾期预警",
+        "dim:year"
+      ],
+      "clues": []
+    },
+    {
+      "rule_id": "C01",
+      "name": "获客激进扩张",
+      "essence": "机构为冲规模批量获客，准入标准被稀释",
+      "members": [
+        {
+          "feature_id": 1,
+          "name": "零散获客",
+          "metric": {
+            "零散客户占比均值": 0.412
+          }
+        },
+        {
+          "feature_id": 2,
+          "name": "无抵押缓释",
+          "metric": {
+            "信用类余额占比均值": 0.164
+          }
+        },
+        {
+          "feature_id": 3,
+          "name": "低评分准入",
+          "metric": {
+            "低分段(<600)占比": 0.0625
+          }
+        }
+      ],
+      "hit_count": 3,
+      "member_total": 3,
+      "hit_ratio": 1.0,
+      "strength": 0.48,
+      "level": "一般",
+      "source": "manual",
+      "cross_stage": false,
+      "stages": [
+        "贷前"
+      ],
+      "cohort_lift": null,
+      "cohort_npl_rate": null,
+      "cohort_size": null,
+      "incremental_lift": null,
+      "evidence_hint": [
+        "dim:guarantee",
+        "dim:score",
+        "dim:org",
+        "clue:资金往来",
+        "feat:1",
+        "feat:2",
+        "feat:3"
+      ],
+      "clues": []
+    },
+    {
+      "rule_id": "M01",
+      "name": "低分小额客群叠加信用敞口",
+      "essence": "低评分准入 + 小额高频 + 纯信用，三重弱点叠加",
+      "members": [
+        {
+          "feature_id": 3,
+          "name": "低评分准入",
+          "metric": {
+            "低分段(<600)占比": 0.0625
+          }
+        },
+        {
+          "feature_id": 2,
+          "name": "无抵押缓释",
+          "metric": {
+            "信用类余额占比均值": 0.164
+          }
+        }
+      ],
+      "hit_count": 2,
+      "member_total": 2,
+      "hit_ratio": 1.0,
+      "strength": 0.41,
+      "level": "一般",
+      "source": "mined",
+      "cross_stage": false,
+      "stages": [
+        "贷前"
+      ],
+      "cohort_lift": 2.86,
+      "cohort_npl_rate": 0.0891,
+      "cohort_size": 4820,
+      "incremental_lift": 1.34,
+      "evidence_hint": [
+        "dim:score",
+        "dim:amount_band",
+        "clue:资金往来"
+      ],
+      "clues": []
+    },
+    {
+      "rule_id": "C10",
+      "name": "客户经营恶化",
+      "essence": "主业造血能力下降",
+      "members": [
+        {
+          "feature_id": 28,
+          "name": "行业性风险",
+          "metric": {
+            "重点行业不良率均值": 0.0606
+          }
+        }
+      ],
+      "hit_count": 1,
+      "member_total": 4,
+      "hit_ratio": 0.25,
+      "strength": 0.31,
+      "level": "一般",
+      "source": "manual",
+      "cross_stage": false,
+      "stages": [
+        "贷前"
+      ],
+      "cohort_lift": null,
+      "cohort_npl_rate": null,
+      "cohort_size": null,
+      "incremental_lift": null,
+      "evidence_hint": [
+        "feat:28",
+        "dim:industry",
+        "clue:交易异常"
+      ],
+      "clues": []
+    }
+  ],
+  "strong_insights": [
+    {
+      "rule_id": "C07",
+      "name": "人员道德风险",
+      "essence": "客户经理能力/尽责/道德问题",
+      "members": [
+        {
+          "feature_id": 11,
+          "name": "高风险客户经理",
+          "metric": {
+            "高风险经理数": 37
+          }
+        },
+        {
+          "feature_id": 17,
+          "name": "与客户资金往来",
+          "metric": {
+            "触发资金往来线索经理数": 22
+          }
+        }
+      ],
+      "hit_count": 2,
+      "member_total": 2,
+      "hit_ratio": 1.0,
+      "strength": 0.72,
+      "level": "显著",
+      "source": "manual",
+      "cross_stage": false,
+      "stages": [
+        "贷后"
+      ],
+      "cohort_lift": null,
+      "cohort_npl_rate": null,
+      "cohort_size": null,
+      "incremental_lift": null,
+      "evidence_hint": [
+        "feat:11",
+        "feat:17",
+        "clue:资金往来",
+        "clue:亲属代还",
+        "clue:49"
+      ],
+      "clues": []
+    },
+    {
+      "rule_id": "C06",
+      "name": "续贷接续断裂",
+      "essence": "到期续贷环节风险滚动",
+      "members": [
+        {
+          "feature_id": 10,
+          "name": "接续不到位",
+          "metric": {
+            "无还本续贷不良率均值": 0.0672
+          }
+        },
+        {
+          "feature_id": 44,
+          "name": "还款行为恶化",
+          "metric": {
+            "平均逾期天数": 46.2
+          }
+        }
+      ],
+      "hit_count": 2,
+      "member_total": 2,
+      "hit_ratio": 1.0,
+      "strength": 0.61,
+      "level": "显著",
+      "source": "manual",
+      "cross_stage": true,
+      "stages": [
+        "贷后"
+      ],
+      "cohort_lift": null,
+      "cohort_npl_rate": null,
+      "cohort_size": null,
+      "incremental_lift": null,
+      "evidence_hint": [
+        "feat:10",
+        "feat:44",
+        "clue:46",
+        "clue:亲属代还"
+      ],
+      "clues": []
+    },
+    {
+      "rule_id": "C05",
+      "name": "贷后管理空转",
+      "essence": "贷后监控缺失、风险信号漏处置",
+      "members": [
+        {
+          "feature_id": 9,
+          "name": "贷后管理不到位",
+          "metric": {
+            "未办结率": 0.318
+          }
+        }
+      ],
+      "hit_count": 1,
+      "member_total": 3,
+      "hit_ratio": 0.3333,
+      "strength": 0.55,
+      "level": "显著",
+      "source": "manual",
+      "cross_stage": true,
+      "stages": [
+        "贷前",
+        "贷后"
+      ],
+      "cohort_lift": null,
+      "cohort_npl_rate": null,
+      "cohort_size": null,
+      "incremental_lift": null,
+      "evidence_hint": [
+        "feat:9",
+        "clue:逾期预警",
+        "clue_matrix:逾期预警",
+        "dim:year"
+      ],
+      "clues": []
+    },
+    {
+      "rule_id": "C01",
+      "name": "获客激进扩张",
+      "essence": "机构为冲规模批量获客，准入标准被稀释",
+      "members": [
+        {
+          "feature_id": 1,
+          "name": "零散获客",
+          "metric": {
+            "零散客户占比均值": 0.412
+          }
+        },
+        {
+          "feature_id": 2,
+          "name": "无抵押缓释",
+          "metric": {
+            "信用类余额占比均值": 0.164
+          }
+        },
+        {
+          "feature_id": 3,
+          "name": "低评分准入",
+          "metric": {
+            "低分段(<600)占比": 0.0625
+          }
+        }
+      ],
+      "hit_count": 3,
+      "member_total": 3,
+      "hit_ratio": 1.0,
+      "strength": 0.48,
+      "level": "一般",
+      "source": "manual",
+      "cross_stage": false,
+      "stages": [
+        "贷前"
+      ],
+      "cohort_lift": null,
+      "cohort_npl_rate": null,
+      "cohort_size": null,
+      "incremental_lift": null,
+      "evidence_hint": [
+        "dim:guarantee",
+        "dim:score",
+        "dim:org",
+        "clue:资金往来",
+        "feat:1",
+        "feat:2",
+        "feat:3"
+      ],
+      "clues": []
+    },
+    {
+      "rule_id": "M01",
+      "name": "低分小额客群叠加信用敞口",
+      "essence": "低评分准入 + 小额高频 + 纯信用，三重弱点叠加",
+      "members": [
+        {
+          "feature_id": 3,
+          "name": "低评分准入",
+          "metric": {
+            "低分段(<600)占比": 0.0625
+          }
+        },
+        {
+          "feature_id": 2,
+          "name": "无抵押缓释",
+          "metric": {
+            "信用类余额占比均值": 0.164
+          }
+        }
+      ],
+      "hit_count": 2,
+      "member_total": 2,
+      "hit_ratio": 1.0,
+      "strength": 0.41,
+      "level": "一般",
+      "source": "mined",
+      "cross_stage": false,
+      "stages": [
+        "贷前"
+      ],
+      "cohort_lift": 2.86,
+      "cohort_npl_rate": 0.0891,
+      "cohort_size": 4820,
+      "incremental_lift": 1.34,
+      "evidence_hint": [
+        "dim:score",
+        "dim:amount_band",
+        "clue:资金往来"
+      ],
+      "clues": []
+    },
+    {
+      "rule_id": "C10",
+      "name": "客户经营恶化",
+      "essence": "主业造血能力下降",
+      "members": [
+        {
+          "feature_id": 28,
+          "name": "行业性风险",
+          "metric": {
+            "重点行业不良率均值": 0.0606
+          }
+        }
+      ],
+      "hit_count": 1,
+      "member_total": 4,
+      "hit_ratio": 0.25,
+      "strength": 0.31,
+      "level": "一般",
+      "source": "manual",
+      "cross_stage": false,
+      "stages": [
+        "贷前"
+      ],
+      "cohort_lift": null,
+      "cohort_npl_rate": null,
+      "cohort_size": null,
+      "incremental_lift": null,
+      "evidence_hint": [
+        "feat:28",
+        "dim:industry",
+        "clue:交易异常"
+      ],
+      "clues": []
+    }
+  ],
+  "top": {
+    "org": [
+      {
+        "rank": 1,
+        "group": "县域机构A",
+        "bal": 1240000000,
+        "npl_bal": 61200000,
+        "npl_rate": 0.0494,
+        "cnt": 21400
+      },
+      {
+        "rank": 2,
+        "group": "县域机构C",
+        "bal": 2900000000,
+        "npl_bal": 82700000,
+        "npl_rate": 0.0285,
+        "cnt": 48900
+      }
+    ],
+    "mgr": [
+      {
+        "rank": 1,
+        "group": "客户经理(编号已脱敏)",
+        "bal": 42000000,
+        "npl_bal": 8600000,
+        "npl_rate": 0.2048,
+        "cnt": 780
+      }
+    ],
+    "breed": []
+  },
+  "actions": [],
+  "warnings": [
+    "合成样例数据（--selftest）"
+  ]
+}

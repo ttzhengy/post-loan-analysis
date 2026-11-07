@@ -1,0 +1,166 @@
+{
+  "schema_version": "3.0",
+  "kind": "drill_plan",
+  "origin": "degrade",
+  "generated_at": "2026-11-06T22:04:32",
+  "note": "无 LLM 返回时由规则 evidence_hint 自动生成的默认钻取计划；hypothesis 带 [降级模板] 前缀，下游 narrative 据此选用数据驱动措辞。",
+  "plans": [
+    {
+      "plan_id": "P001",
+      "topic_hint": "人员道德风险的风险集中在哪类合同",
+      "linked_rule": "C07",
+      "hypothesis": "[降级模板] 高风险客户经理、与客户资金往来 同时命中的线索（C07）背后，其风险集中在「单笔 5 万元以下小额度凭证」这一类合同上：这类合同的不良率应显著高于其余合同，并在「资金往来、亲属代还」线索上表现突出；若两者差异不足 1.5 倍，则该线索只是全辖共有的风险，不具备独立管理价值。（线索矩阵：资金往来 线索内不良占比 19.25%，lift 6.2）",
+      "mechanism": "（降级）由引擎证据入口 feat:11/feat:17/clue:资金往来/clue:亲属代还 推导，未做语义深挖；待 LLM 接入后替换为机制句子。",
+      "falsify_if": "命中组与对照组不良率差异 < 1.5 倍，或任一组合样本 < 30",
+      "priority": 1,
+      "origin": "degrade_from_rule",
+      "evidence_hint_used": [
+        "feat:11",
+        "feat:17",
+        "clue:资金往来",
+        "clue:亲属代还",
+        "clue:49"
+      ],
+      "steps": [
+        {
+          "step_id": "P001-S1",
+          "intent": "取「单笔 5 万元以下小额度凭证」命中组 vs 其余客群的客户数与不良率",
+          "group": "hit",
+          "tables": [
+            "G_00PF_PEAS_LN_VCH_DV"
+          ],
+          "sql": "SELECT 'hit' AS grp, COUNT(DISTINCT CUST_NO) AS n,\n       SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5') THEN 1 ELSE 0 END) AS npl_cnt,\n       SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5') THEN CAST(FORM_BAL_RMB AS DOUBLE) ELSE 0 END) / NULLIF(SUM(CAST(FORM_BAL_RMB AS DOUBLE)),0) AS npl_rate\nFROM G_00PF_PEAS_LN_VCH_DV\nWHERE DATA_DAT = '20260831' AND BUS_BREED_CD LIKE 'A70%'\n  AND (CAST(RSK_CLS_CD AS VARCHAR) IS NOT NULL AND CAST(FORM_BAL_RMB AS DOUBLE) < 50000)",
+          "expect": "命中组不良率应 ≥ 全辖平均的 1.5 倍"
+        },
+        {
+          "step_id": "P001-S2",
+          "intent": "取「单笔 5 万元以下小额度凭证」之外的对照客群客户数与不良率",
+          "group": "nonhit",
+          "tables": [
+            "G_00PF_PEAS_LN_VCH_DV"
+          ],
+          "sql": "SELECT 'nonhit' AS grp, COUNT(DISTINCT CUST_NO) AS n,\n       SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5') THEN 1 ELSE 0 END) AS npl_cnt,\n       SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5') THEN CAST(FORM_BAL_RMB AS DOUBLE) ELSE 0 END) / NULLIF(SUM(CAST(FORM_BAL_RMB AS DOUBLE)),0) AS npl_rate\nFROM G_00PF_PEAS_LN_VCH_DV\nWHERE DATA_DAT = '20260831' AND BUS_BREED_CD LIKE 'A70%'\n  AND NOT (CAST(RSK_CLS_CD AS VARCHAR) IS NOT NULL AND CAST(FORM_BAL_RMB AS DOUBLE) < 50000)",
+          "expect": "对照组不良率应接近全辖平均"
+        }
+      ]
+    },
+    {
+      "plan_id": "P002",
+      "topic_hint": "续贷接续断裂的风险集中在哪类合同",
+      "linked_rule": "C06",
+      "hypothesis": "[降级模板] 接续不到位、还款行为恶化 同时命中的线索（C06）背后，其风险集中在「单笔 5 万元以下小额度凭证」这一类合同上：这类合同的不良率应显著高于其余合同，并在「46、亲属代还」线索上表现突出；若两者差异不足 1.5 倍，则该线索只是全辖共有的风险，不具备独立管理价值。",
+      "mechanism": "（降级）由引擎证据入口 feat:10/feat:44/clue:46/clue:亲属代还 推导，未做语义深挖；待 LLM 接入后替换为机制句子。",
+      "falsify_if": "命中组与对照组不良率差异 < 1.5 倍，或任一组合样本 < 30",
+      "priority": 2,
+      "origin": "degrade_from_rule",
+      "evidence_hint_used": [
+        "feat:10",
+        "feat:44",
+        "clue:46",
+        "clue:亲属代还"
+      ],
+      "steps": [
+        {
+          "step_id": "P002-S1",
+          "intent": "取「单笔 5 万元以下小额度凭证」命中组 vs 其余客群的客户数与不良率",
+          "group": "hit",
+          "tables": [
+            "G_00PF_PEAS_LN_VCH_DV"
+          ],
+          "sql": "SELECT 'hit' AS grp, COUNT(DISTINCT CUST_NO) AS n,\n       SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5') THEN 1 ELSE 0 END) AS npl_cnt,\n       SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5') THEN CAST(FORM_BAL_RMB AS DOUBLE) ELSE 0 END) / NULLIF(SUM(CAST(FORM_BAL_RMB AS DOUBLE)),0) AS npl_rate\nFROM G_00PF_PEAS_LN_VCH_DV\nWHERE DATA_DAT = '20260831' AND BUS_BREED_CD LIKE 'A70%'\n  AND (CAST(RSK_CLS_CD AS VARCHAR) IS NOT NULL AND CAST(FORM_BAL_RMB AS DOUBLE) < 50000)",
+          "expect": "命中组不良率应 ≥ 全辖平均的 1.5 倍"
+        },
+        {
+          "step_id": "P002-S2",
+          "intent": "取「单笔 5 万元以下小额度凭证」之外的对照客群客户数与不良率",
+          "group": "nonhit",
+          "tables": [
+            "G_00PF_PEAS_LN_VCH_DV"
+          ],
+          "sql": "SELECT 'nonhit' AS grp, COUNT(DISTINCT CUST_NO) AS n,\n       SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5') THEN 1 ELSE 0 END) AS npl_cnt,\n       SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5') THEN CAST(FORM_BAL_RMB AS DOUBLE) ELSE 0 END) / NULLIF(SUM(CAST(FORM_BAL_RMB AS DOUBLE)),0) AS npl_rate\nFROM G_00PF_PEAS_LN_VCH_DV\nWHERE DATA_DAT = '20260831' AND BUS_BREED_CD LIKE 'A70%'\n  AND NOT (CAST(RSK_CLS_CD AS VARCHAR) IS NOT NULL AND CAST(FORM_BAL_RMB AS DOUBLE) < 50000)",
+          "expect": "对照组不良率应接近全辖平均"
+        }
+      ]
+    },
+    {
+      "plan_id": "P003",
+      "topic_hint": "贷后管理空转的风险集中在哪类合同",
+      "linked_rule": "C05",
+      "hypothesis": "[降级模板] 贷后管理不到位 同时命中的线索（C05）背后，其风险集中在「2023 年及以前的存量凭证」这一类合同上：这类合同的不良率应显著高于其余合同，并在「逾期预警」线索上表现突出；若两者差异不足 1.5 倍，则该线索只是全辖共有的风险，不具备独立管理价值。（线索矩阵：逾期预警 线索内不良占比 4.35%，lift 1.4）",
+      "mechanism": "（降级）由引擎证据入口 feat:9/clue:逾期预警/clue_matrix:逾期预警/dim:year 推导，未做语义深挖；待 LLM 接入后替换为机制句子。",
+      "falsify_if": "命中组与对照组不良率差异 < 1.5 倍，或任一组合样本 < 30",
+      "priority": 3,
+      "origin": "degrade_from_rule",
+      "evidence_hint_used": [
+        "feat:9",
+        "clue:逾期预警",
+        "clue_matrix:逾期预警",
+        "dim:year"
+      ],
+      "steps": [
+        {
+          "step_id": "P003-S1",
+          "intent": "取「2023 年及以前的存量凭证」命中组 vs 其余客群的客户数与不良率",
+          "group": "hit",
+          "tables": [
+            "G_00PF_PEAS_LN_VCH_DV"
+          ],
+          "sql": "SELECT 'hit' AS grp, COUNT(DISTINCT CUST_NO) AS n,\n       SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5') THEN 1 ELSE 0 END) AS npl_cnt,\n       SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5') THEN CAST(FORM_BAL_RMB AS DOUBLE) ELSE 0 END) / NULLIF(SUM(CAST(FORM_BAL_RMB AS DOUBLE)),0) AS npl_rate\nFROM G_00PF_PEAS_LN_VCH_DV\nWHERE DATA_DAT = '20260831' AND BUS_BREED_CD LIKE 'A70%'\n  AND (substr(LN_DAT,1,4) <= '2023')",
+          "expect": "命中组不良率应 ≥ 全辖平均的 1.5 倍"
+        },
+        {
+          "step_id": "P003-S2",
+          "intent": "取「2023 年及以前的存量凭证」之外的对照客群客户数与不良率",
+          "group": "nonhit",
+          "tables": [
+            "G_00PF_PEAS_LN_VCH_DV"
+          ],
+          "sql": "SELECT 'nonhit' AS grp, COUNT(DISTINCT CUST_NO) AS n,\n       SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5') THEN 1 ELSE 0 END) AS npl_cnt,\n       SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5') THEN CAST(FORM_BAL_RMB AS DOUBLE) ELSE 0 END) / NULLIF(SUM(CAST(FORM_BAL_RMB AS DOUBLE)),0) AS npl_rate\nFROM G_00PF_PEAS_LN_VCH_DV\nWHERE DATA_DAT = '20260831' AND BUS_BREED_CD LIKE 'A70%'\n  AND NOT (substr(LN_DAT,1,4) <= '2023')",
+          "expect": "对照组不良率应接近全辖平均"
+        }
+      ]
+    },
+    {
+      "plan_id": "P004",
+      "topic_hint": "获客激进扩张的风险集中在哪类合同",
+      "linked_rule": "C01",
+      "hypothesis": "[降级模板] 零散获客、无抵押缓释、低评分准入 同时命中的线索（C01）背后，其风险集中在「纯信用（GRTE_MOD_CD=0100）」这一类合同上：这类合同的不良率应显著高于其余合同，并在「资金往来」线索上表现突出；若两者差异不足 1.5 倍，则该线索只是全辖共有的风险，不具备独立管理价值。（线索矩阵：资金往来 线索内不良占比 19.25%，lift 6.2）",
+      "mechanism": "（降级）由引擎证据入口 dim:guarantee/dim:score/dim:org/clue:资金往来 推导，未做语义深挖；待 LLM 接入后替换为机制句子。",
+      "falsify_if": "命中组与对照组不良率差异 < 1.5 倍，或任一组合样本 < 30",
+      "priority": 4,
+      "origin": "degrade_from_rule",
+      "evidence_hint_used": [
+        "dim:guarantee",
+        "dim:score",
+        "dim:org",
+        "clue:资金往来",
+        "feat:1",
+        "feat:2",
+        "feat:3"
+      ],
+      "steps": [
+        {
+          "step_id": "P004-S1",
+          "intent": "取「纯信用（GRTE_MOD_CD=0100）」命中组 vs 其余客群的客户数与不良率",
+          "group": "hit",
+          "tables": [
+            "G_00PF_PEAS_LN_VCH_DV"
+          ],
+          "sql": "SELECT 'hit' AS grp, COUNT(DISTINCT CUST_NO) AS n,\n       SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5') THEN 1 ELSE 0 END) AS npl_cnt,\n       SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5') THEN CAST(FORM_BAL_RMB AS DOUBLE) ELSE 0 END) / NULLIF(SUM(CAST(FORM_BAL_RMB AS DOUBLE)),0) AS npl_rate\nFROM G_00PF_PEAS_LN_VCH_DV\nWHERE DATA_DAT = '20260831' AND BUS_BREED_CD LIKE 'A70%'\n  AND (GRTE_MOD_CD = '0100')",
+          "expect": "命中组不良率应 ≥ 全辖平均的 1.5 倍"
+        },
+        {
+          "step_id": "P004-S2",
+          "intent": "取「纯信用（GRTE_MOD_CD=0100）」之外的对照客群客户数与不良率",
+          "group": "nonhit",
+          "tables": [
+            "G_00PF_PEAS_LN_VCH_DV"
+          ],
+          "sql": "SELECT 'nonhit' AS grp, COUNT(DISTINCT CUST_NO) AS n,\n       SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5') THEN 1 ELSE 0 END) AS npl_cnt,\n       SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5') THEN CAST(FORM_BAL_RMB AS DOUBLE) ELSE 0 END) / NULLIF(SUM(CAST(FORM_BAL_RMB AS DOUBLE)),0) AS npl_rate\nFROM G_00PF_PEAS_LN_VCH_DV\nWHERE DATA_DAT = '20260831' AND BUS_BREED_CD LIKE 'A70%'\n  AND NOT (GRTE_MOD_CD = '0100')",
+          "expect": "对照组不良率应接近全辖平均"
+        }
+      ]
+    }
+  ],
+  "warnings": []
+}
