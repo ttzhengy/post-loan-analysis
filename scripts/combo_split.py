@@ -402,11 +402,20 @@ def split_sql(conds, slice_v, table=TABLE, level="vch", base_slice=None):
 
 
 def single_sql(cond, slice_v, table=TABLE, level="vch", base_slice=None):
-    """单条件 → 客户级 hit / universe 两行（用于「组合 vs 单条件」增量检验）"""
-    body = "\nUNION ALL\n".join([_agg("hit", "hit_flag = 1"), _agg("universe")])
+    """单条件 → 客户级 hit / nonhit / universe 三行。
+
+    必须带 nonhit：screen() 需要三组才能做口径自洽校验（hit+nonhit=universe）
+    与显著性检验。之前只给 hit / universe 两组，导致单条件在 screen 里
+    一律因「缺少分组结果」判 insufficient —— 单条件现象通道等于没接通。
+    """
+    body = "\nUNION ALL\n".join([
+        _agg("hit", "hit_flag = 1"),
+        _agg("nonhit", "hit_flag = 0"),
+        _agg("universe"),
+    ])
     return (_cte([cond], slice_v, table, level, base_slice)
             + "SELECT * FROM (\n" + body + "\n) t\n"
-            + "ORDER BY CASE grp WHEN 'hit' THEN 1 ELSE 2 END")
+            + "ORDER BY CASE grp WHEN 'hit' THEN 1 WHEN 'nonhit' THEN 2 ELSE 3 END")
 
 
 # ============================================================ 现象成立性判定
@@ -418,6 +427,9 @@ DEFAULT_SCREEN = {
     "singleton_margin": 1.15,  # 组合 lift 应至少比最强单条件 lift 高 15%
     "nonhit_max_lift": 1.3,    # 对照组的 lift 上限，太高说明条件不具区分性
     "max_p_value": 0.05,       # 与基准组差异的双侧检验 p 值上限
+    # 命中组占比超过此值时，全辖已被命中组自身拉高，不能再作基线。
+    # 此时改用非命中组 —— 换对照组，不是降门槛。
+    "share_baseline_max": 0.25,
 }
 
 
@@ -451,7 +463,8 @@ def _z_test_two_prop(p1, n1, p2, n2):
     return round(math.erfc(abs(z) / math.sqrt(2)), 6)
 
 
-def screen(hit, nonhit, universe, singles, cfg=None, level="vch", parent=None):
+def screen(hit, nonhit, universe, singles, cfg=None, level="vch", parent=None,
+           is_single=False):
     """判定「这是不是一个真正的风险现象」。
 
     返回 status ∈ {phenomenon, weak_phenomenon, insufficient, broken}
@@ -497,12 +510,25 @@ def screen(hit, nonhit, universe, singles, cfg=None, level="vch", parent=None):
     uni_lift = hit_rate / uni_rate if uni_rate else None
     share = uh / uu
 
-    # 父群基线：优先用父群，否则退回全辖
+    # 基线选择：父群 > 非命中组（大占比时）> 全辖
+    #
+    # 为什么不能无条件用全辖
+    # ---------------------
+    # 全辖 = 命中组 + 非命中组。当命中组占比很高时，全辖率被命中组自己拉高，
+    # lift 变成「自己比自己」，必然趋近 1。实测过一个占比 38.9% 的客群：
+    # 命中组 7.45%、非命中组 1.83%（真实差距 4.08 倍），但相对全辖只有 1.50 倍，
+    # 恰好卡在门槛上被判 weak_phenomenon。这不是「没有风险」，是**基线选错**。
+    # 命中组占比超过 share_baseline_max 时，全辖已不可作为对照，
+    # 改用非命中组 —— 换的是正确的对照组，不是调低门槛。
     par_n = _num((parent or {}).get("n"))
     par_rate = _num((parent or {}).get("npl_rate"))
     use_parent = bool(par_n and par_rate and par_n > 0)
+    share = uh / uu if uu else 0
     if use_parent:
         base_rate, base_n, base_name = par_rate, par_n, "父群"
+    elif share > cfg["share_baseline_max"] and non_rate:
+        # 命中组占比过高，全辖被自身污染，退到非命中组做基线
+        base_rate, base_n, base_name = non_rate, un, "非命中组"
     else:
         base_rate, base_n, base_name = uni_rate, uu, "全辖"
     base_lift = (hit_rate / base_rate) if base_rate else None
@@ -521,11 +547,21 @@ def screen(hit, nonhit, universe, singles, cfg=None, level="vch", parent=None):
         r = _num((s.get("hit") or {}).get("npl_rate"))
         ur = _num((s.get("universe") or {}).get("npl_rate")) or uni_rate
         if r is not None and ur:
-            single_lifts.append({"feature_id": s.get("feature_id"), "name": s.get("name"),
-                                 "cond": s.get("cond"), "lift": r / ur, "n": (s.get("hit") or {}).get("n")})
+            # 单条件 lift 必须用与组合**相同**的基线口径，否则「增量」是两个
+            # 不同分母的比值，毫无意义。实测：组合用非命中组算出 4.08 倍，
+            # 单条件却用全辖算出 1.50 倍，增量算成 1.00，于是把一个真实
+            # 4 倍差距的现象判成「叠加没有增量」。
+            single_lifts.append({
+                "feature_id": s.get("feature_id"), "name": s.get("name"),
+                "cond": s.get("cond"),
+                "lift": r / base_rate if base_rate else None,
+                "lift_vs_universe": r / ur,
+                "n": (s.get("hit") or {}).get("n")})
     single_lifts.sort(key=lambda x: -(x["lift"] or 0))
     best_single = single_lifts[0] if single_lifts else None
-    incremental = (uni_lift / best_single["lift"]) if best_single and best_single["lift"] else None
+    # 同一口径下比较组合 vs 最强单条件
+    incremental = (base_lift / best_single["lift"]
+                   if (best_single and best_single["lift"] and base_lift) else None)
 
     metrics = {
         "level": level,
@@ -558,11 +594,16 @@ def screen(hit, nonhit, universe, singles, cfg=None, level="vch", parent=None):
                                              f"{base_lift:.2f} 倍，低于门槛 {cfg['lift_floor']}，"
                                              f"不构成独立风险现象"}
     if incremental is not None and best_single and incremental < cfg["singleton_margin"]:
-        return "weak_phenomenon", {**metrics,
-                                   "reason": f"组合 lift {uni_lift:.2f} 仅为最强单条件"
-                                             f"「{best_single['name']}」({best_single['lift']:.2f}) 的 "
-                                             f"{incremental:.2f} 倍，叠加没有带来增量，"
-                                             f"该现象由单条件主导，不成立为组合现象"}
+        # 只有真正的组合才做「组合 vs 单条件」增量检验。
+        # 单条件候选拿自己跟自己比，增量恒为 1.0，必然被判「没有增量」，
+        # 那会让「自身强度达标」的单条件永远出不来。用 is_single 显式区分，
+        # 不靠 singles 的长度猜（可能是两成员但其中一个冗余）。
+        if not is_single:
+            return "weak_phenomenon", {**metrics,
+                                       "reason": f"组合相对{base_name}的 lift {base_lift:.2f} 仅为最强单条件"
+                                                 f"「{best_single['name']}」({best_single['lift']:.2f}) 的 "
+                                                 f"{incremental:.2f} 倍，叠加没有带来增量，"
+                                                 f"该现象由单条件主导，不成立为组合现象"}
     return "phenomenon", metrics
 
 
@@ -838,16 +879,21 @@ def main():
         return {r[0]: dict(zip(cols, r)) for r in rws}
 
     passed = []
+    single_candidates = {}   # feature_id → 已算过的单条件结果，避免重复取数
     for c in cands:
         sql = split_sql(c["conds"], args.slice, level=args.level, base_slice=args.base_slice)
         c["sql"] = sql
         groups = _q(sql)   # {grp: row-dict}
         singles = []
         for f in c["features"]:
-            sg = _q(single_sql(f["cond"], args.slice, level=args.level,
-                               base_slice=args.base_slice))
+            sg = single_candidates.get(f["feature_id"])
+            if sg is None:
+                sg = _q(single_sql(f["cond"], args.slice, level=args.level,
+                                   base_slice=args.base_slice))
+                single_candidates[f["feature_id"]] = sg
             singles.append({"feature_id": f["feature_id"], "name": f["name"],
-                            "cond": f["cond"], "hit": sg.get("hit"), "universe": sg.get("universe")})
+                            "cond": f["cond"], "hit": sg.get("hit"),
+                            "nonhit": sg.get("nonhit"), "universe": sg.get("universe")})
         # 父群基线：去掉最后一个条件后的客群（组合 size>=2 才有意义）。
         # 「接续贷 + 循环额度」该跟「接续贷」比，而不是跟全辖比 ——
         # 全辖率是混合群体的加权结果，会把子群差异稀释掉。
@@ -866,6 +912,49 @@ def main():
         c.update({"status": status, "metrics": metrics})
         if status == "phenomenon":
             passed.append(c)
+
+    # ---------------- 单条件现象通道 ----------------
+    # 为什么需要这一段
+    # --------------
+    # 候选池只有 2 阶和 3 阶组合，**没有任何单条件候选**。于是出现这种情况：
+    # 单条件「纯信用且≥50万」自身就有 4 倍强度，但它只能作为某个组合的成员
+    # 出现；而组合一旦包含一个冗余条件（如「余额≥30万」被「≥50万」蕴含），
+    # incremental_lift 就等于 1.0，被判「叠加无增量，由单条件主导」而否决。
+    # 结果是：**越强的单条件，越容易被判成「没有组合增量」，越出不来**。
+    # 这不是筛选严格，是把真实风险挡在门外。单条件强度达标时也应作为现象成立。
+    covered = {tuple(sorted(f["feature_id"] for f in c["features"])) for c in passed}
+    for fid, sg in single_candidates.items():
+        if (fid,) in covered:
+            continue
+        name, cond = None, None
+        for cc in cands:
+            for f in cc["features"]:
+                if f["feature_id"] == fid:
+                    name, cond = f["name"], f["cond"]
+                    break
+            if name:
+                break
+        if not cond:
+            continue
+        try:
+            st, m = screen(sg.get("hit"), sg.get("nonhit"), sg.get("universe"),
+                           [{"feature_id": fid, "name": name, "cond": cond,
+                             "hit": sg.get("hit"), "nonhit": sg.get("nonhit"),
+                             "universe": sg.get("universe")}],
+                           level=args.level, is_single=True)
+        except Exception:
+            continue
+        if st != "phenomenon":
+            continue
+        # 单条件没有「组合增量」一说，把口径标明，避免下游误读成组合现象
+        m = {**m, "phenomenon_kind": "single",
+             "reason": f"单条件自身{('生成率' if args.level == 'chg' else '不良率')} "
+                       f"即达门槛，不依赖组合叠加"}
+        passed.append({"features": [{"feature_id": fid, "name": name, "cond": cond}],
+                       "conds": [cond], "combo_size": 1,
+                       "sql": single_sql(cond, args.slice, level=args.level,
+                                         base_slice=args.base_slice),
+                       "status": "phenomenon", "metrics": m})
 
     passed.sort(key=lambda x: -((x["metrics"] or {}).get("lift_vs_baseline")
                                 or (x["metrics"] or {}).get("lift_vs_universe") or 0))
