@@ -150,6 +150,18 @@ def main():
         args += ["--data-dir", data_dir]
     run(args, cwd=out)
 
+    step("S2c bounded_search（确定性有界搜索）")
+    log("   反馈式选题：先单维扫描，只对显著维度做交叉，不再盲目枚举全组合。")
+    log("   查询次数有硬预算上限；预算耗尽会如实告警「未查完 ≠ 无风险」。")
+    if execute and base_slice:
+        bs_args = [py, SCRIPTS / "bounded_search.py",
+                   "--signals", "signals.json", "--slice", slice_v,
+                   "--level", level, "--base-slice", base_slice,
+                   "--data-dir", data_dir, "--out", "bounded_search.json"]
+        run(bs_args, cwd=out)
+    else:
+        log("   跳过：未设 DATA_DIR / 缺 BASE_SLICE")
+
     step("S3 attribution")
     run([py, SCRIPTS / "attribution.py", "--signals", "signals.json",
          "--rules", RULES, "--out", "attribution.json"], cwd=out, critical=True)

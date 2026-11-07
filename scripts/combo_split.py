@@ -609,6 +609,86 @@ def screen(hit, nonhit, universe, singles, cfg=None, level="vch", parent=None,
 
 # ============================================================ 组合生成
 
+def conds_subsumed(conds):
+    """判断组合里是否存在条件蕴含（一条完全包含另一条）。
+
+    为什么必须判
+    ------------
+    「纯信用且余额≥50万」(13) 与「余额≥30万」(7) 求交后**等于 13 本身** ——
+    7 被 13 完全蕴含。这类组合送进库白跑一遍，拿回的数字与 13 完全相同，
+    然后被判「叠加无增量」，看起来像发现了什么，其实只是重复计算。
+
+    实测（planted 夹具）：13+7 与 13+2 的 hit_n 都恰好等于 13 单独的 20247，
+    lift 恒为 1.00，白白消耗 4 次查询。
+
+    判定方式：同字段上的阈值型条件（>= / > / <= / <）比较边界；
+    若一条的可行域包含另一条，则后者冗余。
+    只做同字段单条件的包含判断，不做通用布尔求解。
+    """
+    import re
+    by_field = {}
+
+    def _atoms(c):
+        """把条件拆成若干原子约束 (字段, 算子, 值)。
+
+        复合条件「A = '1' AND X >= 5」必须拆开逐个记，否则只取到第一个约束，
+        「13 包含 7」这类蕴含就识别不出来。
+        字段名允许被 TRY_CAST(...AS DOUBLE) 包裹。
+        """
+        out = []
+        # 阈值约束要处理两种写法：
+        #   X >= 5                           → 直接匹配
+        #   TRY_CAST(X AS DOUBLE) >= 5       → 字段名被 CAST 包裹
+        for m in re.finditer(r"CAST\s*\(\s*([A-Z_]+)\s+AS\s+[A-Z_]+[^)]*\)\s*"
+                             r"(>=|<=|!=|>|<)\s*([0-9.]+)", c.upper()):
+            out.append((m.group(1), m.group(2), float(m.group(3))))
+        stripped = re.sub(r"CAST\s*\(\s*[A-Z_]+\s+AS\s+[A-Z_]+[^)]*\)", " ", c.upper())
+        for m in re.finditer(r"([A-Z_]+)\s*(>=|<=|!=|>|<)\s*([0-9.]+)", stripped):
+            out.append((m.group(1), m.group(2), float(m.group(3))))
+        for m in re.finditer(r"([A-Z_]+)\s*(?:=\s*'([^']*)'|(\bIN\b)\s*\(([^)]+)\))",
+                             c.upper()):
+            if m.group(2) is not None:
+                out.append((m.group(1), "=", m.group(2)))
+            elif m.group(3):
+                vals = tuple(v.strip().strip("'") for v in m.group(4).split(","))
+                out.append((m.group(1), "IN", vals))
+        return out
+
+    atoms = [(c, a) for c in conds for a in _atoms(c)]
+    for _c, (f, op, v) in atoms:
+        by_field.setdefault(f, []).append((op, v, _c))
+
+    for _f, items in by_field.items():
+        if len(items) < 2:
+            continue
+        for i, (op1, v1, c1) in enumerate(items):
+            for j, (op2, v2, c2) in enumerate(items):
+                if i == j or c1 == c2:
+                    continue
+                if op1 == "=" and op2 == "=":
+                    if v1 == v2:
+                        return True, "两条条件含相同字段取值约束，后者冗余"
+                    continue
+                if op1 == "IN" and op2 == "IN":
+                    if isinstance(v1, tuple) and isinstance(v2, tuple) and set(v2) <= set(v1):
+                        return True, f"条件「{c2}」的取值集合被「{c1}」包含"
+                    continue
+                if op1 == "IN" and op2 == "=":
+                    if isinstance(v1, tuple) and v2 in v1:
+                        return True, f"条件「{c2}」的取值被「{c1}」包含"
+                    continue
+                if not isinstance(v1, float) or not isinstance(v2, float):
+                    continue
+                # c1 的可行域是否包含 c2
+                lo1 = -float("inf") if op1 in (">", ">=") else v1
+                hi1 = float("inf") if op1 in ("<", "<=") else v1
+                lo2 = -float("inf") if op2 in (">", ">=") else v2
+                hi2 = float("inf") if op2 in ("<", "<=") else v2
+                if lo1 <= lo2 and hi1 >= hi2:
+                    return True, f"条件「{c2}」的可行域被「{c1}」完全包含"
+    return False, ""
+
+
 def conds_conflict(conds):
     """判断一组条件是否逻辑互斥（交集恒为空）。
 
