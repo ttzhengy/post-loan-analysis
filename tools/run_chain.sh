@@ -49,11 +49,13 @@ if [ -n "${DATA_DIR:-}" ] && [ -d "${DATA_DIR:-}" ]; then
   echo "   模式：execute（真实查询 $DATA_DIR）"
   "$PY" "$ROOT/scripts/combo_split.py" \
     --signals signals.json --slice 20260831 --data-dir "$DATA_DIR" \
+    --rules "$ROOT/references/rules.json" \
     --out combo_screen.json || echo "   ⚠️ combo_split 失败（不中断链路）"
 else
   echo "   模式：dry-run（未提供 DATA_DIR，仅产出候选组合与 SQL）"
   "$PY" "$ROOT/scripts/combo_split.py" \
     --signals signals.json --slice 20260831 \
+    --rules "$ROOT/references/rules.json" \
     --out combo_screen.json || echo "   ⚠️ combo_split 失败（不中断链路）"
 fi
 
@@ -90,6 +92,15 @@ else
     --plan drill_plan.json --table-dict "$ROOT/shared/table-dict.json" \
     --dry-run --metrics metrics.json --out evidence.json
 fi
+
+echo "── S4b topic_gate（两道校验 + 主题名额）──"
+# 第一道：组合是否构成风险现象（复用 combo_screen 的判定结果，不重算）
+# 第二道：现象与归因是否确实相关/可解释（用钻取实测数字检验四个条件）
+# 名额：上限 10，**不设下限** —— 通过几个报几个，不放宽门槛凑数。
+"$PY" "$ROOT/scripts/topic_gate.py" \
+  --combo-screen combo_screen.json --evidence evidence.json \
+  --attribution attribution.json --max-topics 10 \
+  --out topic_gate.json || echo "   ⚠️ topic_gate 失败（不中断链路）"
 
 echo "── S5 narrative（降级模板，不调 LLM）──"
 "$PY" "$ROOT/scripts/narrative.py" \

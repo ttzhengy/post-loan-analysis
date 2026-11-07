@@ -418,7 +418,32 @@ def main():
     ap.add_argument("--max-combo", type=int, default=3)
     ap.add_argument("--max-candidates", type=int, default=60)
     ap.add_argument("--top", type=int, default=40, help="最多向下游交付多少个通过筛选的现象")
+    ap.add_argument("--rules", help="rules.json；用于把现象挂到归因规则上（Jaccard 匹配）")
     args = ap.parse_args()
+
+    # 从 rules.json 提取每条规则引用的特征集合，用于「现象 ↔ 归因规则」匹配
+    args.rule_features = {}
+    if args.rules:
+        try:
+            rd = json.load(open(args.rules, encoding="utf-8"))
+            # rules.json 有三个分节：manual / mined / derived
+            all_rules = []
+            for sect in ("manual", "mined", "derived"):
+                all_rules.extend(rd.get(sect) or [])
+            all_rules.extend(rd.get("rules") or [])
+            for r in all_rules:
+                expr = r.get("expr") or {}
+                ids = expr.get("all_of") or expr.get("any_of") or r.get("members") or []
+                feats = []
+                for x in ids:
+                    try:
+                        feats.append(int(x))
+                    except (TypeError, ValueError):
+                        continue
+                if feats:
+                    args.rule_features[r.get("rule_id")] = feats
+        except Exception as exc:   # noqa: BLE001
+            print(f"⚠️  rules.json 解析失败（{exc}），现象不会挂到规则上")
 
     sig = json.load(open(args.signals, encoding="utf-8"))
     rows = []
@@ -500,6 +525,23 @@ def main():
             passed.append(c)
 
     passed.sort(key=lambda x: -((x["metrics"] or {}).get("lift_vs_universe") or 0))
+
+    # 把通过的现象挂到「引用同一组特征」的归因规则上，供 topic_gate 第一道校验
+    # 匹配。匹配依据是特征集合的 Jaccard（>=0.6），不做文字相似度猜测。
+    rule_feats = args.rule_features or {}
+    for c in passed:
+        cfeat = {f["feature_id"] for f in c["features"]}
+        linked = []
+        for rid, feats in rule_feats.items():
+            rfeat = set(feats or [])
+            if not rfeat or not cfeat:
+                continue
+            jac = len(cfeat & rfeat) / len(cfeat | rfeat)
+            if jac >= 0.6:
+                linked.append({"rule_id": rid, "jaccard": round(jac, 3)})
+        c["linked_rules"] = [x["rule_id"] for x in linked]
+        c["linked_detail"] = linked
+
     result["candidates"] = cands
     result["phenomena"] = passed[:args.top]
     result["phenomena_total"] = len(passed)

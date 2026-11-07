@@ -97,6 +97,51 @@ def main():
     ck("征信" in cs.unavailable_reason(32), "拒绝理由说明原因（征信 P 表）")
     ck(cs.translate(2) is not None, "无抵押缓释 → 可映射")
 
+    print("\n── 5. 第二道校验：现象 ↔ 归因 相关性（topic_gate）")
+    import topic_gate as tg
+    r1 = tg.attribution_gate([{"hit": {"n": 5000, "npl_rate": 0.45},
+                               "nonhit": {"n": 45000, "npl_rate": 0.03}, "lift": 15.0}])
+    ck(r1["status"] == "supported", "强归因（lift 15、对照 3%）→ supported")
+    r2 = tg.attribution_gate([{"hit": {"n": 3000, "npl_rate": 0.12},
+                               "nonhit": {"n": 47000, "npl_rate": 0.11}, "lift": 1.09}])
+    ck(r2["status"] == "rejected", "对照组同样偏高（全辖共性）→ rejected")
+    ck("区分度不足" in (r2.get("reason") or ""), "拒绝理由写明「区分度不足」")
+    r3 = tg.attribution_gate([])
+    ck(r3["status"] == "insufficient", "无钻取数据 → insufficient（不硬判）")
+    r4 = tg.attribution_gate([{"hit": {"n": 20, "npl_rate": 0.9},
+                               "nonhit": {"n": 45000, "npl_rate": 0.03}, "lift": 30}])
+    ck(r4["status"] == "insufficient", "样本不足 → insufficient")
+
+    print("\n── 6. 主题名额：上限 10 但**不设下限**")
+    six = [{"both_passed": True, "strength": 0.9 - i * 0.05, "rule_id": f"R{i}"} for i in range(6)]
+    s6 = tg.select_topics(six, 10)
+    ck(s6["count"] == 6, f"只有 6 个通过 → 如实报 6 个（不是凑到 10）")
+    ck(s6["shortage"] == 4, "shortage 正确记为 4")
+    ck("未放宽条件凑数" in s6["shortage_note"], "缺口原因写明「未放宽条件凑数」")
+    many = six + [{"both_passed": True, "strength": 0.1 + i * 0.001, "rule_id": f"X{i}"} for i in range(8)]
+    s14 = tg.select_topics(many, 10)
+    ck(s14["count"] == 10 and s14["dropped_by_cap"] == 4, "14 个通过 → 取前 10，另 4 个标记为名额溢出")
+
+    print("\n── 7. 端到端：现象成立但归因弱 → 弃题")
+    combo_doc = {"phenomena": [{"status": "phenomenon", "linked_rules": ["C01", "C02"],
+                                "metrics": {"hit_n": 5000, "universe_n": 50000,
+                                            "hit_rate": 0.45, "universe_rate": 0.08,
+                                            "lift_vs_universe": 5.6, "incremental_lift": 2.1}}]}
+    ev_doc = {"evidence_chain": [
+        {"linked_rule": "C01", "status": "verified", "comparisons": [
+            {"hit": {"n": 5000, "npl_rate": 0.45},
+             "nonhit": {"n": 45000, "npl_rate": 0.03}, "lift": 15.0}]},
+        {"linked_rule": "C02", "status": "verified", "comparisons": [
+            {"hit": {"n": 3000, "npl_rate": 0.12},
+             "nonhit": {"n": 47000, "npl_rate": 0.11}, "lift": 1.09}]},
+    ]}
+    at_doc = [{"rule_id": "C01", "name": "获客激进", "strength": 0.9, "level": "显著"},
+              {"rule_id": "C02", "name": "准入失守", "strength": 0.8, "level": "显著"}]
+    res = tg.run(combo_doc, ev_doc, at_doc, max_topics=10)
+    ck(res["selection"]["count"] == 1, "两个现象成立，但只有归因也成立的 1 个入选")
+    ck(res["selection"]["topics"][0]["rule_id"] == "C01", "入选的是归因得到支持的那一个")
+    ck("归因rejected" in res["reject_reasons"], "被弃的题记为「归因rejected」")
+
     print("\n" + "=" * 60)
     print(f"结果：{len(_pass)} 通过 / {len(_fail)} 失败")
     if _fail:
