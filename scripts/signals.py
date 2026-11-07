@@ -103,9 +103,19 @@ def build_dimensions(overview, overall, warnings):
     for group, dims in overview["dimensions"].items():
         if not isinstance(dims, dict):
             continue
-        for dim_name, items in dims.items():
+        # 兼容两种结构：
+        #   旧/扁平：{group: {dim_name: [bucket, ...]}}
+        #   现/对象：{group: {"name": "担保方式", "stage": "贷前", "buckets": [...]}}
+        if isinstance(dims.get("buckets"), list):
+            dim_items = [(dims.get("name") or group, dims.get("buckets"), dims.get("stage"))]
+        else:
+            dim_items = [(k, v, None) for k, v in dims.items() if isinstance(v, list)]
+        for dim_name, items, dim_stage in dim_items:
             if not isinstance(items, list) or not items:
                 continue
+            # 维度中文名缺失时退回 group 名，避免把 "buckets" 当维度名显示
+            if not dim_name or dim_name in ("buckets", "items", "values"):
+                dim_name = group
             # 同一维度名可能出现在不同 group，用 group 前缀消歧
             key = dim_name if dim_name not in dims_out else f"{group}·{dim_name}"
             buckets = []
@@ -122,7 +132,7 @@ def build_dimensions(overview, overall, warnings):
                 npl_share = (npl / total_npl) if total_npl and it.get("states") else (
                     _num(it.get("bad_share")) or 0.0)
                 buckets.append({
-                    "bucket": str(it.get("dim_value", "")),
+                    "bucket": str(it.get("bucket") or it.get("dim_value") or ""),
                     "bal": round(bal, 2),
                     "npl_bal": round(npl, 2),
                     "npl_rate": round(rate, 6) if rate is not None else None,
@@ -139,7 +149,7 @@ def build_dimensions(overview, overall, warnings):
             dims_out[key] = {
                 "name": dim_name,
                 "group": group,
-                "stage": DIM_STAGE.get(dim_name, "贷前"),
+                "stage": dim_stage or DIM_STAGE.get(dim_name, "贷前"),
                 "buckets": buckets,
             }
     if not dims_out:

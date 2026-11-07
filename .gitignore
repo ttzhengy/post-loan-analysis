@@ -1,22 +1,32 @@
 # 依赖与缓存
 .venv/
+venv/
 __pycache__/
 *.pyc
 *.pyo
+.env
 
 # 渲染产物（可随时由 scripts/ + synth/ 重新生成）
+preview/
 preview/dataset_01/
 preview/dataset_02/
 preview/dataset_03/
 preview/dataset_04/
+_e2e/
 /tmp/preview_work_*/
 output/
+/out/
+report.html
+*.xlsx
+
+# 备份与废弃副本
+render_report_v5_backup.py
+render_report_v6_tmp.py
+*_backup.py
+*_tmp.py
 
 # 编辑器 / 系统
 .DS_Store
 .idea/
 .vscode/
 *.swp
-
-# 历史备份（保留在版本历史里即可，不入库）
-scripts/render_report_v5_backup.py

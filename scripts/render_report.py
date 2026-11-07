@@ -475,8 +475,11 @@ def chart_dim_offset(reg, dims, group):
     H = top + row_h * len(rows) + 34
     s = Svg(W, H)
     s.text(20, 22, "8 大维度恶化偏移（最差档位不良率 − 全辖不良率）", 13, GRAY["900"], weight="700")
-    x0 = 210
-    x1 = W - 150
+    LABEL_W = 150         # 维度名可用的显示宽度（px）
+    x0 = 180              # 轨道左边界：给「客户类型」等 5 字维度名 + 档位副标签留位
+    x1 = W - 310          # 条形右端：再往左收，给两项读数让位
+    s_off_x = x1 + 12     # 偏移读数（+X.XXpp）
+    s_rate_x = W - 168    # 「档不良率」栏统一左对齐基准
     mx = max(abs(r[3]) for r in rows) or 1.0
     span = x1 - x0
     zero_x = x0 + span * (max(0, mx) / (mx * 1.02))
@@ -487,9 +490,16 @@ def chart_dim_offset(reg, dims, group):
     for i, (name, stage, bucket, off, rate, key) in enumerate(rows):
         y = top + i * row_h
         cy = y + row_h / 2 - 2
-        # 维度名 + 最差档
-        s.text(20, cy + 4, name[:12], 11.5, GRAY["700"], "start", "600")
-        s.text(20 + 2 + svg_text_w(name[:12], 11.5) + 6, cy + 4, f"（{stage}·{bucket[:8]}）", 10, GRAY["400"])
+        # 维度名 + 最差档（超长按显示宽度截断，避免压到轨道）
+        nm = name if svg_text_w(name, 11.5) <= LABEL_W else name[:8] + "…"
+        s.text(20, cy + 4, nm, 11.5, GRAY["700"], "start", "600")
+        sub = f"（{stage}·{bucket}）" if bucket else f"（{stage}）"
+        sub_x = 20 + 2 + svg_text_w(nm, 11.5) + 6
+        # 副标签也只画到轨道左边界之前
+        for ch in range(len(sub), 0, -1):
+            if sub_x + svg_text_w(sub[:ch], 10) <= x0 - 8:
+                s.text(sub_x, cy + 4, sub[:ch], 10, GRAY["400"])
+                break
         # 轨道
         s.rect(x0, cy - 8, x1 - x0, 16, GRAY["100"], rx=3)
         wpx = abs(off) * scale
@@ -500,19 +510,21 @@ def chart_dim_offset(reg, dims, group):
         else:
             col = GRAY["400"] if off <= -1.0 else GRAY["300"]
             s.rect(zero_x - wpx, cy - 8, wpx, 16, col, rx=3)
-        # 数值（可验算）
-        lab = _calc_label(reg, f"维度「{name}」最差档恶化偏移", pp(off), f"signals.json dimensions[{key}].buckets[].offset_pp（max）",
-                          f"offset_pp = (该档不良余额/该档余额 − 全辖不良率) × 100，全辖不良率取 signals.overall.npl_rate", group)
-        tx = x1 + 8 if off >= 0 else zero_x - wpx - 8
-        anc = "start" if off >= 0 else "end"
-        if off < 0 and zero_x - wpx - 8 < x0:
-            tx, anc = x1 + 8, "start"
-        s.text(tx - (0 if off >= 0 else 0), cy + 4, "", 11, TEAL["900"] if off >= 0 else GRAY["500"],
-               anc, "600", inner=lab)
+        # 数值（可验算）——左半区画条，右半区放两项读数，避免压字
+        lab = _calc_label(reg, f"维度「{name}」最差档恶化偏移", pp(off),
+                          f"signals.json dimensions[{key}].buckets[].offset_pp（max）",
+                          f"offset_pp = (该档不良余额/该档余额 − 全辖不良率) × 100，"
+                          f"全辖不良率取 signals.overall.npl_rate", group)
+        if off >= 0:
+            s.text(s_off_x, cy + 4, "", 11, TEAL["900"], "start", "600", inner=lab)
+        else:
+            # 负向条从 zero_x 向左画，读数放在条形左端外侧
+            s.text(zero_x - wpx - 8, cy + 4, "", 11, GRAY["500"], "end", "600", inner=lab)
         if rate is not None:
-            rl = _calc_label(reg, f"维度「{name}」最差档不良率", pct(rate), f"signals.json dimensions[{key}].buckets[].npl_rate",
+            rl = _calc_label(reg, f"维度「{name}」最差档不良率", pct(rate),
+                             f"signals.json dimensions[{key}].buckets[].npl_rate",
                              "npl_bal / bal（该档）", group)
-            s.text(W - 138, cy + 4, "", 10.5, GRAY["500"], "start", inner="档不良率 " + rl)
+            s.text(s_rate_x, cy + 4, "", 10.5, GRAY["500"], "start", inner="档不良率 " + rl)
     # 0 基准线
     s.line(zero_x, top - 8, zero_x, top + row_h * len(rows) - 6, GRAY["500"], 1.5)
     s.text(zero_x, top + row_h * len(rows) + 14, "0（全辖不良率）", 10.5, GRAY["500"], "middle")
@@ -679,7 +691,7 @@ def chart_topic_lift(reg, topics, group):
                           "命中组不良率 / 对照组不良率" if lift is not None else "客群实测不良率 / 全辖不良率", group)
         s.text(x0 + wpx + 8, cy + 4, "", 11, TEAL["900"], "start", "600", inner=lab)
     s.text(20, H - 8, "深青绿＝2.5 倍以上｜中青绿＝1.5–2.5 倍｜浅青绿＝1.5 倍以下（仍高于基准线）", 10.5, GRAY["500"])
-    return s.render("", "主题客群 lift 条形图")
+    return s.render("", "各主题命中客群的不良倍数条形图")
 
 
 def chart_block(title, sub, svg, note=""):
@@ -1008,10 +1020,12 @@ def render(args):
                                 f"SELECT SUM(FORM_BAL_RMB) FROM {VCH} WHERE {FILTER} AND EXD_DAYS>0", g)
 
     kpis = [
-        kpi("不良率", rate_span(), "metrics.json overall.npl_rate", "", "不良余额 ÷ 全部余额"),
+        kpi("不良率", rate_span(), "metrics.json overall.npl_rate", "",
+            "", "不良余额 ÷ 全部余额"),
         kpi("不良余额", npl_bal_span(), "metrics.json overall.npl_bal", "deep", ""),
         kpi("农户贷款余额", bal_span(), "metrics.json overall.bal", "teal", ""),
-        kpi("贷款笔数", cnt_span(), "metrics.json overall.cnt", "", f"{cust_span()}客户"),
+        kpi("贷款笔数", cnt_span(), "metrics.json overall.cnt", "",
+            "", cust_span() + " 客户"),
     ]
     kpi_html = "".join(kpis)
 
@@ -1372,11 +1386,11 @@ def render(args):
         blind = nar.get("data_blind_spots") or []
         blind_html = "".join(f"<li>{esc(b)}</li>" for b in blind) or "<li>本期数据源完整，未发现口径级盲区。</li>"
 
-  # 指标监测形态：这两张图在主流程里没有出现过，此处首次渲染并注册编号
-    fig_clue_mon = inline_chart(svg3, "各类风险线索触发客户的不良率与全辖水平对比",
-                                "高于虚线的线索值得优先排查") if svg3 else ""
-    fig_cont_mon = inline_chart(svg4, "各类续贷/重组工具的不良率",
-                                "「续」了但不良仍高，说明风险只是被往后推") if svg4 else ""
+        # 指标监测形态：这两张图在主流程里没有出现过，此处首次渲染并注册编号
+        fig_clue_mon = inline_chart(svg3, "各类风险线索触发客户的不良率与全辖水平对比",
+                                    "高于虚线的线索值得优先排查") if svg3 else ""
+        fig_cont_mon = inline_chart(svg4, "各类续贷/重组工具的不良率",
+                                    "「续」了但不良仍高，说明风险只是被往后推") if svg4 else ""
 
         monitor_html = f"""
 <div class="section">
