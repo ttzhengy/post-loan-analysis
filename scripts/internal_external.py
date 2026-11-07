@@ -66,7 +66,7 @@ EXTERNAL_MARKERS = {
     },
     "grant_mode": {
         "label": "非信用类担保（外部增信覆盖）",
-        "cond": "GRTE_MOD_CD NOT IN ('0100')",
+        "cond": cs.GRTE_NON_CREDIT,
         "rationale": "有抵押/保证的敞口由第三方分担部分损失，其表现差异不宜全记内部管理",
     },
 }

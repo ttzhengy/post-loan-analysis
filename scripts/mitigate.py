@@ -64,51 +64,68 @@ MITIGATORS = {
         "label": "剩余期限",
         # 用借款日期推算：距分析时点满 3 个月的算「有缓冲期」
         "note": "以借款日期距分析时点的月数近似剩余期限；凭证表无到期日字段",
+        # 客户级按最早一笔借款日定档（缓冲期最短的那笔），保证只落一档
+        "agg": "MIN(LN_DAT)",
         "buckets": [
-            ("3 个月以上缓冲期", "LN_DAT <= '{m3}'"),
-            ("3 个月内到期",     "LN_DAT > '{m3}'"),
+            ("3 个月以上缓冲期", "{agg} <= '{m3}'"),
+            ("3 个月内到期",     "{agg} > '{m3}'"),
         ],
     },
     "overdue": {
         "label": "当前逾期状态",
-        "note": "EXD_DAYS 逾期天数，最直接的风险前置信号",
+        "note": "EXD_DAYS 逾期天数，最直接的风险前置信号；"
+                "该字段以 VARCHAR 落盘，比较前必须转整数",
+        # 客户级定档：按该客户在客群内**最严重**的一笔凭证判定。
+        # 多笔凭证下若逐笔判档再取 MAX，同一客户会同时落进「无逾期」和
+        # 「已现逾期」两档，两档户数之和超过客群户数（实测多出 453 户）。
+        "agg": "MAX(COALESCE(TRY_CAST(EXD_DAYS AS BIGINT),0))",
         "buckets": [
-            ("至今无逾期", "COALESCE(EXD_DAYS,0) = 0"),
-            ("已现逾期",   "COALESCE(EXD_DAYS,0) >= 1"),
+            ("至今无逾期", "{agg} = 0"),
+            ("已现逾期",   "{agg} >= 1"),
         ],
     },
     "guarantee": {
         "label": "担保方式",
         "note": "GRTE_MOD_CD 担保方式维度，缓释能力差异的最主要来源",
+        # 客户多笔凭证可能各用不同担保方式，按「缓释能力最弱的一笔」定档：
+        # 纯信用的分值最小，用 MIN 取到纯信用前缀即为最弱，无纯信用则取到
+        # 抵押/保证类编码。这样每个客户只会落进一档。
+        "agg": "MIN(GRTE_MOD_CD)",
         "buckets": [
-            ("有抵押物担保", "GRTE_MOD_CD NOT IN ('0100')"),
-            ("纯信用",       "GRTE_MOD_CD = '0100'"),
+            ("有抵押物担保", "{agg} IN ('" + cs.GRTE_CODE_MORTGAGE
+                             + "','" + cs.GRTE_CODE_GUARANTEE
+                             + "','" + cs.GRTE_CODE_AGRI + "')"),
+            ("纯信用",       "{agg} = '" + cs.GRTE_CODE_CREDIT + "'"),
         ],
     },
     "amount": {
         "label": "单笔金额",
         "note": "以凭证余额分层，金额越大单户风险敞口越集中",
+        # 客户级敞口取最大一笔的余额定档，避免同一客户在三档里各命中一次
+        "agg": "MAX(CAST(FORM_BAL_RMB AS DOUBLE))",
         "buckets": [
-            ("小额（<10万）",   "CAST(FORM_BAL_RMB AS DOUBLE) < 100000"),
-            ("中额（10~30万）", "CAST(FORM_BAL_RMB AS DOUBLE) >= 100000 "
-                                "AND CAST(FORM_BAL_RMB AS DOUBLE) < 300000"),
-            ("大额（≥30万）",   "CAST(FORM_BAL_RMB AS DOUBLE) >= 300000"),
+            ("小额（<10万）",   "{agg} < 100000"),
+            ("中额（10~30万）", "{agg} >= 100000 AND {agg} < 300000"),
+            ("大额（≥30万）",   "{agg} >= 300000"),
         ],
     },
     "continuation": {
         "label": "是否接续放款",
         "note": "CONT_LN_IND，接续放款把到期压力后移，风险化解程度不同",
+        # 有任一笔接续即算接续客户：接续是需要复核的动作，宁可归入需关注档
+        "agg": "MAX(COALESCE(CONT_LN_IND,'0'))",
         "buckets": [
-            ("非接续（新发放）", "COALESCE(CONT_LN_IND,'0') <> '1'"),
-            ("接续放款",         "CONT_LN_IND = '1'"),
+            ("非接续（新发放）", "{agg} <> '1'"),
+            ("接续放款",         "{agg} = '1'"),
         ],
     },
     "tenor": {
         "label": "循环额度",
         "note": "CYC_LN_IND，循环额度可反复支用，敞口不受单次审批约束",
+        "agg": "MAX(COALESCE(CYC_LN_IND,'0'))",
         "buckets": [
-            ("普通额度", "COALESCE(CYC_LN_IND,'0') <> '1'"),
-            ("循环额度", "CYC_LN_IND = '1'"),
+            ("普通额度", "{agg} <> '1'"),
+            ("循环额度", "{agg} = '1'"),
         ],
     },
 }
@@ -151,11 +168,18 @@ def bucket_conflicts(cohort_conds, bucket_cond):
 
     a, b = _norm(a), _norm(b)
 
-    # 等值 vs 非等值冲突：客群限定 ='0100'，分档要求 NOT IN ('0100')
+    # 等值 vs 非等值冲突：客群限定 ='0101'，分档要求 NOT IN ('0101') 或 IN ('0201',...)
     for field in ("GRTE_MOD_CD", "CONT_LN_IND", "CYC_LN_IND", "RPAY_MOD_CD"):
         m_co = re.search(field + r"='([^']+)'", a)
         b_eq = re.search(field + r"='([^']+)'", b)
         b_ne = re.search(field + r"NOTIN'([^']+)'", b)
+        # 分档是 IN(...) 白名单：客群锁定的值不在白名单里 → 交集为空
+        b_in = re.search(field + r"IN'([^']+)'", b)
+        if m_co and b_in:
+            allowed = [x.strip().strip("'") for x in b_in.group(1).split(",")]
+            if m_co.group(1) not in allowed:
+                return True, (f"客群限定 {field}='{m_co.group(1)}'，"
+                              f"分档白名单 {allowed} 不含该值，交集为空")
         if m_co and b_ne:
             # b_ne.group(1) 已是不含引号的裸值（正则捕获的是引号内部）
             if m_co.group(1) in [x.strip().strip("'") for x in b_ne.group(1).split(",")]:
@@ -183,6 +207,17 @@ def bucket_conflicts(cohort_conds, bucket_cond):
     return False, ""
 
 
+def _agg_field(agg):
+    """从聚合表达式里取出裸字段名：MAX(COALESCE(TRY_CAST(EXD_DAYS AS BIGINT),0))
+    → EXD_DAYS。仅用于 bucket_conflicts 的字符串级冲突探测。
+    """
+    if not agg:
+        return ""
+    import re
+    m = re.search(r"(EXD_DAYS|GRTE_MOD_CD|FORM_BAL_RMB|LN_DAT|CONT_LN_IND|CYC_LN_IND)", agg)
+    return m.group(1) if m else ""
+
+
 def usable_mitigators(cohort_conds, keys=None):
     """筛掉与客群条件冲突的缓释分档，返回 (可用分档, 被跳过及原因)。"""
     keys = keys or list(MITIGATORS)
@@ -193,7 +228,10 @@ def usable_mitigators(cohort_conds, keys=None):
             continue
         kept = []
         for label, cond in spec["buckets"]:
-            hit_conflict, why = bucket_conflicts(cohort_conds, cond)
+            # 冲突判定用「字段级原形」：把 {agg} 换回裸字段名，
+            # 否则占位符会让等值/互斥比对失真。
+            probe = cond.replace("{agg}", _agg_field(spec.get("agg"))).replace("{m3}", "0")
+            hit_conflict, why = bucket_conflicts(cohort_conds, probe)
             if hit_conflict:
                 skipped.append({"mitigator": key, "mitigator_label": spec["label"],
                                 "bucket": label, "reason": why})
@@ -208,7 +246,7 @@ def usable_mitigators(cohort_conds, keys=None):
                     "reason": "该维度与客群条件冲突，剩余不足两档，不出结论"})
             continue
         usable.append({"key": key, "label": spec["label"], "note": spec["note"],
-                       "buckets": kept})
+                       "agg": spec.get("agg"), "buckets": kept})
     return usable, skipped
 
 
@@ -246,27 +284,136 @@ def _m3(slice_v):
 
 
 def bucket_sql(base_conds, bucket_cond, slice_v, level="chg", base_slice=None,
-               m3=None):
+               m3=None, agg=None):
     """客群内部的一个分层 → hit / universe 两组（universe 即整个客群）。
 
-    注意 hit 在此处含义与 combo_split 不同：这里是「客群 ∩ 该分层」，
-    不是「全辖 ∩ 组合」。因此 universe 提供的是客群基线，用于算分层 lift。
+    客户级定档，不能逐笔判档再取 MAX
+    --------------------------------
+    客户可能持有多笔凭证：一笔无逾期、另一笔已逾期。
+    若在凭证级判定分层条件、再对客户取 MAX(bucket_hit)，则
+      「至今无逾期」= 该客户有任一笔 EXD_DAYS=0
+      「已现逾期」  = 该客户有任一笔 EXD_DAYS>=1
+    两档会同时命中同一个客户。实测两档户数之和 40496 超过客群 40043
+    （多出 453 户重叠），各档占比失真、加总不为 100%。
+
+    正确做法是**先聚合到客户级，再用聚合值判档**：
+    每个维度声明一个 `agg` 表达式（如 overdue 用 MAX(EXD_DAYS)，
+    amount 用 MAX(余额)），客户级只产生一个值，档位天然互斥。
+
+    `agg` 各档共用；未提供时退回凭证级判定（仅供单档调用方使用）。
     """
     if not base_conds:
         raise ValueError("bucket_sql 需要客群条件（至少 1 条）")
-    b = bucket_cond.format(m3=m3 or _m3(slice_v)) if "{m3}" in bucket_cond else bucket_cond
-    # 客群条件之间是 OR-equivalent（同一个 hit 客户的所有凭证都满足组合），
-    # 但分层要精确定位到「客群内、且满足分层条件」的凭证，所以用 AND。
-    # 客户级归属由 combo_split 的 CTE 保证：任一笔凭证满足即归入。
-    inner = list(base_conds)
-    return cs.split_sql(inner + [b], slice_v, level=level, base_slice=base_slice)
+    # 只替换 {m3}；{agg} 留到下面替换成客户级列名 agg_val。
+    # 用 replace 而非 str.format：条件里可能含其它花括号（如 JSON 片段、
+    # 正则量词），format 会当作占位符解析并抛 KeyError。
+    b = bucket_cond.replace("{m3}", m3 or _m3(slice_v))
+
+    cohort_and = " AND ".join("(" + c + ")" for c in base_conds)
+    npl = cs.NPL_EXPR
+    # 判档表达式：作用于客户级聚合值 agg_val（不是原始字段）。
+    # cli/cli2 只带出 agg_val，所以 {agg} 必须先替换成 agg_val，
+    # 否则会去引用底层字段而报 Binder Error。
+    # 未声明 agg 的维度（无 {agg} 占位）无法在客户级判定，直接报错，
+    # 不静默退回凭证级 —— 那正是跨档 bug 的来源。
+    if "{agg}" not in bucket_cond:
+        raise ValueError(
+            f"分层条件未声明 {{agg}} 占位符，无法在客户级判档：{bucket_cond}")
+    bucket_expr = "CASE WHEN (" + b.replace("{agg}", "agg_val") + ") THEN 1 ELSE 0 END"
+
+    if level == "chg":
+        if not base_slice:
+            raise ValueError("chg 口径必须提供 base_slice（对比时点）")
+        # 三层：凭证级打标 → 客户级聚合出 agg 值 → 用 agg 值判档（互斥）
+        # bucket_hit 必须在 cli 之后算，否则又退回「逐笔判档再 MAX」的老问题。
+        return f"""
+WITH b AS (
+  SELECT CUST_NO, FORM_NO,
+         CAST(FORM_BAL_RMB AS DOUBLE) AS bal0,
+         CASE WHEN {npl} THEN 1 ELSE 0 END AS npl0,
+         CASE WHEN {cohort_and} THEN 1 ELSE 0 END AS in_cohort,
+         EXD_DAYS, GRTE_MOD_CD, LN_DAT, CONT_LN_IND, CYC_LN_IND,
+         bal0 AS FORM_BAL_RMB
+  FROM {cs.TABLE}
+  WHERE DATA_DAT='{base_slice}' AND BUS_BREED_CD LIKE 'A70%'
+),
+cli AS (
+  SELECT CUST_NO,
+         MAX(in_cohort) AS in_cohort,
+         {agg or 'MAX(FORM_NO)'} AS agg_val
+  FROM b GROUP BY CUST_NO
+),
+cli2 AS (
+  SELECT CUST_NO, in_cohort,
+         CASE WHEN ({bucket_expr}) THEN 1 ELSE 0 END AS bucket_hit
+  FROM cli
+),
+c AS (
+  SELECT FORM_NO,
+         CASE WHEN {npl} THEN 1 ELSE 0 END AS npl1,
+         CAST(FORM_BAL_RMB AS DOUBLE) AS bal1
+  FROM {cs.TABLE}
+  WHERE DATA_DAT='{slice_v}' AND BUS_BREED_CD LIKE 'A70%'
+),
+tagged AS (
+  SELECT cli2.CUST_NO, cli2.bucket_hit,
+         SUM(CASE WHEN b.npl0=0 AND COALESCE(c.npl1,0)=1
+                  THEN COALESCE(c.bal1, b.bal0) ELSE 0 END) AS npl_bal,
+         SUM(CASE WHEN b.npl0=0 AND COALESCE(c.npl1,0)=1 THEN 1 ELSE 0 END) AS npl_vch_cnt,
+         SUM(b.bal0) AS tot_bal
+  FROM cli2 JOIN b ON b.CUST_NO = cli2.CUST_NO
+  LEFT JOIN c ON c.FORM_NO = b.FORM_NO
+  WHERE cli2.in_cohort = 1
+  GROUP BY cli2.CUST_NO, cli2.bucket_hit
+)
+SELECT 'hit' AS grp, COUNT(*) AS n, SUM(npl_vch_cnt) AS npl_vch_cnt,
+       SUM(npl_bal) AS npl_bal, SUM(tot_bal) AS tot_bal,
+       SUM(npl_bal)/NULLIF(SUM(tot_bal),0) AS npl_rate
+FROM tagged WHERE bucket_hit = 1
+UNION ALL
+SELECT 'universe' AS grp, COUNT(*) AS n, SUM(npl_vch_cnt) AS npl_vch_cnt,
+       SUM(npl_bal) AS npl_bal, SUM(tot_bal) AS tot_bal,
+       SUM(npl_bal)/NULLIF(SUM(tot_bal),0) AS npl_rate
+FROM tagged
+"""
+
+    # vch 口径：单期，同样必须「客户级聚合后判档」，否则多笔客户会跨档
+    return f"""
+WITH b AS (
+  SELECT CUST_NO,
+         MAX(CASE WHEN {cohort_and} THEN 1 ELSE 0 END) AS in_cohort,
+         {agg or 'MAX(FORM_NO)'} AS agg_val,
+         SUM(CASE WHEN {npl} THEN 1 ELSE 0 END) AS npl_vch_cnt,
+         SUM(CASE WHEN {npl} THEN CAST(FORM_BAL_RMB AS DOUBLE) ELSE 0 END) AS npl_bal,
+         SUM(CAST(FORM_BAL_RMB AS DOUBLE)) AS tot_bal
+  FROM {cs.TABLE}
+  WHERE DATA_DAT='{slice_v}' AND BUS_BREED_CD LIKE 'A70%'
+  GROUP BY CUST_NO
+),
+b2 AS (
+  SELECT *, CASE WHEN ({bucket_expr}) THEN 1 ELSE 0 END AS bucket_hit
+  FROM b
+)
+SELECT 'hit' AS grp, COUNT(*) AS n, SUM(npl_vch_cnt) AS npl_vch_cnt,
+       SUM(npl_bal) AS npl_bal, SUM(tot_bal) AS tot_bal,
+       SUM(npl_bal)/NULLIF(SUM(tot_bal),0) AS npl_rate
+FROM b2 WHERE in_cohort = 1 AND bucket_hit = 1
+UNION ALL
+SELECT 'universe' AS grp, COUNT(*) AS n, SUM(npl_vch_cnt) AS npl_vch_cnt,
+       SUM(npl_bal) AS npl_bal, SUM(tot_bal) AS tot_bal,
+       SUM(npl_bal)/NULLIF(SUM(tot_bal),0) AS npl_rate
+FROM b2 WHERE in_cohort = 1
+"""
 
 
 def group_sql(base_conds, slice_v, level="chg", base_slice=None):
-    """整个客群（不切分层）的 hit / universe 两组，用作分层对比的基线。"""
+    """整个客群（不切分层）的 hit / universe 两组，用作分层对比的基线。
+
+    注意这里传的是同一组客群条件，universe 恒等于 hit；
+    调用方取 hit 即为客群整体，用来做分层对比的基准生成率。
+    """
     inner = list(base_conds)
     if len(inner) < 2:
-        # 单条件客群：补一个恒真条件以复用 split_sql 的 AND 语义
         inner = inner + ["1=1"]
     return cs.split_sql(inner, slice_v, level=level, base_slice=base_slice)
 
@@ -398,7 +545,7 @@ def main():
     for spec in usable:
         for label, cond in spec["buckets"]:
             bucket_defs.append({"mitigator": spec["key"], "label": label, "cond": cond,
-                                "note": spec["note"]})
+                                "note": spec["note"], "agg": spec.get("agg")})
         result["mitigators"][spec["key"]] = {
             "label": spec["label"], "note": spec["note"],
             "buckets": [b[0] for b in spec["buckets"]]}
@@ -413,7 +560,8 @@ def main():
     if not args.data_dir:
         for b in bucket_defs:
             b["sql"] = bucket_sql(args.conds, b["cond"], args.slice,
-                                  args.level, args.base_slice, m3)
+                                  args.level, args.base_slice, m3,
+                                  agg=b.get("agg"))
         result["plan"] = bucket_defs
         result["summary"] = {"tiers": [], "protect_factor": None, "mis_hit": None,
                              "warnings": ["dry-run：未连接数据源，仅产出分层 SQL"]}
@@ -453,7 +601,8 @@ def main():
     tiers = []
     for b in bucket_defs:
         g = _q(bucket_sql(args.conds, b["cond"], args.slice,
-                          args.level, args.base_slice, m3))
+                          args.level, args.base_slice, m3,
+                          agg=b.get("agg")))
         hit = g.get("hit") or {}
         n = to_num(hit.get("n")) or 0
         rate = to_num(hit.get("npl_rate"))

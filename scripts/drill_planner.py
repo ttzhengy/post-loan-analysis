@@ -548,7 +548,7 @@ def _sql_hit_nonhit(dim_filter_hit, dim_filter_nonhit, table="G_00PF_PEAS_LN_VCH
 # 维度 → 凭证表可比较字段（用于降级 SQL）
 # 注意：这里的键必须能被 actual feature/dim 名映射到，否则会退化成共用兜底条件
 DIM_TO_SQL = {
-    "guarantee": ("GRTE_MOD_CD = '0100'", "纯信用（无抵押、无第二还款来源）"),
+    "guarantee": ("GRTE_MOD_CD = '0101'", "纯信用（无抵押、无第二还款来源）"),
     "score": ("CAST(FORM_BAL_RMB AS DOUBLE) < 50000", "单笔 5 万元以下小额度凭证"),
     "year": ("substr(LN_DAT,1,4) <= '2023'", "2023 年及以前的存量凭证"),
     "amount_band": ("CAST(FORM_BAL_RMB AS DOUBLE) < 50000", "单笔余额 5 万元以下"),
@@ -565,10 +565,10 @@ CIRCULAR_DIM_KEYS = {"age", "rsk_cls", "wroff", "五级分类", "核销状态", 
 
 # 特征名关键词 → SQL 条件（按特征业务含义映射，优先级高于维度兜底）
 FEATURE_TO_SQL = [
-    (("无抵押", "信用"), "GRTE_MOD_CD = '0100'", "纯信用（无抵押、无第二还款来源）"),
+    (("无抵押", "信用"), "GRTE_MOD_CD = '0101'", "纯信用（无抵押、无第二还款来源）"),
     (("资金往来",), "MAGR_CD IS NOT NULL", "有客户经理归属的凭证"),
     (("批量建档", "建档"), "LN_DAT IS NOT NULL", "建档记录完整的凭证"),
-    (("零散获客", "获客"), "GRTE_MOD_CD = '0100'", "纯信用（无抵押、无第二还款来源）"),
+    (("零散获客", "获客"), "GRTE_MOD_CD = '0101'", "纯信用（无抵押、无第二还款来源）"),
     (("低评分", "评分"), "CAST(FORM_BAL_RMB AS DOUBLE) < 50000", "单笔 5 万元以下小额度凭证"),
     (("小额",), "CAST(FORM_BAL_RMB AS DOUBLE) < 50000", "单笔余额 5 万元以下"),
     (("超额授信", "大额"), "CAST(FORM_BAL_RMB AS DOUBLE) >= 500000", "单笔余额 50 万元以上"),

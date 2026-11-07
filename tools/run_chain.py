@@ -210,6 +210,19 @@ def main():
     else:
         log("   跳过：未设 DATA_DIR")
 
+    step("S4e falsify（归因假设的可证伪检验）")
+    log("   归因不能停在「哪类客户坏得多」。这一步对每个入选主题做四项检验：")
+    log("   时间集中性、剂量反应、准入与贷后区分、客群资质对照。")
+    log("   只有「未被推翻」的假设才进结论，被反驳的明确写出反驳理由。")
+    if execute and (out / "topic_gate.json").exists() and base_slice:
+        run([py, SCRIPTS / "falsify.py",
+             "--topic-gate", "topic_gate.json",
+             "--combo-screen", "combo_screen.json",
+             "--slice", slice_v, "--base-slice", base_slice,
+             "--data-dir", data_dir, "--out", "falsify.json"], cwd=out)
+    else:
+        log("   跳过：无 topic_gate.json / 未设 DATA_DIR / 缺 BASE_SLICE")
+
     step("S5 narrative（降级模板，不调 LLM）")
     nar = [py, SCRIPTS / "narrative.py", "--evidence", "evidence.json",
            "--signals", "signals.json", "--attribution", "attribution.json"]

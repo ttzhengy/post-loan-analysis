@@ -72,23 +72,69 @@ NPL_EXPR = "substr(RSK_CLS_CD,1,1) IN ('3','4','5')"
 # 已核销/已结清的敞口会从分母消失，分母被系统性低估。
 LEVELS = ("vch", "chg")
 
+# ============================================================ 担保方式编码
+# 唯一事实来源。改这里，全项目（combo_split / mitigate / internal_external /
+# drill_planner / drill_executor）都跟着变，不允许各文件再硬编码一套。
+#
+# 为什么必须是 0101 而不是 0100
+# ----------------------------
+# 曾经的写法是 GRTE_MOD_CD = '0100'，但真实数据的担保编码里**没有 0100**，
+# 信用是 0101。后果不是报错，而是静默命中 0 户：所有含担保特征的组合
+# 命中数为 0，screen() 判 insufficient，报告里表现为「该客群无样本」。
+# 这种错最难查 —— 不报错、不告警，只是结论全空。
+#
+# 编码取自 core_overview_duckdb.DIMENSIONS['产品与担保']['担保方式']['label_map']，
+# 那份字典是从真实数据统计出来的，是项目里唯一有实测依据的版本。
+GRTE_CODE_CREDIT = "0101"                      # 信用
+GRTE_CODE_MORTGAGE = "0201"                    # 抵押
+GRTE_CODE_GUARANTEE = "0202"                   # 保证
+GRTE_CODE_AGRI = "0308"                        # 农担
+# 复合码：01010201 信用(农担)、01010202 信用(保证)、0203 抵押(农担)
+GRTE_CODE_ALL = ("0101", "0201", "0202", "0308", "01010201", "01010202", "0203")
+
+# 「纯信用」= 主担保方式为信用，且没有叠加任何抵质押/保证/农担。
+# 注意复合码（01010201 信用+农担、01010202 信用+保证）本质仍是信用类，
+# 但严格意义的「无第二还款来源」要求不再有第三方增信，所以这里只取 0101 本身。
+GRTE_CREDIT_ONLY = "GRTE_MOD_CD = '" + GRTE_CODE_CREDIT + "'"
+# 非信用：抵押/保证/农担三类主担保方式
+GRTE_NON_CREDIT = (
+    "GRTE_MOD_CD IN ('" + GRTE_CODE_MORTGAGE + "','" + GRTE_CODE_GUARANTEE
+    + "','" + GRTE_CODE_AGRI + "')"
+)
+
+# ============================================================ 类型转换
+# parquet 全列以 VARCHAR 落盘，数值字段必须显式 CAST 才能比较。
+# EXD_DAYS 在 table-dict 里标的是 INT，但实际数据是 VARCHAR ——
+# 字典与实际类型不一致，以实测为准。字符串比较会静默出错：
+#   '100' BETWEEN '1' AND '90'  → true（首位 '1' < '9'）
+#   '5'   >= 1                  → 报错或隐式转换
+# 所以凡数值字段一律走这里，不要直接写裸比较。
+def _int(field):
+    return ("TRY_CAST(" + field + " AS BIGINT)")
+
+def _dec(field):
+    return ("TRY_CAST(" + field + " AS DOUBLE)")
+
+EXD = _int("EXD_DAYS")
+BAL = _dec("FORM_BAL_RMB")
+
 # ============================================================ 特征 → 凭证表条件
 # 只列出**能由凭证表字段直接判定**的特征。value 是 SQL 布尔表达式。
 # note 写清口径，报告里会原样引用，避免读者误以为这是征信口径。
 FEATURE_COND = {
     # —— 担保 / 额度结构 ——
-    2: {"cond": "GRTE_MOD_CD = '0100'",
+    2: {"cond": GRTE_CREDIT_ONLY,
         "desc": "纯信用（无抵押物担保）",
-        "note": "GRTE_MOD_CD=0100，凭证表担保方式维度"},
-    13: {"cond": "GRTE_MOD_CD = '0100' AND CAST(FORM_BAL_RMB AS DOUBLE) >= 500000",
+        "note": "GRTE_MOD_CD=" + GRTE_CODE_CREDIT + "（信用），凭证表担保方式维度"},
+    13: {"cond": GRTE_CREDIT_ONLY + " AND " + BAL + " >= 500000",
          "desc": "大额纯信用（单笔余额≥50万且无抵押）",
-         "note": "GRTE_MOD_CD=0100 且 FORM_BAL_RMB≥50万"},
-    7: {"cond": "CAST(FORM_BAL_RMB AS DOUBLE) >= 300000",
+         "note": "GRTE_MOD_CD=" + GRTE_CODE_CREDIT + " 且 FORM_BAL_RMB≥50万"},
+    7: {"cond": BAL + " >= 300000",
         "desc": "单笔大额（余额≥30万）",
         "note": "以凭证余额作授信规模的代理变量；凭证表无授信额度字段"},
-    6: {"cond": "GRTE_MOD_CD IN ('0200','0300','0400','9900')",
+    6: {"cond": GRTE_NON_CREDIT,
         "desc": "非信用类担保（保证/抵押/质押）",
-        "note": "GRTE_MOD_CD≠0100，用于对照信用类"},
+        "note": "GRTE_MOD_CD∈{0201,0202,0308}，用于对照信用类"},
 
     # —— 产品 / 业务品种 ——
     12: {"cond": "BUS_BREED_CD LIKE 'A701%'",
@@ -101,12 +147,15 @@ FEATURE_COND = {
          "note": "LN_DAT 借款日期；经营年限无字段，用放款时点作代理"},
 
     # —— 逾期与还款 ——
-    44: {"cond": "EXD_DAYS >= 1",
+    44: {"cond": EXD + " >= 1",
          "desc": "曾出现逾期（EXD_DAYS≥1）",
-         "note": "逾期是五级分类的前置信号，非不良定义本身，可用于归因"},
-    43: {"cond": "EXD_DAYS BETWEEN 1 AND 90",
+         "note": "逾期是五级分类的前置信号，非不良定义本身，可用于归因；"
+                 "EXD_DAYS 以 VARCHAR 落盘，比较前显式转整数"},
+    43: {"cond": EXD + " BETWEEN 1 AND 90",
          "desc": "短期逾期已出现但未达 90 天",
-         "note": "逾期 1–90 天，风险信号出现但处置未跟上"},
+         "note": "逾期 1–90 天，风险信号出现但处置未跟上；"
+                 "EXD_DAYS 以 VARCHAR 落盘，必须 CAST 后比较，"
+                 "否则字符串比较会把 '100' 判进 1~90 区间"},
 
     # —— 接续 ——
     10: {"cond": "CONT_LN_IND = '1'",
@@ -462,8 +511,8 @@ def conds_conflict(conds):
 
     为什么必须判
     ------------
-    特征 2（纯信用 GRTE_MOD_CD='0100'）与特征 6（非信用
-    GRTE_MOD_CD IN ('0200','0300','0400','9900')）是两个互斥集合，
+    特征 2（纯信用 GRTE_MOD_CD='0101'）与特征 6（非信用
+    GRTE_MOD_CD IN ('0201','0202','0308')）是两个互斥集合，
     组合起来交集恒为空。旧版 build_candidates 只检查 cond **字符串**是否
     完全相同，于是把这类组合也送进库，白跑一遍 SQL 后拿到空集，
     最后报「insufficient：不良率缺失」—— 真正的错误（条件互斥）

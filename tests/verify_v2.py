@@ -97,7 +97,7 @@ def run_offline(c: Checker):
          "无分层通过门槛时不给因子，且给出提示")
 
     # B5 缓释维度与客群条件冲突时必须整维不出
-    credit_cohort = ["GRTE_MOD_CD = '0100'", "CAST(FORM_BAL_RMB AS DOUBLE) >= 500000"]
+    credit_cohort = [cs.GRTE_CREDIT_ONLY, cs.FEATURE_COND[13]["cond"]]
     usable, skipped = mg.usable_mitigators(credit_cohort)
     keys = {u["key"] for u in usable}
     c.ok("guarantee" not in keys,
@@ -116,6 +116,38 @@ def run_offline(c: Checker):
     conflict, why = mg.bucket_conflicts(
         ["CAST(FORM_BAL_RMB AS DOUBLE) >= 500000"], "CAST(FORM_BAL_RMB AS DOUBLE) < 100000")
     c.ok(conflict, "[B5] 客群≥50万 vs 分档<10万 判为冲突", why)
+
+    # ---- 编码与类型防回归 ----
+    print("\n[D] 编码与类型防回归")
+    # D1 担保编码必须是真实存在的 0101，不能是 0100
+    c.ok(cs.GRTE_CODE_CREDIT == "0101",
+         "[D1] 信用担保编码为 0101（真实数据无 0100）", cs.GRTE_CODE_CREDIT)
+    all_conds = " ".join(v["cond"] for v in cs.FEATURE_COND.values())
+    c.ok("'0100'" not in all_conds,
+         "[D1] FEATURE_COND 中不含不存在的 0100 编码")
+    # D2 纯信用条件必须用 0101
+    c.ok("0101" in cs.FEATURE_COND[2]["cond"],
+         "[D2] 特征 2 纯信用使用 0101", cs.FEATURE_COND[2]["cond"])
+    # D3 非信用条件不能与纯信用重叠
+    c.ok(cs.conds_conflict([cs.FEATURE_COND[2]["cond"], cs.FEATURE_COND[6]["cond"]])[0],
+         "[D3] 纯信用与非信用互斥（编码正确时仍然成立）")
+    # D4 数值字段必须 CAST 后才能比较
+    for fid in (43, 44):
+        cond = cs.FEATURE_COND[fid]["cond"]
+        c.ok("CAST" in cond.upper(),
+             f"[D4] 特征 {fid} 的 EXD_DAYS 比较前已 CAST", cond)
+    c.ok("EXD_DAYS >= 1" not in all_conds and "EXD_DAYS BETWEEN" not in all_conds,
+         "[D4] 不存在裸 EXD_DAYS 比较")
+    # D5 余额比较也要 CAST（FORM_BAL_RMB 是 DECIMAL，但为对齐口径统一 TRY_CAST）
+    c.ok("CAST" in cs.FEATURE_COND[7]["cond"].upper(),
+         "[D5] 特征 7 的余额比较已 CAST", cs.FEATURE_COND[7]["cond"])
+    # D6 mitigate 的逾期维度必须 CAST（EXD_DAYS 是 VARCHAR），
+    # 且必须走客户级 agg 定档 —— 否则多笔客户会同时落进两档。
+    ov_agg = mg.MITIGATORS["overdue"].get("agg") or ""
+    ov = " ".join(c for _, c in mg.MITIGATORS["overdue"]["buckets"])
+    c.ok("CAST" in ov_agg.upper(), "[D6] 缓释逾期分层已 CAST",
+         f"agg={ov_agg}")
+    c.ok("{agg}" in ov, "[D6] 缓释逾期分层走客户级 agg 定档（两档互斥）", ov)
 
     # B7 冲突过滤后仍能产出有效分层（本次真实场景）
     tiers_ok = [
@@ -250,8 +282,9 @@ def run_online(c: Checker, data_dir: str, keep: bool):
          f"skipped={[s['bucket'] for s in conf_skip]}")
     pick = next((u for u in usable if u["key"] == "overdue"), usable[0] if usable else None)
     c.ok(pick is not None, "[B5] 在线：仍有可用缓释维度")
-    for label, cond in (pick["buckets"] if pick else []):
-        g = q(mg.bucket_sql(conds, cond, cur, "chg", base))
+    _pick_agg = (pick or {}).get("agg")
+    for label, cond in ((pick or {}).get("buckets") or []):
+        g = q(mg.bucket_sql(conds, cond, cur, "chg", base, agg=_pick_agg))
         hit = g.get("hit") or {}
         n = _num(hit.get("n")) or 0
         if not n:

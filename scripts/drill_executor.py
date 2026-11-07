@@ -499,7 +499,7 @@ SELFTEST_PLAN = {
                         "SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5') THEN CAST(FORM_BAL_RMB AS DOUBLE) ELSE 0 END) "
                         "/ NULLIF(SUM(CAST(FORM_BAL_RMB AS DOUBLE)),0) AS npl_rate "
                         "FROM G_00PF_PEAS_LN_VCH_DV WHERE DATA_DAT = '20260831' AND BUS_BREED_CD LIKE 'A70%' "
-                        "AND GRTE_MOD_CD = '0100'",
+                        "AND GRTE_MOD_CD = '0101'",
                  "expect": "命中组不良率 ≥ 对照组 1.8 倍"},
                 {"step_id": "P001-S2", "intent": "对照组不良率", "group": "nonhit",
                  "tables": ["G_00PF_PEAS_LN_VCH_DV"],
@@ -508,7 +508,7 @@ SELFTEST_PLAN = {
                         "SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5') THEN CAST(FORM_BAL_RMB AS DOUBLE) ELSE 0 END) "
                         "/ NULLIF(SUM(CAST(FORM_BAL_RMB AS DOUBLE)),0) AS npl_rate "
                         "FROM G_00PF_PEAS_LN_VCH_DV WHERE DATA_DAT = '20260831' AND BUS_BREED_CD LIKE 'A70%' "
-                        "AND NOT (GRTE_MOD_CD = '0100')",
+                        "AND NOT (GRTE_MOD_CD = '0101')",
                  "expect": "对照组不良率接近全辖平均"},
             ],
         },

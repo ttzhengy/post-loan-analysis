@@ -96,7 +96,8 @@ def run_one(con, dx, cohort, args, cfg):
     for spec in usable:
         for label, cond in spec["buckets"]:
             g = _q(mg.bucket_sql(cohort["conds"], cond, args.slice,
-                                 args.level, args.base_slice, m3))
+                                 args.level, args.base_slice, m3,
+                                 agg=spec.get("agg")))
             hit = g.get("hit") or {}
             n = mg.to_num(hit.get("n")) or 0
             rate = mg.to_num(hit.get("npl_rate"))

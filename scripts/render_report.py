@@ -411,7 +411,7 @@ def chart_exd_seg(reg, metrics, overall, group):
                                 f"metrics.json exd_seg[{k}].bal / 逾期合计",
                                 f"SELECT SUM(FORM_BAL_RMB) FROM {VCH} WHERE DATA_DAT='{{slice}}' "
                                 f"AND BUS_BREED_CD LIKE 'A70%' "
-                                f"AND EXD_DAYS {_exd_cond(k)} -- ÷ 全部 EXD_DAYS>0 余额", group)
+                                f"AND CAST(EXD_DAYS AS BIGINT) {_exd_cond(k)} -- ÷ 全部 CAST(EXD_DAYS AS BIGINT)>0 余额", group)
             s.text(cur + wpx / 2, by + 17, "", 11, "#ffffff", "middle", "600", inner=inner)
         cur += wpx
     # 明细行
@@ -427,18 +427,18 @@ def chart_exd_seg(reg, metrics, overall, group):
         s.text(36, y - 3, k, 11.5, GRAY["700"])
         amt = _calc_label(reg, f"逾期{k}余额", f"{num(v['bal'] / 10000)} 万", f"metrics.json exd_seg[{k}].bal",
                           f"SELECT SUM(FORM_BAL_RMB) FROM {VCH} WHERE DATA_DAT='{{slice}}' AND BUS_BREED_CD LIKE 'A70%' "
-                          f"AND EXD_DAYS {_exd_cond(k)}", group)
+                          f"AND CAST(EXD_DAYS AS BIGINT) {_exd_cond(k)}", group)
         s.text(x0 + 196, y - 3, "", 11.5, GRAY["700"], "end", inner=amt)
         cnt = _calc_label(reg, f"逾期{k}笔数", f"{num(v.get('cnt'))} 笔", f"metrics.json exd_seg[{k}].cnt",
                           f"SELECT COUNT(*) FROM {VCH} WHERE DATA_DAT='{{slice}}' AND BUS_BREED_CD LIKE 'A70%' "
-                          f"AND EXD_DAYS {_exd_cond(k)}", group)
+                          f"AND CAST(EXD_DAYS AS BIGINT) {_exd_cond(k)}", group)
         s.text(x0 + 196, y - 3, "", 11.5, GRAY["500"], "start", inner="")
         s.text(x0 + 232, y - 3, "", 11.5, GRAY["700"], "start", inner=cnt)
         sh = _calc_label(reg, f"逾期{k}占比(明细)", pct(v["bal"] / total), f"metrics.json exd_seg[{k}].bal / 逾期合计",
                          "same as 堆叠条", group)
         s.text(x0 + 380, y - 3, "", 11.5, GRAY["700"], "start", inner=sh)
     tot = _calc_label(reg, "逾期余额合计", f"{num(total / 10000)} 万", "metrics.json exd_seg 求和",
-                      f"SELECT SUM(FORM_BAL_RMB) FROM {VCH} WHERE DATA_DAT='{{slice}}' AND BUS_BREED_CD LIKE 'A70%' AND EXD_DAYS>0",
+                      f"SELECT SUM(FORM_BAL_RMB) FROM {VCH} WHERE DATA_DAT='{{slice}}' AND BUS_BREED_CD LIKE 'A70%' AND CAST(EXD_DAYS AS BIGINT)>0",
                       group)
     s.text(20, H - 8, "", 11.5, TEAL["900"], "start", "600",
            inner="逾期余额合计 " + tot + _calc_label(reg, "逾期笔数合计", f"{num(total_cnt)} 笔",
@@ -1066,7 +1066,7 @@ def render(args):
                                    f"SELECT COUNT(DISTINCT ID_CARD_NO) FROM {VCH} WHERE {FILTER}", g, suffix=" 人")
     exd_bal = overall.get("exd_bal")
     exd_span = lambda: reg.unit("逾期余额", exd_bal, wan, "metrics.json overall.exd_bal",
-                                f"SELECT SUM(FORM_BAL_RMB) FROM {VCH} WHERE {FILTER} AND EXD_DAYS>0", g)
+                                f"SELECT SUM(FORM_BAL_RMB) FROM {VCH} WHERE {FILTER} AND CAST(EXD_DAYS AS BIGINT)>0", g)
 
     kpis = [
         kpi("不良率", rate_span(), "metrics.json overall.npl_rate", "",

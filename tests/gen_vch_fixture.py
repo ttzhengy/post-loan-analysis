@@ -41,25 +41,53 @@ COPY (
       'C' || lpad(CAST(CAST(random()*60000 AS INT) AS VARCHAR), 7, '0') AS CUST_NO,
       'F' || lpad(CAST(i AS VARCHAR), 8, '0')                              AS FORM_NO,
       CASE WHEN random() < 0.6 THEN 'A701' ELSE 'A702' END                 AS BUS_BREED_CD,
-      CASE WHEN random() < 0.55 THEN '0100' ELSE '0200' END                AS GRTE_MOD_CD,
+      CASE WHEN random() < 0.55 THEN '0101' ELSE '0201' END                AS GRTE_MOD_CD,
       ROUND(random()*800000, 2)                                            AS FORM_BAL_RMB,
       CASE WHEN random() < 0.5 THEN '1' ELSE '0' END                       AS CONT_LN_IND,
       CASE WHEN random() < 0.3 THEN 'CONT1' ELSE '' END                    AS CONTINUE_FLAG,
       CASE WHEN random() < 0.4 THEN '1' ELSE '0' END                       AS CYC_LN_IND,
       CASE WHEN random() < 0.5 THEN '01' ELSE '02' END                     AS RPAY_MOD_CD,
-      CASE WHEN random() < 0.5 THEN '20230101' ELSE '20250601' END         AS LN_DAT,
-      CAST(FLOOR(random()*200) AS INT)                                     AS EXD_DAYS
+      -- 放款年份需要有足够多的批次，否则时间集中性与「准入 vs 贷后」
+      -- 这两项检验都会因「可用批次不足」而不可用，等于这两项从未被真正测过。
+      CASE WHEN random() < 0.25 THEN '20220101'
+           WHEN random() < 0.50 THEN '20230101'
+           WHEN random() < 0.75 THEN '20240601'
+           ELSE '20250601' END                                              AS LN_DAT,
+      -- EXD_DAYS 必须存成 VARCHAR：真实 parquet 全列以 VARCHAR 落盘，
+      -- 若 fixture 用 INT 就测不出「字符串比较导致 100 落进 1~90」这类问题。
+      -- 逾期天数分布也要贴近现实：约 70% 客户从未逾期（0 天），
+      -- 否则「客群资质对照」检验会因为人人都有逾期而失去判别力。
+      CAST(CAST(
+        CASE WHEN random() < 0.70 THEN 0
+             ELSE FLOOR(random()*200) + 1 END
+      AS INT) AS VARCHAR)                                                    AS EXD_DAYS
     FROM range(120000) t(i)
   ),
   -- 两层物化：DuckDB 不允许在同一 SELECT 里对带副作用的表达式（random()）
   -- 既取别名又立刻引用，所以先把属性落成 real 表再算概率
   attr AS (
     SELECT *,
+      -- 真值设计必须让各检验能被真正区分，否则检验模块等于从未被验证：
+      --   1) 不良概率随放款年份递减 → 老批次更差，时间上不均匀，
+      --      这样「时间集中性」和「准入 vs 贷后」才有判别力；
+      --   2) 不良概率随金额递增 → 剂量反应可测；
+      --   3) 客群内正常客户与全辖正常客户的逾期分布一致 → 资质对照应为中性。
       CASE
-        WHEN GRTE_MOD_CD = '0100' AND FORM_BAL_RMB >= 500000 THEN 0.75
-        WHEN GRTE_MOD_CD = '0100' THEN 0.18
-        WHEN FORM_BAL_RMB  >= 500000 THEN 0.15
-        ELSE 0.03 END AS p_grade
+        WHEN GRTE_MOD_CD = '0101' AND FORM_BAL_RMB >= 500000 THEN 0.55
+        WHEN GRTE_MOD_CD = '0101' THEN 0.16
+        WHEN FORM_BAL_RMB  >= 500000 THEN 0.13
+        ELSE 0.03 END
+      -- 年份衰减：2022 年批次风险暴露时间最长，概率最高
+      * CASE substr(LN_DAT,1,4)
+          WHEN '2022' THEN 1.45
+          WHEN '2023' THEN 1.15
+          WHEN '2024' THEN 0.80
+          ELSE 0.45 END
+      -- 金额梯度：同客群内金额越大风险越高（剂量反应）
+      * CASE WHEN FORM_BAL_RMB >= 700000 THEN 1.35
+             WHEN FORM_BAL_RMB >= 500000 THEN 1.10
+             ELSE 1.0 END
+        AS p_grade
     FROM base
   ),
   marked AS (
