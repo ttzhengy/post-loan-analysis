@@ -53,8 +53,11 @@ def main():
         print(f"错误：数据目录不存在: {args.data_dir}", file=sys.stderr)
         return 2
 
-    result = {"schema_version": "2.0", "slice": args.slice, "features": [], "warnings": []}
+    result = {"schema_version": "2.0", "slice": args.slice, "features": [], "warnings": [],
+              "baseline": {}, "baseline_src": {}}
     F = result["features"]
+    BASE = result["baseline"]       # metric_label -> 全辖基线值
+    BASE_SRC = result["baseline_src"]  # metric_label -> 口径说明
 
     def load(fname, cols=None, nrows=None):
         """读 CSV/Parquet，usecols 只读必要列（内存优化）
@@ -136,6 +139,38 @@ def main():
         s = pd.to_numeric(c, errors="coerce").dropna()
         return round(float(s.mean()), 4) if len(s) else None
 
+    def col_wavg(df, rate_col, wgt_col, default=None):
+        """余额加权率 —— 全辖口径的正确算法。
+
+        分机构预聚合表里 col_mean 得到的是「各机构率的简单平均」，
+        全辖值应是 Σ(不良余额) / Σ(余额)。两者在有机构规模差异时并不相等。
+        """
+        r = col(df, rate_col)
+        w = col(df, wgt_col)
+        if r is None or w is None:
+            return default
+        rs = pd.to_numeric(r, errors="coerce")
+        ws = pd.to_numeric(w, errors="coerce")
+        mask = rs.notna() & ws.notna() & (ws > 0)
+        if not mask.any():
+            return default
+        tot = float(ws[mask].sum())
+        return round(float((rs[mask] * ws[mask]).sum() / tot), 6) if tot else default
+
+    def full_scope_baseline(df, rate_col, wgt_candidates, label):
+        """为率类指标产出全辖基线；找不到权重列则退回简单平均并注明口径。"""
+        for wcol in wgt_candidates:
+            if col(df, wcol) is not None:
+                v = col_wavg(df, rate_col, wcol)
+                if v is not None:
+                    BASE[label] = v
+                    BASE_SRC[label] = f"wavg:{wcol}"
+                    return
+        v = col_mean(df, rate_col)
+        if v is not None:
+            BASE[label] = v
+            BASE_SRC[label] = "mean(无权重列)"
+
     def col_ratio(df, name, pred, default=None):
         """pred 接收 Series 返回 bool Series，返回 True 占比"""
         c = col(df, name)
@@ -154,6 +189,16 @@ def main():
         """过滤掉 0/None/空值指标，避免报告出现 0 统计"""
         return {k: v for k, v in m.items() if v not in (0, 0.0, None, "")} if m else {}
 
+    def _attach_baseline(m, baseline_src_map=None):
+        """把 BASE 里对应标签的全辖值挂到该特征的 baseline 上。
+
+        只挂「该特征 metric 里确实有、且 BASE 里算出了」的标签，
+        避免把别的特征口径混进来。
+        """
+        if not m:
+            return {}
+        return {k: BASE[k] for k in m if k in BASE}
+
     def miss(fid, name, dim, stage, note=""):
         F.append({"feature_id": fid, "name": name, "dimension": dim, "stage": stage,
                   "status": "data_missing", "note": note})
@@ -161,12 +206,13 @@ def main():
     def approx(fid, name, dim, stage, table, metric, note=""):
         F.append({"feature_id": fid, "name": name, "dimension": dim, "stage": stage,
                   "status": "approximate", "table": table, "metric": nonempty_metric(metric),
-                  "note": note})
+                  "baseline": _attach_baseline(nonempty_metric(metric)), "note": note})
 
     def ok(fid, name, dim, stage, table, metric, evidence, note=""):
+        mm = nonempty_metric(metric)
         F.append({"feature_id": fid, "name": name, "dimension": dim, "stage": stage,
-                  "status": "ok", "table": table, "metric": nonempty_metric(metric),
-                  "evidence": evidence, "note": note})
+                  "status": "ok", "table": table, "metric": mm,
+                  "baseline": _attach_baseline(mm), "evidence": evidence, "note": note})
 
     # ================= 机构维度 =================
     # 1 零散获客
@@ -176,6 +222,7 @@ def main():
              "零散客户占比均值": col_mean(df, "DIVR_CUST_RATE"),
              "零散余额占比均值": col_mean(df, "DIVR_LN_BAL_RATE"),
              "零散不良率均值": col_mean(df, "DIVR_UHLTH_LN_RATE")}
+        full_scope_baseline(df, "DIVR_UHLTH_LN_RATE", ["DIVR_LN_BAL", "DIVR_LN_BAL_RMB", "LN_BAL"], "零散不良率均值")
         ok(1, "零散获客风险", "机构", "营销获客", "S_00PF_PEAS_DIVR_RSK_C4", m,
            "DIVR_CUST_RATE/DIVR_LN_BAL_RATE/DIVR_UHLTH_LN_RATE 全辖均值")
     else:
@@ -217,6 +264,7 @@ def main():
         m = {"机构数": len(df),
              "异常建档客户占比均值": col_mean(df, "TRS_RAT_CUST_PEA"),
              "异常建档不良率均值": col_mean(df, "TRS_RAT_NPL_PEAS")}
+        full_scope_baseline(df, "TRS_RAT_NPL_PEAS", ["TRS_RAT_LN_BAL", "LN_BAL", "RSK_LN_BAL"], "异常建档不良率均值")
         ok(4, "建档不规范风险", "机构", "贷前准入", "S_00PF_PEAS_LN_ARC_QLT_RSK_ORG_ANL_C4", m,
            "ARC_QLT_RSK_TYP 预聚合")
     else:
@@ -251,6 +299,7 @@ def main():
         m = {"机构数": len(df),
              "超额授信余额占比均值": col_mean(df, "RSK_LN_BAL_PPTN", col_mean(df, "RSK_BAL_PPTN")),
              "超额授信不良率均值": col_mean(df, "RSK_UHLTH_RATE")}
+        full_scope_baseline(df, "RSK_UHLTH_RATE", ["RSK_LN_BAL", "RSK_BAL", "LN_BAL"], "超额授信不良率均值")
         ok(7, "超额授信风险", "机构", "贷前准入", "S_00PF_PEAS_OVER_FL_AC_RSK_C4", m,
            "OVER_FL_AC_RSK_TYP 预聚合")
     else:
@@ -292,6 +341,8 @@ def main():
         m = {"机构数": len(df),
              "无还本续贷不良率均值": col_mean(df, "CTNU_LN_BAD_RATE"),
              "一键续贷不良率均值": col_mean(df, "ONE_CTNU_LN_BAD_RATE")}
+        full_scope_baseline(df, "CTNU_LN_BAD_RATE", ["CTNU_LN_BAL", "LN_BAL"], "无还本续贷不良率均值")
+        full_scope_baseline(df, "ONE_CTNU_LN_BAD_RATE", ["ONE_CTNU_LN_BAL", "LN_BAL"], "一键续贷不良率均值")
         ok(10, "接续不到位风险", "机构", "到期续贷", "S_00PF_PEAS_CONT_QUAL_C4", m,
            "CTNU_LN_BAD_RATE 预聚合")
     else:
@@ -317,6 +368,7 @@ def main():
     if df is not None and not df.empty:
         m = {"机构数": len(df),
              "产品不良率均值": col_mean(df, "BIZ_RAT_NPL_PEAS")}
+        full_scope_baseline(df, "BIZ_RAT_NPL_PEAS", ["BIZ_LN_BAL", "LN_BAL", "RSK_LN_BAL"], "产品不良率均值")
         ok(12, "高风险产品/专项", "机构", "其他", "S_00PF_PEAS_LN_BIZ_TYP_ORG_ANL_C4", m,
            "PEAS_LN_C4_BIZ 预聚合")
     else:
@@ -328,6 +380,7 @@ def main():
         m = {"机构数": len(df),
              "大额信用余额占比均值": col_mean(df, "LRG_RAT_BAL_PEAS"),
              "大额信用不良率均值": col_mean(df, "LRG_RAT_NPL_PEAS")}
+        full_scope_baseline(df, "LRG_RAT_NPL_PEAS", ["LRG_LN_BAL", "CR_LN_BAL", "LN_BAL"], "大额信用不良率均值")
         ok(13, "大额信用风险", "机构", "其他", "S_00PF_PEAS_LN_LRG_CR_ORG_ANL_C4", m,
            "大额信用预聚合")
     else:

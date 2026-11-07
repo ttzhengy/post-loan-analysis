@@ -78,6 +78,29 @@ COHORT_RULES = [
     {"rule_id": "G04", "name": "批量获客风险", "essence": "批量建档+低评分",
      "members": [14, 3], "method": "intersect",
      "desc": "批量建档客户经理 ∩ 低评分客户 → 批量获客风险"},
+
+    # ---- 以下 G05~G09：SQL 条件型客群，直接对 cohort_base 列过滤 ----
+    # 依据：本切片仅农户贷款(A70)，农户/个人凭证为同一批客户，客群只能按农贷内部属性切分
+    {"rule_id": "G05", "name": "小额贷款客群", "essence": "户均借款金额5万元以下",
+     "members": ["avg_amt < 50000"], "method": "condition",
+     "match_dim": "额度档", "match_bucket": "5万以下",
+     "desc": "户均额度 5 万以下 → 覆盖 M03/M04/M05/M06/M13/M16/M17"},
+    {"rule_id": "G06", "name": "存量老资产客群", "essence": "最早一笔放款在2023年及以前",
+     "members": ["fst_ln_year <= 2023"], "method": "condition",
+     "match_dim": "放款年份", "match_bucket": "2023",
+     "desc": "放款年份 2023 及以前 → 覆盖 M08/M09/M11/M14/M16"},
+    {"rule_id": "G07", "name": "脱贫户客群", "essence": "经营主体类型为脱贫户",
+     "members": ["ADMI_SUBJ_TYP = '01'"], "method": "condition",
+     "match_dim": "主体类型", "match_bucket": "脱贫户",
+     "desc": "主体类型 01 脱贫户 → 覆盖 M07/M15/M17"},
+    {"rule_id": "G08", "name": "种养大户客群", "essence": "经营主体类型为种养大户",
+     "members": ["ADMI_SUBJ_TYP = '06'"], "method": "condition",
+     "match_dim": "主体类型", "match_bucket": "种养大户",
+     "desc": "主体类型 06 种养大户 → 规模化经营风险"},
+    {"rule_id": "G09", "name": "边缘户客群", "essence": "经营主体类型为边缘户或一般农户(已核)",
+     "members": ["ADMI_SUBJ_TYP IN ('03','05')"], "method": "condition",
+     "match_dim": "主体类型", "match_bucket": "边缘户",
+     "desc": "主体类型 03/05 → 政策边缘群体，风险介于脱贫户与一般农户之间"},
 ]
 
 # ============ 对照画像维度（命中组 vs 正常组） ============
@@ -188,7 +211,8 @@ def build_base(con, data_dir, slice_dt, qlog):
                AVG(CAST(FORM_BAL_RMB AS DOUBLE)) AS avg_bal,
                AVG(CAST(LN_AMT_RMB AS DOUBLE)) AS avg_amt,
                MAX(CASE WHEN CAST(COALESCE(EXD_DAYS,'0') AS BIGINT) > 0 THEN 1 ELSE 0 END) AS has_exd,
-               MAX(CASE WHEN RSK_CLS_CD IN ('30','40','50') THEN 1 ELSE 0 END) AS has_npl
+               MAX(CASE WHEN RSK_CLS_CD IN ('30','40','50') THEN 1 ELSE 0 END) AS has_npl,
+               MIN(TRY_CAST(SUBSTR(LN_DAT,1,4) AS BIGINT)) AS fst_ln_year
         FROM read_parquet('{vch_glob}')
         WHERE DATA_DAT = '{slice_dt}' AND BUS_BREED_CD LIKE 'A70%'
         GROUP BY 1
@@ -202,7 +226,7 @@ def build_base(con, data_dir, slice_dt, qlog):
                MAX(CAST(COALESCE(TOT_DPS,'0') AS DOUBLE)) TOT_DPS
         FROM read_parquet('{fas_glob}') GROUP BY 1
     )
-    SELECT v.CUST_NO, v.avg_bal, v.avg_amt, v.has_exd, v.has_npl,
+    SELECT v.CUST_NO, v.avg_bal, v.avg_amt, v.has_exd, v.has_npl, v.fst_ln_year,
            d.CUR_PLCE_RES_YEAR, d.ADMI_SUBJ_TYP,
            f.FARM_LAND, f.TOT_DPS,
            dp.RMB_DP_BAL,
@@ -301,6 +325,65 @@ def main():
     # 主题客群
     themes = []
     for rule in COHORT_RULES:
+        # condition 型：整条 SQL 条件直接对 cohort_base 过滤
+        if rule["method"] == "condition":
+            cond = " AND ".join(str(c) for c in rule["members"])
+            sql = f"SELECT DISTINCT CUST_NO FROM cohort_base WHERE {cond}"
+            try:
+                con.execute("DROP TABLE IF EXISTS tmp_cohort_cond")
+                con.execute(f"CREATE TEMP TABLE tmp_cohort_cond AS {sql}")
+                n = con.execute("SELECT COUNT(*) FROM tmp_cohort_cond").fetchone()[0]
+                con.execute("DROP TABLE IF EXISTS tmp_cohort_members")
+                con.execute("CREATE TEMP TABLE tmp_cohort_members AS SELECT CUST_NO FROM tmp_cohort_cond")
+                sel = ", ".join(f"({expr}) AS d{i}" for i, (nm, expr) in enumerate(PROFILE_DIMS.items()))
+                row = con.execute(
+                    f"SELECT {sel} FROM cohort_base b JOIN tmp_cohort_members m ON m.CUST_NO = b.CUST_NO"
+                ).fetchone()
+                cohort_profile = ({nm: (round(float(v), 4) if v is not None else None)
+                                   for (nm, _), v in zip(PROFILE_DIMS.items(), row)}
+                                  if row else None)
+            except Exception as e:
+                qlog.add(stage="客群归因", table="cohort_base", query=rule["name"],
+                         result=f"ERROR {str(e)[:80]}", thought="condition 型客群失败")
+                continue
+            if not row:
+                continue
+            diff = {}
+            if cohort_profile and normal_profile:
+                for k in PROFILE_DIMS:
+                    cv, nv = cohort_profile.get(k), normal_profile.get(k)
+                    if cv is not None and nv is not None:
+                        diff[k] = round(cv - nv, 4)
+            # 客群自身不良率与 lift（余额加权）
+            npl_rate, lift = None, None
+            try:
+                r = con.execute(
+                    "SELECT SUM(CASE WHEN has_npl=1 THEN avg_bal ELSE 0 END)*1.0/"
+                    "NULLIF(SUM(avg_bal),0) FROM cohort_base WHERE " + cond
+                ).fetchone()[0]
+                b = con.execute(
+                    "SELECT SUM(CASE WHEN has_npl=1 THEN avg_bal ELSE 0 END)*1.0/"
+                    "NULLIF(SUM(avg_bal),0) FROM cohort_base"
+                ).fetchone()[0]
+                if r is not None:
+                    npl_rate = round(float(r), 6)
+                    lift = round(float(r) / float(b), 4) if b else None
+            except Exception:
+                pass
+            themes.append({
+                "rule_id": rule["rule_id"], "name": rule["name"], "essence": rule["essence"],
+                "desc": rule["desc"], "members": [str(c) for c in rule["members"]],
+                "member_sizes": {str(rule["members"][0]): int(n)},
+                "cohort_size": int(n), "cohort_profile": cohort_profile,
+                "normal_profile": normal_profile, "diff_vs_normal": diff,
+                "npl_rate": npl_rate, "lift": lift,
+                "match_dim": rule.get("match_dim"), "match_bucket": rule.get("match_bucket"),
+            })
+            print(f"  [{rule['rule_id']}] {rule['name']}: 客群 {n}")
+            qlog.add(stage="客群归因", table="cohort_base", query=f"{rule['name']}：{cond}",
+                     result=f"客群 {n}", thought="condition-型客群")
+            continue
+
         sets = []
         for fid in rule["members"]:
             cfg = FEATURE_SAMPLES.get(fid)

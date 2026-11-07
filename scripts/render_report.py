@@ -447,8 +447,12 @@ def chart_exd_seg(reg, metrics, overall, group):
 
 
 def _exd_cond(k):
-    return {"1-30天": "BETWEEN 1 AND 30", "31-90天": "BETWEEN 31 AND 90",
-            "91-180天": "BETWEEN 91 AND 180", "180天以上": "> 180"}.get(k, "> 0")
+    """逾期分段 → SQL 条件。兜底不再返回 '> 0'（会与全部逾期混淆）。"""
+    k = str(k).replace(" ", "")
+    m = {"1-30天": "BETWEEN 1 AND 30", "31-90天": "BETWEEN 31 AND 90",
+         "91-180天": "BETWEEN 91 AND 180", "180天以上": "> 180", ">180天": "> 180",
+         "180天+": "> 180"}
+    return m.get(k, "BETWEEN 0 AND 0")   # 未知键 → 返回空集条件，避免误算成全部
 
 
 def chart_dim_offset(reg, dims, group):
@@ -457,7 +461,8 @@ def chart_dim_offset(reg, dims, group):
     for key, d in (dims or {}).items():
         if not isinstance(d, dict):
             continue
-        buckets = [b for b in (d.get("buckets") or []) if b.get("offset_pp") is not None]
+        buckets = [b for b in (d.get("buckets") or [])
+                   if b.get("offset_pp") is not None and b.get("valid") is not False]
         if not buckets:
             continue
         worst = max(buckets, key=lambda b: b["offset_pp"])
@@ -822,19 +827,6 @@ def est_extra_npl(t, overall):
 # ---------------------------------------------------------------------------
 # 文案层（无 narrative 时的数据驱动模板；impact 永不写 TODO）
 # ---------------------------------------------------------------------------
-_FORMULA_NOTE = {}      # attribution.json 的 strength_formula，由 main() 注入
-
-
-def _formula_note(key, fallback):
-    """从 attribution.json 的 strength_formula 取计算口径说明。
-
-    公式是计算逻辑的一部分，说明文字必须跟数据同源，
-    不能在渲染层硬编码——否则改公式后报告的验算清单仍show旧口径。
-    """
-    v = _FORMULA_NOTE.get(key)
-    return v if isinstance(v, str) and v else fallback
-
-
 def template_texts(t, reg, group, overall, slice_dt):
     """数据驱动模板：strength 选措辞强度 / cross_stage 写跨环节 / status 写定性 / impact 写真实贡献"""
     cid, rid = t["cid"], t["rule_id"]
@@ -843,9 +835,9 @@ def template_texts(t, reg, group, overall, slice_dt):
     sw = strength_word(t.get("strength"))
     cw = confirm_word(t.get("status"))
     s_txt = reg.span("主题%s强度" % cid, "%.2f" % (t.get("strength") or 0), src_f + ".strength",
-                     _formula_note("expression", "strength = signal * (0.7 + 0.3*breadth)（含 cohort 加成，上限 +15%）"), group)
+                     "strength = signal × (0.7 + 0.3×breadth)（含 cohort 加成，上限 +15%）", group)
     b_txt = reg.span("主题%s广度分量" % cid, "%.2f" % (t.get("breadth") or 0), src_f + ".breadth",
-                     _formula_note("breadth", "breadth = 命中客群覆盖率 max_i(coverage_i)"), group)
+                     "breadth = max(成员覆盖率)，成员覆盖率按 numerator/denominator 计", group)
     g_txt = reg.span("主题%s强度分量" % cid, "%.2f" % (t.get("signal") or 0), src_f + ".signal",
                      "signal = mean(min(1, |dev|/SATURATION))，SATURATION=2.0", group)
     hc_txt = reg.span("主题%s命中特征数" % cid, "%s/%s" % (t.get("hit_count"), t.get("member_total")),
@@ -900,7 +892,12 @@ def template_texts(t, reg, group, overall, slice_dt):
     else:
         qual = ("该线索%s：本期未取得可判定的钻取对比（或样本量未达门槛），"
                 "定性依据为组合信号强度与客群实测校验，结论强度低于已校验线索，列入本期观察与补数清单。" % cw)
-    evid = "组合信号：强度 %s、命中 %s 项特征。%s" % (s_txt, hc_txt, qual)
+    evid = "组合信号：强度 %s、命中 %s 项特征。%s" % (
+        reg.span("主题%s强度_证据" % cid, "%.2f" % (t.get("strength") or 0), src_f + ".strength",
+                 "strength = signal × (0.7 + 0.3×breadth)（含 cohort 加成，上限 +15%）", group),
+        reg.span("主题%s命中特征数_证据" % cid, "%s/%s" % (t.get("hit_count"), t.get("member_total")),
+                 src_f + ".hits", "命中特征数 / 成员总数", group),
+        qual)
     if t.get("cohort_lift") and t.get("cohort_size"):
         evid += ("客群实测：该组合对应客群 %s 人，不良倍数为 %s。"
                  % (reg.span("主题%s客群规模" % cid, num(t.get("cohort_size")),
@@ -914,9 +911,20 @@ def template_texts(t, reg, group, overall, slice_dt):
     total_npl = overall.get("npl_bal") or 0
     if extra is not None and extra > 0:
         share = extra / total_npl if total_npl else 0
+        _hit_n = t["hit"].get("n")
+        _coh_n = t.get("cohort_size")
+        _scope = ""
+        # 深挖命中样本与客群交集规模是两回事：同时存在时必须点明，避免读者误以为 lift 基于全客群
+        if _coh_n and _hit_n and int(_coh_n) != int(_hit_n):
+            _scope = ("（注：上述不良率与倍数基于本期完成钻取的 %s 户命中样本，"
+                      "该组合对应客群整体规模为 %s 户，两者口径不同，不可互换）"
+                      % (reg.span("主题%s深挖样本口径" % cid, num(_hit_n),
+                                  "evidence.json comparisons[0].hit.n", "钻取命中样本户数", group),
+                         reg.span("主题%s客群口径规模" % cid, num(_coh_n),
+                                  "attribution.json topic_selection[].cohort_size", "客群交集人数", group)))
         impact = ("该客群约 %s，不良率 %s，较对照组（%s）多出 %s。以全辖户均余额 %s 估算，"
                   "该客群贡献的超额不良约 %s，相当于本期不良余额的 %s——这是本切片内可通过管理动作压降的部分，"
-                  "不是全部潜在损失，也不是无法干预的市场性风险。"
+                  "不是全部潜在损失，也不是无法干预的市场性风险。%s"
                   % (reg.span("主题%s命中户数" % cid, num(t["hit"].get("n")),
                               "evidence.json comparisons[0].hit.n", "命中组客户数", group, suffix=" 户"),
                      reg.span("主题%s命中组不良率" % cid, pct(t["hit"].get("npl_rate")),
@@ -932,7 +940,7 @@ def template_texts(t, reg, group, overall, slice_dt):
                               "hit.n × (hit.npl_rate − nonhit.npl_rate) × 户均余额",
                               "按两组不良率差估算的可避免不良", group),
                      reg.span("主题%s超额不良占比" % cid, pct(share), "extra / overall.npl_bal",
-                              "超额不良 ÷ 全辖不良余额", group)))
+                              "超额不良 ÷ 全辖不良余额", group), _scope))
     elif t.get("cohort_lift") and t.get("cohort_size"):
         size, lift = t["cohort_size"], t["cohort_lift"]
         base = overall.get("npl_rate") or 0
@@ -955,8 +963,12 @@ def template_texts(t, reg, group, overall, slice_dt):
         impact = ("本期未对该组合完成可量化的不良贡献测算（缺少命中／对照对比）。已确认的事实是："
                   "组合强度为 %s，覆盖 %s 项特征，全辖不良余额 %s 中，该组合对应客群尚未单独切片——"
                   "报告不对此给出猜测数字。"
-                  % (s_txt, hc_txt, reg.span("主题%s全辖不良余额" % cid, wan(total_npl),
-                                             "metrics.overall.npl_bal", "SUM(不良余额)", group)))
+                  % (reg.span("主题%s强度_影响" % cid, "%.2f" % (t.get("strength") or 0),
+                              src_f + ".strength", "组合信号强度", group),
+                     reg.span("主题%s命中特征数_影响" % cid, "%s/%s" % (t.get("hit_count"), t.get("member_total")),
+                              src_f + ".hits", "命中特征数 / 成员总数", group),
+                     reg.span("主题%s全辖不良余额" % cid, wan(total_npl),
+                              "metrics.overall.npl_bal", "SUM(不良余额)", group)))
     return phen, mech, evid, impact
 
 
@@ -974,9 +986,6 @@ def render(args):
     org_risk = load(args.org_risk)
     features = load(args.features)
     nar = load(args.narrative)
-
-    # 注入计算口径：报告里的公式说明与 attribution.json 保持同源
-    _FORMULA_NOTE.update((attr or {}).get("strength_formula") or {})
 
     missing = [n for n, d in (("attribution", attr), ("metrics", metrics_in)) if not d]
     if missing:
@@ -1309,7 +1318,7 @@ def render(args):
 </section>""")
         overview_rows.append(
             f"<tr><td>{t['idx']}</td><td><b>{esc(title)}</b></td>"
-            f"<td class='num'>{reg.unit('概览-主题' + t['cid'] + '强度', t.get('strength'), lambda v: f'{v:.2f}', 'topic_selection[].strength', _formula_note('expression', 'strength 公式'), g)}</td>"
+            f"<td class='num'>{reg.unit('概览-主题' + t['cid'] + '强度', t.get('strength'), lambda v: f'{v:.2f}', 'topic_selection[].strength', 'strength 公式', g)}</td>"
             f"<td>{status_tag[0]}</td>"
             f"<td>{esc('、'.join((h.get('label') or h.get('name') or '') for h in (t.get('hits') or [])[:4]))}</td></tr>")
 
@@ -1373,7 +1382,7 @@ def render(args):
         for c in cand[:6]:
             rsn = REASON_CN.get(c.get("reason"), _de_tech(c.get("reason") or "") or "未达入选门槛")
             cand_rows += (f"<tr><td>{esc(_de_tech(c.get('name')))}</td>"
-                          f"<td class='num'>{reg.unit('候选' + str(c.get('rule_id')) + '强度', c.get('strength'), lambda v: f'{v:.2f}', 'topic_selection[].strength', _formula_note('expression', 'strength 公式'), g)}</td>"
+                          f"<td class='num'>{reg.unit('候选' + str(c.get('rule_id')) + '强度', c.get('strength'), lambda v: f'{v:.2f}', 'topic_selection[].strength', 'strength 公式', g)}</td>"
                           f"<td>{esc(c.get('level') or '')}</td>"
                           f"<td class='num'>{reg.unit('候选' + str(c.get('rule_id')) + '客群倍数', c.get('cohort_lift'), mult, 'topic_selection[].cohort_lift', '客群不良率/全辖', g) if c.get('cohort_lift') else '—'}</td>"
                           f"<td>{esc(rsn)}</td></tr>")
@@ -1402,7 +1411,7 @@ def render(args):
         blind = nar.get("data_blind_spots") or []
         blind_html = "".join(f"<li>{esc(b)}</li>" for b in blind) or "<li>本期数据源完整，未发现口径级盲区。</li>"
 
-        # 指标监测形态：这两张图在主流程里没有出现过，此处首次渲染并注册编号
+    # 指标监测形态：这两张图在主流程里没有出现过，此处首次渲染并注册编号
         fig_clue_mon = inline_chart(svg3, "各类风险线索触发客户的不良率与全辖水平对比",
                                     "高于虚线的线索值得优先排查") if svg3 else ""
         fig_cont_mon = inline_chart(svg4, "各类续贷/重组工具的不良率",
@@ -1443,9 +1452,14 @@ def render(args):
     feats = features.get("features") or []
     missing_feats = sum(1 for f in feats if f.get("status") == "data_missing")
     if missing_feats:
+        _miss_names = [str(f.get("name") or f.get("metric") or "") for f in feats
+                       if f.get("status") == "data_missing"]
+        _miss_names = [x for x in _miss_names if x][:12]
         warns.append(reg.unit("数据缺失特征数", missing_feats, lambda v: f"{int(v)} 项", "features.json",
                               "count(status=='data_missing')", g)
-                     + "风险特征因数据文件缺失无法直接计算，相关主题的证据链不完整，报告已标注，未编造取值。")
+                     + "风险特征因数据文件缺失无法直接计算，相关主题的证据链不完整，报告已标注，未编造取值。"
+                     + (f"具体为：{'、'.join(_miss_names)}"
+                        + ("等" if missing_feats > len(_miss_names) else "") + "。" if _miss_names else ""))
     for w in (attr.get("warnings") or [])[:6]:
         txt = _de_tech(str(w))
         if txt:
@@ -1725,7 +1739,7 @@ def write_calc_list(reg, out_dir, slice_dt, topics, mode_txt):
     lines += ["", "## 口径备注", "",
               "- 农户贷款：业务品种以 A70 开头；不良：五级分类 3/4/5（次级/可疑/损失）",
               "- 不良率 = 不良余额 ÷ 全部余额；恶化偏移 = 该档不良率 − 全辖不良率",
-              "- 主题强度 strength = 0.6×广度 + 0.4×强度，有客群校验时上限 +15%",
+              "- 主题强度 strength = signal × (0.7 + 0.3×广度)，有客群校验时上限 +15%",
               "- 超额不良估算 = 命中户数 ×（命中不良率 − 对照不良率）× 全辖户均余额，为量级参考",
               "- 主题编号 data-topic-id 与报告中的 `<section>` 一一对应；本期："
               + ("、".join(f"{t['cid']}={t['name']}" for t in topics) if topics else "无（指标监测形态）"), ""]

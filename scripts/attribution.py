@@ -9,9 +9,9 @@
 
 相对 v2.0 的实质变化（对应已诊断的 6 个缺陷）：
 1. 强度不再等于 hit_ratio。改为 CONTRACT 第 3 节公式：
-       breadth  = 命中客群覆盖率 max_i(coverage_i)（缺失时退回 hit_count / total_members）
+       breadth  = hit_count / total_members
        signal   = mean(norm(dev))  over hits,  norm(dev)=min(1, |dev|/SATURATION)
-       strength = signal * (0.7 + 0.3*breadth)
+       strength = 0.6*breadth + 0.4*signal
    0.4 的强度分量此前从未实现，是「C01/C02/C03 永远霸榜」的根因。
 2. 规则不再硬编码，改读 references/rules.json 的 manual + mined + derived 三段。
 3. expr 支持 all_of / any_of / min_hits / min_any_hits / scale_max（一阶信号 + 低阶组合），
@@ -190,8 +190,6 @@ class SignalTable:
         self.warnings = warnings
         self.hit_min_dev = float(hit_min_dev)
         self.base_rate = _num((self.signals.get("overall") or {}).get("npl_rate"))
-        # 全辖余额：用于把维度档位的余额折算成覆盖率（breadth 的数据来源）
-        self.total_bal = _num((self.signals.get("overall") or {}).get("bal"))
         self.units = {}          # uid -> unit
         self.features = {}       # feature_id -> unit
         self.dim_buckets = []    # list of units（维度档位）
@@ -219,11 +217,6 @@ class SignalTable:
                 "dev": None, "raw": None, "baseline_value": None, "dev_label": None,
                 "score": None,
             }
-            # coverage：该特征命中的业务量占全辖的比例（numerator/denominator）。
-            # 用于 breadth 打分——「覆盖多少客群」应由数据给出，
-            # 不能由「规则写了几条成员」决定。
-            num, den = _num(f.get("numerator")), _num(f.get("denominator"))
-            unit["coverage"] = (num / den) if (num is not None and den) else None
             dev, raw, base, dlabel, _score = compute_deviation(unit, self.warnings)
             unit["raw"], unit["baseline_value"], unit["dev_label"] = raw, base, dlabel
             unit["dev"] = dev
@@ -265,10 +258,6 @@ class SignalTable:
                     "dev_label": "npl_rate", "computable": rate is not None,
                     "score": rate,
                 })
-                # coverage：该档余额占全辖余额的比例
-                bal = _num(b.get("bal"))
-                self.dim_buckets[-1]["coverage"] = (
-                    bal / self.total_bal) if (bal is not None and self.total_bal) else None
 
         # ---- clue ----
         for ctype, c in (sig.get("clue_matrix") or {}).items():
@@ -282,8 +271,6 @@ class SignalTable:
                 "trigger_npl_pptn": _num(c.get("trigger_npl_pptn")),
                 "raw": c, "computable": lift is not None or _num(c.get("verify_false_pptn")) is not None,
             }
-            # coverage：线索触达的余额占比（数据自带口径）
-            self.clues[ctype]["coverage"] = _num(c.get("coverage_bal_pptn"))
 
         # ---- continuation ----
         cont = sig.get("continuation") or {}
@@ -298,9 +285,6 @@ class SignalTable:
                 # 其强度直接取不良率本身的严重程度（见 norm_of）
                 "computable": _num(t.get("npl_rate")) is not None,
             }
-            bal = _num(t.get("bal"))
-            self.cont[tool]["coverage"] = (
-                bal / self.total_bal) if (bal is not None and self.total_bal) else None
         chain = cont.get("chain") or {}
         for key in ("rolling", "resolving"):
             c = chain.get(key) or {}
@@ -310,10 +294,6 @@ class SignalTable:
                 "cnt": int(_num(c.get("cnt")) or 0), "raw": c,
                 "computable": _num(c.get("npl_rate")) is not None,
             }
-            cnt = _num(c.get("cnt"))
-            total_cnt = _num((self.signals.get("overall") or {}).get("cnt"))
-            self.cont[key]["coverage"] = (
-                cnt / total_cnt) if (cnt is not None and total_cnt) else None
 
     # ---- 求值 ----
     def feature_unit(self, spec):
@@ -528,11 +508,7 @@ def evaluate_rule(rule, sigtab, thr):
         if min_hits > 0 and len([m for m in combo]) + (min_any if any_selected else 0) > scale_max:
             continue
         ev = Evaluation(rule, diag)
-        # 组合的 coverage 取成员中的最大值：规则描述的现象覆盖面
-        # 由「覆盖最广的那个特征」决定，而不是相加（相加会越界 >1）。
-        covs = [m[1].get("coverage") for m in members if m[1].get("coverage") is not None]
-        ev.compute(members, total_members, thr, n_no_baseline,
-                   coverage=max(covs) if covs else None)
+        ev.compute(members, total_members, thr, n_no_baseline)
         if best is None or better_eval(ev, best):
             best = ev
 
@@ -730,30 +706,13 @@ class Evaluation:
         self.reject_reason = None
         self.reject_note = ""
 
-    def compute(self, members, total_members, thr, n_no_baseline=0, coverage=None):
+    def compute(self, members, total_members, thr, n_no_baseline=0):
         self.members = members
         self.hit_count = len(members)
-        # ---- breadth：命中成员数 / 规则成员数 ----
-        # 注意：这个值受「规则怎么写的」影响，成员写得少则容易拿高分。
-        # 单成员规则只要命中就是 1.0，与「现象是否普遍」无关。
-        # 因此它只作为 rule_breadth 保留在诊断里，不再直接主导 strength。
-        self.rule_breadth = self.hit_count / total_members if total_members else 0.0
-        # ---- breadth：真正用于打分的「现象覆盖度」----
-        # 取命中客群在本维度的实际占比（coverage），缺失时退回 rule_breadth。
-        # 这样「覆盖 90% 客群的弱信号」和「覆盖 0.5% 客群的极强信号」
-        # 都能被正确区分，而不是取决于规则写了几条成员。
-        self.breadth = max(0.0, min(1.0, coverage)) if coverage is not None else self.rule_breadth
+        self.breadth = self.hit_count / total_members if total_members else 0.0
         norms = [m[2] for m in members if m[2] is not None]
         self.signal = sum(norms) / len(norms) if norms else 0.0
-        # ---- strength：signal 主导、breadth 只作调节 ----
-        # 旧公式 strength = 0.6*breadth + 0.4*signal 的病根：breadth 权重 0.6，
-        # 导致「几乎无偏离但覆盖满」(D04: lift 1.11, signal 0.05) 能压过
-        # 「强偏离但覆盖有限」(M13: lift 3.68, signal 0.75)。
-        # 风险归因的核心是找偏离，不是找覆盖面，故改为：
-        #   strength = signal * (0.7 + 0.3*breadth)
-        # signal 是主因（乘性），breadth 只在 0.7~1.0 区间做调节，
-        # 覆盖极小但偏离极强的线索不会被埋没，覆盖广但无偏离的也不会虚高。
-        self.strength = self.signal * (0.7 + 0.3 * self.breadth)
+        self.strength = 0.6 * self.breadth + 0.4 * self.signal
         self.n_no_baseline = n_no_baseline
         return self
 
@@ -1056,6 +1015,25 @@ def run(signals, rules_doc, saturation=None, overrides=None):
     candidates = [t for t in topic_selection if t["decision"] == "candidate"]
     rejected = [t for t in topic_selection if t["decision"] == "rejected"]
 
+    # 主题同源检测：命中成员高度重叠的主题实际上是同一资产的不同切面，
+    # 报告里应合并叙述，否则读者会误以为是多个独立发现。
+    for i, a in enumerate(selected):
+        a_refs = {str(h.get("ref")) for h in (a.get("hits") or []) if h.get("ref")}
+        if not a_refs:
+            continue
+        same = []
+        for b in selected[i + 1:]:
+            b_refs = {str(h.get("ref")) for h in (b.get("hits") or []) if h.get("ref")}
+            if not b_refs:
+                continue
+            overlap = a_refs & b_refs
+            jac = len(overlap) / len(a_refs | b_refs)
+            if jac >= 0.5:
+                same.append({"rule_id": b.get("rule_id"), "name": b.get("name"),
+                             "jaccard": round(jac, 3), "shared": sorted(overlap)})
+        if same:
+            a["same_source_as"] = same
+
     # 主题选择轨迹汇总：拒绝原因分布（给预览版渲染用）
     reason_count = {}
     for t in topic_selection:
@@ -1070,14 +1048,13 @@ def run(signals, rules_doc, saturation=None, overrides=None):
         "thresholds": thr,
         "strength_formula": {
             "expression": "strength = signal * (0.7 + 0.3*breadth)",
-            "breadth": "命中客群覆盖率 max_i(coverage_i)，缺失时退回 hit_count/total_members",
+            "breadth": "max_i(coverage_i)，成员覆盖率最大值（feature=numerator/denominator，"
+                       "dim_bucket=该档余额/总余额，clue=coverage_bal_pptn，cont=余额/总余额）",
             "signal": "mean_i( min(1, |dev_i| / SATURATION) ) over hits",
             "cohort_bonus": "strength *= (1 + 0.15*min(1,(cohort_lift-1)/3))，仅当存在 cohort 校验",
             "levels": {"显著": thr["significant"], "一般": thr["moderate"],
                        "弱信号": thr["weak"]},
             "degrade_rule": "无 cohort 校验（或 lift/sample 不达标）的规则最高只能标「一般」",
-            "rationale": "风险归因以「偏离强度」为主线：signal 乘性主导，breadth 仅在 0.7~1.0 区间调节。"
-                         "旧公式 0.6*breadth+0.4*signal 让覆盖率压过偏离度，会把 lift 1.11 的规则排在 lift 3.68 之前。",
         },
         "rule_stats": stats,
         "coverage": {

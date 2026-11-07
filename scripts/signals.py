@@ -32,6 +32,12 @@ SCHEMA_VERSION = "3.0"
 # 维度定义：把 overview.json 的 8 大维度收口成引用层需要的稳定 key
 # overview 的 dimensions 是 {dim_group: {dim_name: [items]}}，这里做两层展平
 # ---------------------------------------------------------------------------
+# 维度档位最小样本门槛：余额占全辖低于此比例的档位，不良率不稳定（易出现 100% 异常值），
+# 不参与不良率排名与展示。0.001 = 全辖余额的 0.1%。
+MIN_DIM_BUCKET_PPTN = 0.001
+# 循环论证维度：五级分类/核销状态本身就是不良定义的来源，用它们解释不良率是同义反复，
+# 不进入归因维度（仍可保留在信号里供 drill 使用）
+CIRCULAR_DIMS = {"五级分类", "核销状态", "风险分类", "不良状态"}
 DIM_STAGE = {
     "担保方式": "贷前", "期限档": "贷前", "额度档": "贷前", "还款方式": "贷前",
     "循环标识": "贷前", "主体类型": "贷前", "首贷与否": "贷前", "性别": "贷前",
@@ -116,6 +122,10 @@ def build_dimensions(overview, overall, warnings):
             # 维度中文名缺失时退回 group 名，避免把 "buckets" 当维度名显示
             if not dim_name or dim_name in ("buckets", "items", "values"):
                 dim_name = group
+            # 循环论证维度不进入归因（五级分类/核销状态即不良定义本身）
+            if dim_name in CIRCULAR_DIMS:
+                warnings.append(f"{dim_name}：循环论证维度，已排除出归因维度")
+                continue
             # 同一维度名可能出现在不同 group，用 group 前缀消歧
             key = dim_name if dim_name not in dims_out else f"{group}·{dim_name}"
             buckets = []
@@ -146,6 +156,21 @@ def build_dimensions(overview, overall, warnings):
                 })
             if not buckets:
                 continue
+            # 最小样本门槛：余额过小的档位不良率不稳定（常见 100% 异常值），
+            # 低于全辖余额 min_dim_bucket_pptn 的档位标记为不可用，不参与排名/展示
+            total_bal = _num(overall.get("bal")) or 0.0
+            min_bal = total_bal * MIN_DIM_BUCKET_PPTN
+            dropped = []
+            for b in buckets:
+                if min_bal > 0 and (b.get("bal") or 0) < min_bal:
+                    b["valid"] = False
+                    b["drop_reason"] = "sample_too_small"
+                    dropped.append(b.get("bucket"))
+            if dropped:
+                warnings.append(
+                    f"{dim_name}：{len(dropped)} 个档位余额低于全辖 {MIN_DIM_BUCKET_PPTN:.3%}，"
+                    f"已剔除不良率排名（{', '.join(str(x) for x in dropped[:5])}"
+                    f"{' 等' if len(dropped) > 5 else ''}）")
             dims_out[key] = {
                 "name": dim_name,
                 "group": group,
@@ -276,19 +301,26 @@ def build_features(features, warnings):
         warnings.append("features.json 缺失或为空：无基础特征，规则引擎将只能依赖维度/线索信号")
         return out
     n_missing_baseline = 0
+    file_base = features.get("baseline") or {} if isinstance(features, dict) else {}
     for f in features.get("features", []):
         if not isinstance(f, dict):
             continue
         fid = f.get("feature_id")
         metric = {k: _num(v) for k, v in (f.get("metric") or {}).items() if _num(v) is not None}
         baseline = {k: _num(v) for k, v in (f.get("baseline") or {}).items() if _num(v) is not None}
+        if not baseline and file_base:
+            # 回退到 features.json 顶层的全辖基线字典（risk_features 产出的真口径）
+            baseline = {k: _num(file_base[k]) for k in metric
+                        if k in file_base and _num(file_base[k]) is not None}
         if baseline:
             bsrc = "inline"
         else:
             baseline, bsrc = _infer_baseline(fid, metric)
             if not baseline:
-                bsrc = "missing"
-                n_missing_baseline += 1
+                # deferred* 表示「可由 overall 回填」，交由 enrich_baseline 处理；
+                # not_applicable / unavailable 表示本就没有基线概念，不算缺失
+                if not bsrc.startswith("deferred") and bsrc != "not_applicable":
+                    n_missing_baseline += 1
         note = f.get("note") or ""
         if bsrc == "missing" and metric:
             note = (note + "；" if note else "") + "无全辖基线，强度分量记 0"
@@ -302,16 +334,61 @@ def build_features(features, warnings):
         }
         out.append(item)
     if n_missing_baseline:
-        warnings.append(f"{n_missing_baseline} 个特征无全辖基线（baseline），其强度分量将记 0")
+        warnings.append(
+            f"{n_missing_baseline} 个特征的指标口径与全辖不良率不同构（如审批通过率、逾期占比、"
+            f"人均水平值），未设基线，其强度分量记 0；这些特征仍可凭维度偏离与线索数据参与归因，"
+            f"不代表数据缺失"
+        )
     return out
 
 
-# 全辖基线推断表：不是编数据，而是把「该特征的 metric 天然对应的全辖口径」登记下来。
-# 结构：feature_id -> [(metric_label, 全辖字典路径, 换算说明)]
-# 全辖字典由 signals 自己算（全辖不良率、全辖信用余额占比=1 等），取不到就留空。
+# 全辖基线推断：按 metric 标签的**语义后缀**匹配，而不是按 feature_id 硬编码。
+# 原因：risk_features.py 的 metric 是多键字典（机构数/各类占比/各类不良率混排），
+# 每个 feature 的键名随表结构变化，硬编码 id→label 无法覆盖。
+#
+# 规则分三类：
+#   1) 率类（*不良率*）→ 全辖不良率；这是唯一有严格同构全辖口径的指标
+#   2) 计数类（机构数/任务数/记录数…）→ 无基线概念，标 n/a，不算缺失
+#   3) 其余（占比均值/平均分/余额）→ 维度内相对值，全辖口径不必然同构，标 unavailable
+#
+# baseline_src 取值：
+#   inline       — features.json 自带 baseline
+#   overall_npl  — 用全辖不良率回填
+#   not_applicable — 计数类，不适用基线（不计入缺失）
+#   unavailable  — 率类之外的无基线指标（计入降级，但不虚报 missing）
+COUNT_LABELS = {
+    "机构数", "任务数", "记录数", "流程数", "客户经理数", "评分记录数",
+    "征信覆盖客户数", "线索类型数", "担保类型数", "客户数", "笔数", "户数",
+    "审批拒绝数", "未办结任务数", "已办结任务数", "高风险经理数", "样本数",
+}
+
+
+def _is_count_label(label):
+    if label in COUNT_LABELS:
+        return True
+    return label.endswith(("数", "个数", "笔数", "户数", "份数"))
+
+
+def _is_rate_label(label):
+    """只有「不良率」类指标与全辖不良率严格同构，可用作基线。
+
+    「通过率」「未办结率」「占比」等虽也是率，但分母语义完全不同
+    （审批流程 / 催收任务 / 余额结构），套用全辖不良率会得到假的强度值。
+    """
+    return "不良率" in label
+
+
+def _is_ratio_to_normal(label):
+    """倍数型指标：metric 本身已是「实测/正常水平」，基线恒为 1.0。
+
+    合成数据集与部分真实特征采用这种口径（如「零散获客强度 3.4」= 3.4 倍）。
+    这类指标不需要全辖不良率，基数是 1。
+    """
+    return label.endswith("强度") or label.endswith("倍数") or label.endswith("指数")
+
+
 BASELINE_RULES = {
-    # 率类特征：全辖基线就是全辖不良率（同一口径下"该特征命中率"不可能低于不良率，
-    # 因此用"若干特征共享同一全辖分母"的做法：基线取全辖不良率，作为景气基准）
+    # 保留少量显式登记（历史兼容），语义匹配为主
     1: [("零散不良率均值", "npl_rate")],
     2: [("信用类不良率均值", "npl_rate")],
     4: [("异常建档不良率均值", "npl_rate")],
@@ -320,33 +397,77 @@ BASELINE_RULES = {
 
 
 def _infer_baseline(fid, metric):
-    """按特征语义推断全辖基线。返回 ({label: value}, src)。
+    """按 metric 标签语义推断基线。返回 ({label: value}, src)。
 
-    只对「本身就是率、且全辖口径必然同构」的指标做推断，其余一律 missing，
-    宁缺勿错——extrapolate 一个假 baseline 会让强度分量失真。
+    此处只做「能否推出」的判断，具体值由 enrich_baseline() 用 overall 填。
     """
-    rules = BASELINE_RULES.get(fid)
-    if not rules:
+    if not metric:
         return {}, "missing"
-    return {}, "deferred"  # 由 enrich_baseline() 用 overall 填
+    # 显式登记优先
+    rules = BASELINE_RULES.get(fid)
+    if rules:
+        for label, _ref in rules:
+            if label in metric:
+                return {}, "deferred"
+    # 语义匹配：至少有一个率类标签
+    if any(_is_rate_label(k) for k in metric):
+        return {}, "deferred_rate"
+    # 倍数型：基线恒为 1.0，无需 external 值
+    if any(_is_ratio_to_normal(k) for k in metric):
+        return {}, "deferred_ratio"
+    # 全为计数类 → 不适用基线
+    if all(_is_count_label(k) for k in metric):
+        return {}, "not_applicable"
+    return {}, "unavailable"
 
 
 def enrich_baseline(feature_list, overall):
-    """用 overall + 维度数据回填 baseline（两遍：先收基线，再逐特征匹配）"""
+    """用 overall 回填 baseline：率类指标 → 全辖不良率。"""
     npl_rate = _num(overall.get("npl_rate"))
+    n_filled = 0
     for f in feature_list:
         if f.get("baseline"):
             continue
-        rules = BASELINE_RULES.get(f.get("feature_id"))
-        if not rules or npl_rate is None:
+        fid = f.get("feature_id")
+        metric = f.get("metric") or {}
+        if not metric:
             continue
-        filled = {}
-        for label, ref in rules:
-            if ref == "npl_rate" and label in (f.get("metric") or {}):
-                filled[label] = npl_rate
-        if filled:
-            f["baseline"] = filled
-            f["baseline_src"] = "overall_npl_rate"
+
+        # 1) 显式登记
+        rules = BASELINE_RULES.get(fid)
+        if rules and npl_rate is not None:
+            filled = {label: npl_rate for label, ref in rules
+                      if ref == "npl_rate" and label in metric}
+            if filled:
+                f["baseline"] = filled
+                f["baseline_src"] = "overall_npl"
+                n_filled += 1
+                continue
+
+        # 2) 语义匹配：所有率类标签都用全辖不良率作基准
+        if npl_rate is not None:
+            rate_labels = [k for k in metric if _is_rate_label(k)]
+            if rate_labels:
+                f["baseline"] = {k: npl_rate for k in rate_labels}
+                f["baseline_src"] = "overall_npl"
+                n_filled += 1
+                continue
+
+        # 3) 倍数型：基线恒为 1.0
+        ratio_labels = [k for k in metric if _is_ratio_to_normal(k)]
+        if ratio_labels:
+            f["baseline"] = {k: 1.0 for k in ratio_labels}
+            f["baseline_src"] = "normal_1_0"
+            n_filled += 1
+            continue
+
+        # 4) 无基线：区分「不适用」和「不可得」，都不再虚报 missing
+        if all(_is_count_label(k) for k in metric):
+            f["baseline_src"] = "not_applicable"
+        else:
+            f["baseline_src"] = "unavailable"
+        f["baseline"] = {}
+    return n_filled
 
 
 # ---------------------------------------------------------------------------
@@ -435,6 +556,37 @@ def build_continuation(org_risk, features, overall, warnings):
 # ---------------------------------------------------------------------------
 # 5.5 cohort_validation：把 cohort.json（客群级实测）按规则折算成当期校验
 # ---------------------------------------------------------------------------
+def _split_members(expr):
+    """把规则 expr 的成员拆成 (特征id列表, 维度桶列表)
+
+    维度桶形如 {"dim_bucket": {"dimension": "额度档", "bucket": "5万以下", ...}}
+    bucket_prefix 型（如 "2023"）也归一为前缀匹配键，由调用方按前缀查。
+    返回 dim 项为 (dimension, bucket) 元组。
+    """
+    fids, dims = [], []
+    stack = [expr]
+    while stack:
+        cur = stack.pop()
+        if isinstance(cur, dict):
+            for k, v in cur.items():
+                if k in ("all_of", "any_of", "none_of") and isinstance(v, list):
+                    stack.extend(v)
+                elif k == "dim_bucket" and isinstance(v, dict):
+                    d = v.get("dimension")
+                    b = v.get("bucket") or v.get("bucket_prefix")
+                    if d and b:
+                        dims.append((str(d), str(b)))
+                elif k == "feature" and isinstance(v, dict):
+                    fid = v.get("feature_id")
+                    if isinstance(fid, (int, float)):
+                        fids.append(int(fid))
+        elif isinstance(cur, list):
+            stack.extend(cur)
+        elif isinstance(cur, (int, float)):
+            fids.append(int(cur))
+    return fids, dims
+
+
 def build_cohort_validation(cohort, rules_doc, warnings):
     """把 cohort.json 的「单特征客群实测」折算成「规则级客群校验」。
 
@@ -459,18 +611,25 @@ def build_cohort_validation(cohort, rules_doc, warnings):
     if not items:
         return out
     by_fid = {}
+    by_dim = {}
     for it in items:
         fid = it.get("feature_id")
         lift = _num(it.get("lift"))
-        if fid is None or lift is None or lift <= 0:
+        if lift is None or lift <= 0:
             continue
-        by_fid[int(fid)] = {
+        rec = {
             "lift": lift,
-            "size": _num(it.get("size")),
+            "size": _num(it.get("size")) or _num(it.get("cohort_size")),
             "npl_rate": _num(it.get("npl_rate")),
             "check": it.get("check"),
         }
-    if not by_fid:
+        # 维度桶型客群（G05~G09）：按 (维度名, 档位) 匹配规则成员
+        md, mb = it.get("match_dim"), it.get("match_bucket")
+        if md and mb:
+            by_dim[(str(md), str(mb))] = rec
+        if fid is not None:
+            by_fid[int(fid)] = rec
+    if not by_fid and not by_dim:
         return out
 
     base_rate = _num(((cohort or {}).get("overall") or {}).get("npl_rate"))
@@ -492,14 +651,15 @@ def build_cohort_validation(cohort, rules_doc, warnings):
 
     for r in rules:
         rid = r.get("rule_id")
-        members = list((r.get("expr") or {}).get("all_of") or [])
-        members += list((r.get("expr") or {}).get("any_of") or [])
-        members = [int(m) for m in members if isinstance(m, (int, float))]
-        hits = [by_fid[m] for m in members if m in by_fid]
+        expr = r.get("expr") or {}
+        fid_members, dim_members = _split_members(expr)
+        hits = ([by_fid[m] for m in fid_members if m in by_fid]
+                + [by_dim[k] for k in dim_members if k in by_dim])
+        total_members = len(fid_members) + len(dim_members)
         if not hits:
             continue
         # 至少一半成员有实测才做折算，否则样本不代表性
-        if len(hits) * 2 < len(members) and len(hits) < 2:
+        if len(hits) * 2 < total_members and len(hits) < 2:
             continue
         geo = 1.0
         for h in hits:
@@ -512,9 +672,11 @@ def build_cohort_validation(cohort, rules_doc, warnings):
             "npl_rate": (round(base_rate * rule_lift, 6) if base_rate else None),
             "basis": "cohort_geomean",
             "member_lifts": {str(m): round(by_fid[m]["lift"], 4)
-                             for m in members if m in by_fid},
+                             for m in fid_members if m in by_fid},
+            "dim_lifts": {f"{k[0]}·{k[1]}": round(by_dim[k]["lift"], 4)
+                          for k in dim_members if k in by_dim},
             "measured_features": len(hits),
-            "total_features": len(members),
+            "total_features": total_members,
             "check": next((h["check"] for h in hits if h.get("check")), None),
         }
     if out:
