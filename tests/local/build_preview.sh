@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
-# build_preview.sh — 一键产出 4 份预览报告 + 验算清单
-# 用法: bash tools/build_preview.sh [输出根目录，默认 /tmp/post_loan_preview]
+# build_preview.sh —【仅本地校验用，不属于 skill 主体】
+#
+# ⚠️ 正式分发和使用请用 Python 版：python tools/build_preview.py
+#    skill 在 Windows 上运行，没有 bash，.sh 不得进入交付包。
+#
+# 一键产出 4 份预览报告 + 验算清单
+# 用法: bash tests/local/build_preview.sh [输出根目录]
 #   合成数据只需链路可跑通；真实数据请先 export DATA_DIR=<parquet目录>，
 #   否则钻取走 dry-run（不出数字），报告会显式标注证据未执行。
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT="$(dirname "$HERE")"
+ROOT="$(dirname "$(dirname "$HERE")")"   # tests/local → tests → 仓库根
 OUT_ROOT="${1:-/tmp/post_loan_preview}"
 
 # 解释器探测：环境变量 → 包内 venv → 系统 python3

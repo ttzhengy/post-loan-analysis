@@ -38,6 +38,13 @@ import json
 import sys
 from pathlib import Path
 
+# Windows 控制台默认 GBK，直接 print 中文会抛 UnicodeEncodeError。
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, ValueError):
+        pass
+
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import common  # noqa: E402
@@ -494,7 +501,10 @@ def conds_conflict(conds):
         if len(eq_sets) >= 2:
             inter = set.intersection(*eq_sets)
             if not inter:
-                return True, f"字段 {f} 的取值集合互不重叠（{eq_sets}），交集恒为空"
+                # 排序后再格式化：set 的迭代顺序受哈希随机化影响，
+                # 不排序会导致同样的输入每次生成不同的提示文字，输出不可复现。
+                shown = [sorted(s) for s in eq_sets]
+                return True, f"字段 {f} 的取值集合互不重叠（{shown}），交集恒为空"
             # 前缀互斥：A701 与 A702 都不互为前缀
             if all(len(s) == 1 for s in eq_sets):
                 vals = [next(iter(s)) for s in eq_sets]

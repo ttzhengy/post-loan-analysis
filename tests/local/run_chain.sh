@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
-# run_chain.sh — 单数据集全链路（signals → attribution → drill → narrative）
-# 用法: bash tools/run_chain.sh <数据集目录> <输出目录>
+# run_chain.sh —【仅本地校验用，不属于 skill 主体】
+#
+# ⚠️ 这个脚本只在 Linux/macOS 开发环境里用来做交叉验证，
+#    正式分发和使用请用 Python 版：python tools/run_chain.py
+#    skill 在 Windows 上运行，没有 bash，所以 .sh 不得进入交付包。
+#    这里保留一份是为了在本机能同时跑两套入口做结果比对（见 tests/local/README.md）。
+#
+# 单数据集全链路（signals → attribution → drill → narrative）
+# 用法: bash tests/local/run_chain.sh <数据集目录> <输出目录>
 #
 # 输入：数据集目录下的 metrics.json / overview.json / org_risk.json /
 #       features.json / cohort.json / signals.json

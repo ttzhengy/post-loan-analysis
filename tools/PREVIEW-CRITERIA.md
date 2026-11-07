@@ -38,6 +38,6 @@
 ## 复现命令
 
 ```bash
-python3 synth/make_synth.py --all --outdir synth      # 生成 4 套数据
-bash preview/build_preview.sh                          # 跑全链路 + 出 4 份 HTML
+python synth/make_synth.py --all --outdir synth       # 生成 4 套数据
+python tools/build_preview.py                         # 跑全链路 + 出 4 份 HTML
 ```

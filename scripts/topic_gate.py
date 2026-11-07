@@ -33,6 +33,13 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+# Windows 控制台默认 GBK，直接 print 中文会抛 UnicodeEncodeError。
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, ValueError):
+        pass
+
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import common  # noqa: E402

@@ -184,12 +184,25 @@ python3 scripts/render_report.py \
 
 ### 一键跑通
 
-```bash
-bash tools/run_chain.sh synth/dataset_01 /tmp/work01   # 单数据集全链路
-bash tools/build_preview.sh                            # 4 数据集批量出报告
+Windows / macOS / Linux 一致，全部用 Python 入口（不依赖 bash）：
+
+```bat
+python tools\run_chain.py synth\dataset_01 work01      :: 单数据集全链路
+python tools\build_preview.py                          :: 4 数据集批量出报告
 ```
 
-解释器探测顺序：`$POST_LOAN_PY` → `.venv` → `venv` → `python3`。
+```bash
+python tools/run_chain.py synth/dataset_01 /tmp/work01  # 同上，Linux/macOS
+python tools/build_preview.py
+```
+
+解释器：默认用运行 `run_chain.py` 的那个 Python；需要指定时设环境变量
+`POST_LOAN_PY`。**不再依赖 shell 探测 `.venv` / `venv`** —— Windows 下
+`.venv\Scripts\python.exe` 与 POSIX 的路径完全不同，靠猜容易出错。
+
+真实数据：设 `DATA_DIR=<parquet目录>`；可选 `BASE_SLICE`（chg 口径对比时点）、
+`LEVEL`（chg/vch）、`SLICE`（分析时点）、`COHORTS`。不设 `DATA_DIR` 时整条链
+走 dry-run，只校验 SQL、不产出任何数字，报告会显式标注证据未执行。
 
 ## 四、报告结构
 
@@ -301,10 +314,11 @@ bash tools/build_preview.sh                            # 4 数据集批量出报
 | 路径 | 用途 |
 |------|------|
 | `shared/table-dict.json` | 字段白名单唯一事实来源（`drill_executor` 强校验依赖） |
-| `tools/run_chain.sh` | 单数据集全链路 |
-| `tools/build_preview.sh` | 4 数据集批量出报告 |
+| `tools/run_chain.py` | 单数据集全链路（跨平台） |
+| `tools/build_preview.py` | 4 数据集批量出报告（跨平台） |
 | `tools/PREVIEW-CRITERIA.md` | 合成数据验收口径 |
 | `synth/` | 4 套合成数据集 + 生成脚本 |
+| `tests/local/` | **仅本地校验**，bash 版入口，不进交付包 |
 
 ## 九、依赖
 
