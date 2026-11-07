@@ -95,14 +95,23 @@ S7 验算清单       render_report.py    → 验算清单.xlsx/.md           [C
 **强度公式（必须照此实现）**：
 
 ```
-breadth = hit_count / total_members                      # 广度分量
+breadth = max_i(coverage_i)                              # 广度分量：命中客群的业务量占比
+        coverage 来源：feature 的 numerator/denominator、dim_bucket 的 bal/总余额、
+                       clue 的 coverage_bal_pptn、cont 的 bal/总余额
+        缺失时退回 hit_count / total_members（仅作为兜底，会写入 diag）
 signal  = mean_i( norm(dev_i) )  对命中成员             # 强度分量
         norm(dev) = min(1.0, |dev| / SATURATION)         # dev = 特征值相对 baseline 的偏离
         SATURATION 默认 2.0（即偏离达基线 2 倍计满）
-strength = 0.6*breadth + 0.4*signal
+strength = signal * (0.7 + 0.3*breadth)
 若 cohort 校验存在：strength *= (1 + 0.15*min(1, (cohort_lift-1)/3))  # 最多 +15%
 tie-break: (-strength, -incremental_lift, -cohort_size, cross_stage, rule_id)
 ```
+
+> **为什么不是 `0.6*breadth + 0.4*signal`**：广度权重 0.6 会让「几乎无偏离但覆盖满」的规则
+> 压过「强偏离但覆盖有限」的规则（实测 D04 lift=1.11 排在 M13 lift=3.68 之前）。
+> 风险归因的主线是找偏离，因此 signal 乘性主导，breadth 仅在 0.7~1.0 区间做调节。
+> 另注意旧式 breadth = hit_count/total_members 由「规则写了几条成员」决定，
+> 单成员规则只要命中就恒为 1.0，与现象是否普遍无关，故不再直接用于打分。
 
 分级：`>=0.5 显著`、`>=0.30 一般`、`>=0.15 弱信号`、`<0.15 淘汰`。
 **无 cohort 校验数据的线索，最高只能标「一般」**，不得进「显著」。

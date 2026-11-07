@@ -822,6 +822,19 @@ def est_extra_npl(t, overall):
 # ---------------------------------------------------------------------------
 # 文案层（无 narrative 时的数据驱动模板；impact 永不写 TODO）
 # ---------------------------------------------------------------------------
+_FORMULA_NOTE = {}      # attribution.json 的 strength_formula，由 main() 注入
+
+
+def _formula_note(key, fallback):
+    """从 attribution.json 的 strength_formula 取计算口径说明。
+
+    公式是计算逻辑的一部分，说明文字必须跟数据同源，
+    不能在渲染层硬编码——否则改公式后报告的验算清单仍show旧口径。
+    """
+    v = _FORMULA_NOTE.get(key)
+    return v if isinstance(v, str) and v else fallback
+
+
 def template_texts(t, reg, group, overall, slice_dt):
     """数据驱动模板：strength 选措辞强度 / cross_stage 写跨环节 / status 写定性 / impact 写真实贡献"""
     cid, rid = t["cid"], t["rule_id"]
@@ -830,9 +843,9 @@ def template_texts(t, reg, group, overall, slice_dt):
     sw = strength_word(t.get("strength"))
     cw = confirm_word(t.get("status"))
     s_txt = reg.span("主题%s强度" % cid, "%.2f" % (t.get("strength") or 0), src_f + ".strength",
-                     "strength = 0.6*breadth + 0.4*signal（含 cohort 加成，上限 +15%）", group)
+                     _formula_note("expression", "strength = signal * (0.7 + 0.3*breadth)（含 cohort 加成，上限 +15%）"), group)
     b_txt = reg.span("主题%s广度分量" % cid, "%.2f" % (t.get("breadth") or 0), src_f + ".breadth",
-                     "breadth = hit_count / member_total", group)
+                     _formula_note("breadth", "breadth = 命中客群覆盖率 max_i(coverage_i)"), group)
     g_txt = reg.span("主题%s强度分量" % cid, "%.2f" % (t.get("signal") or 0), src_f + ".signal",
                      "signal = mean(min(1, |dev|/SATURATION))，SATURATION=2.0", group)
     hc_txt = reg.span("主题%s命中特征数" % cid, "%s/%s" % (t.get("hit_count"), t.get("member_total")),
@@ -961,6 +974,9 @@ def render(args):
     org_risk = load(args.org_risk)
     features = load(args.features)
     nar = load(args.narrative)
+
+    # 注入计算口径：报告里的公式说明与 attribution.json 保持同源
+    _FORMULA_NOTE.update((attr or {}).get("strength_formula") or {})
 
     missing = [n for n, d in (("attribution", attr), ("metrics", metrics_in)) if not d]
     if missing:
@@ -1293,7 +1309,7 @@ def render(args):
 </section>""")
         overview_rows.append(
             f"<tr><td>{t['idx']}</td><td><b>{esc(title)}</b></td>"
-            f"<td class='num'>{reg.unit('概览-主题' + t['cid'] + '强度', t.get('strength'), lambda v: f'{v:.2f}', 'topic_selection[].strength', 'strength 公式', g)}</td>"
+            f"<td class='num'>{reg.unit('概览-主题' + t['cid'] + '强度', t.get('strength'), lambda v: f'{v:.2f}', 'topic_selection[].strength', _formula_note('expression', 'strength 公式'), g)}</td>"
             f"<td>{status_tag[0]}</td>"
             f"<td>{esc('、'.join((h.get('label') or h.get('name') or '') for h in (t.get('hits') or [])[:4]))}</td></tr>")
 
@@ -1357,7 +1373,7 @@ def render(args):
         for c in cand[:6]:
             rsn = REASON_CN.get(c.get("reason"), _de_tech(c.get("reason") or "") or "未达入选门槛")
             cand_rows += (f"<tr><td>{esc(_de_tech(c.get('name')))}</td>"
-                          f"<td class='num'>{reg.unit('候选' + str(c.get('rule_id')) + '强度', c.get('strength'), lambda v: f'{v:.2f}', 'topic_selection[].strength', 'strength 公式', g)}</td>"
+                          f"<td class='num'>{reg.unit('候选' + str(c.get('rule_id')) + '强度', c.get('strength'), lambda v: f'{v:.2f}', 'topic_selection[].strength', _formula_note('expression', 'strength 公式'), g)}</td>"
                           f"<td>{esc(c.get('level') or '')}</td>"
                           f"<td class='num'>{reg.unit('候选' + str(c.get('rule_id')) + '客群倍数', c.get('cohort_lift'), mult, 'topic_selection[].cohort_lift', '客群不良率/全辖', g) if c.get('cohort_lift') else '—'}</td>"
                           f"<td>{esc(rsn)}</td></tr>")
