@@ -1,32 +1,119 @@
-# 接口契约 v3.0（四个子代理的共同约束，不得单方面修改）
+# 中间产物接口契约
 
-本文件由 Orchestrator 定义。任何子代理需要改动契约，必须在交付说明里**明确标注**，不得静默变更。
+本文件定义各脚本之间 JSON 的字段约定与计算公式，是**唯一的接口事实来源**。
+改动任一脚本的输入输出结构，必须同步更新本文件，否则下游脚本会静默取到空值。
 
 ## 0. 全局约定
 
-- Python **纯标准库**（`json`/`math`/`statistics`/`argparse`/`datetime`/`re`/`pathlib`）。
-  唯一例外：C（渲染）不需要第三方库；A/B/D 也不得引入 numpy/pandas/pyyaml。
-  原生处理数据的脚本（`core_metrics_duckdb.py` 等）保持原样，不在本次重构范围。
-- 所有脚本：输入不存在 → 退出码 2，不猜；数值异常 → 写 `warnings[]`。
-- 中文输出统一 `ensure_ascii=False, indent=2`。
-- 字段名一律 `snake_case`。
+- 脚本分两类：**取数脚本**（`core_metrics_duckdb.py` / `core_overview_duckdb.py` / `org_risk.py` /
+  `risk_features.py` / `cohort_attribution.py` / `theme_deep_dive_duckdb.py`）可用 duckdb / pyarrow / pandas；
+  **计算与渲染脚本**（`signals.py` / `attribution.py` / `drill_*.py` / `narrative.py` / `render_report.py`）
+  只用标准库，不引第三方依赖。
+- 输入文件不存在 → 退出码 2，不猜。
+- 数值异常（负余额、分母为 0）→ 写入 `warnings[]` 后继续。
+- 中文输出统一 `ensure_ascii=False, indent=2`；字段名一律 `snake_case`。
 
 ## 1. 工作流（7 步）
 
 ```
-S1 总览汇总      core_overview_duckdb.py + core_metrics_duckdb.py  → overview.json / metrics.json   [既有，不改]
-S2 分维度扫线索   NEW signals.py     → signals.json                [A]
-S3 LLM 研判深挖   NEW drill_planner.py → drill_prompt.json          [B，只出提示词]
-S4 按计划钻取     NEW drill_executor.py → evidence.json             [B，白名单强校验]
-S5 LLM 写证据链   NEW narrative.py    → narrative_prompt.json       [B，只出提示词]
-S6 渲染报告       render_report.py    → report.html + 图表          [C，重构]
-S7 验算清单       render_report.py    → 验算清单.xlsx/.md           [C，对齐 data-calc-id]
+S1 取数汇总      core_metrics_duckdb.py + core_overview_duckdb.py  → metrics.json / overview.json
+S1b 机构级指标   org_risk.py                                       → org_risk.json
+S1c 客群切分     cohort_attribution.py                             → cohort.json
+S1d 基础特征     risk_features.py                                  → features.json
+S2 归并扫线索    signals.py                                        → signals.json
+S3 研判提示词    drill_planner.py                                  → drill_prompt.json
+S4 按计划钻取    drill_executor.py                                 → evidence.json
+S5 证据链提示词  narrative.py                                      → narrative_prompt.json
+S6 渲染报告      render_report.py                                  → report.html / 验算清单 / summary.md
 ```
 
-**LLM 边界（用户已确认）**：脚本**只输出提示词**（`*_prompt.json`），由外部 Agent 调用模型；脚本内**不调用任何 API**。
-无 LLM 结果时，S4/S5 必须能降级：`drill_plan` 用规则默认计划，`narrative` 用数据驱动模板。
+**LLM 边界**：脚本**只输出提示词**（`*_prompt.json`），由外部 Agent 调用模型，脚本内不调用任何 API。
+无 LLM 结果时 S3/S5 必须能降级：`drill_plan` 用规则默认计划（`--degrade`），
+`narrative` 用数据驱动模板（`--degrade`）。降级路径是全链路可离线跑通的前提。
 
-## 2. signals.json（A 产出）
+## 2. metrics.json / overview.json / org_risk.json / features.json / cohort.json（取数阶段产出）
+
+这五个文件由 S1 阶段脚本产出，是下游 signals.py 的全部输入。字段以实际产出为准。
+
+### 2.1 metrics.json（core_metrics_duckdb.py）
+
+```jsonc
+{
+  "schema_version":"3.0","slice":"20260831",
+  "overall": {"bal":0,"npl_bal":0,"npl_rate":0,"cnt":0,"cust_cnt":0,"person_cnt":0,"exd_bal":0},
+  "exd_seg": {"1-30天":{...},"31-90天":{...},"91-180天":{...},"180天以上":{...}},
+  "by_org": [...], "by_mgr": [...], "by_breed": [...],
+  "warnings": []
+}
+```
+
+`exd_seg` 的键名固定为这四档中文标签。**下游按此键名生成 SQL 条件**，
+`180天以上` 必须映射为 `EXD_DAYS > 180`，不可退化为 `> 0`。
+
+### 2.2 overview.json（core_overview_duckdb.py）
+
+```jsonc
+{
+  "schema_version":"3.0","slice":"20260831",
+  "groups": {"normal":{...},"watch":{...},"bad":{...},"other":{...}},   // 四组对照
+  "dimensions": {                        // 8 大维度
+    "guarantee": {"name":"担保方式","stage":"贷前","buckets":[
+      {"bucket":"信用","bal":0,"npl_bal":0,"npl_rate":0,"npl_share":0,
+       "offset_pp":0.0,"reference_ctl":{"normal_share":0,"npl_share":0},"valid":true}]}
+  },
+  "overview_dives": {...},
+  "warnings": []
+}
+```
+
+维度键名固定 8 个：`guarantee` / `cust_type` / `industry` / `term` / `amount` /
+`year` / `score` / `org`。`buckets[].valid=false` 表示该档样本量不足（余额低于全辖 0.1%），
+下游不得参与排名。
+
+### 2.3 org_risk.json（org_risk.py）
+
+`dimensions` 结构与 overview.json 相同，另含 `tables.cont.summary` / `tables.cont.rows_all`
+（接续工具明细）、线索长表 `rows_by_type`。缺失时 signals 的
+`clue_matrix` / `continuation` 会降级，并在 `warnings[]` 注明。
+
+### 2.4 features.json（risk_features.py）
+
+```jsonc
+{
+  "schema_version":"2.0","slice":"20260831",
+  "baseline": {"零散不良率均值":0.0231, ...},      // 全辖口径基线字典（label → 值）
+  "baseline_src": {"零散不良率均值":"wavg:DIVR_LN_BAL"},  // 口径说明
+  "features": [
+    {"feature_id":1,"name":"零散获客风险","dimension":"机构","stage":"营销获客",
+     "status":"ok|approximate|data_missing","table":"S_00PF_...",
+     "metric":{"<label>":<number>},"baseline":{"<label>":<number>},
+     "evidence":"...","note":""}
+  ],
+  "warnings":[]
+}
+```
+
+**基线口径**：率类指标的全辖值用**余额加权**（`Σ(率×余额)/Σ余额`），
+不是各机构率的简单平均——机构规模有差异时两者并不相等。
+`metric` 与 `baseline` 是多键混合字典，键名随表结构变化，下游必须按语义匹配，不得按 `feature_id` 硬编码。
+
+### 2.5 cohort.json（cohort_attribution.py）
+
+```jsonc
+{
+  "schema_version":"3.0",
+  "cohorts":[
+    {"feature_id":1,"name":"零散获客","size":12137,"npl_rate":0.0876,
+     "lift":1.8841,"incremental_lift":null,"npl_share":0.12,
+     "condition":{...},"match_dim":"...","match_bucket":"..."}
+  ]
+}
+```
+
+`condition` 型客群带 `match_dim` / `match_bucket`，signals 按
+`(维度名, 档位)` 匹配到对应规则；无 `condition` 的客群按 `feature_id` 匹配。
+
+## 3. signals.json（signals.py 产出）
 
 ```jsonc
 {
@@ -66,9 +153,21 @@ S7 验算清单       render_report.py    → 验算清单.xlsx/.md           [C
 }
 ```
 
-`baseline` 是**强度分量的必需输入**（特征值相对全辖基线的偏离）。缺失时该特征强度分量记 0 并在 note 标注。
+`baseline` 是**强度分量的必需输入**（特征值相对全辖基线的偏离）。
 
-## 3. rules.json（A 产出，双源）
+取值优先级与语义（`baseline_src` 字段记录来源）：
+
+| baseline_src | 含义 |
+|---|---|
+| `inline` | 特征自带 baseline（或从 features.json 顶层 `baseline` 字典按标签匹配） |
+| `overall_npl` | 指标含「不良率」，基线取全辖不良率 |
+| `normal_1_0` | 倍数型指标（`强度`/`倍数`/`指数`），基线恒为 1.0 |
+| `not_applicable` | 计数类指标（机构数/任务数等），无基线概念，不计入缺失 |
+| `unavailable` | 口径与全辖不良率不同构（通过率/逾期占比等），强度分量记 0 |
+
+**只有「不良率」类可以套用全辖不良率**。通过率、未办结率等分母语义完全不同，套用会得到假的强度值。
+
+## 4. rules.json（人工维护，双源）
 
 ```jsonc
 {
@@ -112,7 +211,7 @@ tie-break: (-strength, -incremental_lift, -cohort_size, cross_stage, rule_id)
 分级：`>=0.5 显著`、`>=0.30 一般`、`>=0.15 弱信号`、`<0.15 淘汰`。
 **无 cohort 校验数据的线索，最高只能标「一般」**，不得进「显著」。
 
-## 4. drill_prompt.json / drill_plan.json（B 产出）
+## 5. drill_prompt.json / drill_plan.json（drill_planner.py 产出）
 
 `drill_prompt.json`：脚本给 LLM 的**完整提示词**，含 `system`、`user`、`output_schema`、`table_whitelist`（从 table-dict.json 取，字段级清单）、`constraints`。
 
@@ -133,7 +232,7 @@ tie-break: (-strength, -incremental_lift, -cohort_size, cross_stage, rule_id)
 4. 出现 `DROP|DELETE|UPDATE|INSERT|CREATE|ALTER|ATTACH|COPY|INSTALL|LOAD` → 直接拒绝（只读库）；
 5. **不静默修正**，无效的 plan 原样记录在 `evidence.json.plan_audit[]`。
 
-## 5. evidence.json（B 产出）
+## 6. evidence.json（drill_executor.py 产出）
 
 ```jsonc
 {"schema_version":"3.0","plans_total":0,"plans_valid":0,
@@ -149,7 +248,7 @@ tie-break: (-strength, -incremental_lift, -cohort_size, cross_stage, rule_id)
 
 `status` 规则：有对比且 `lift>=1.5` 且样本 `n>=30` → `verified`；`lift<1.2` → `rejected`；样本不足或无对比 → `insufficient`。
 
-## 6. narrative_prompt.json / narrative.json（B 产出）
+## 7. narrative_prompt.json / narrative.json（narrative.py 产出）
 
 `narrative_prompt.json` 的 `output_schema` 要求 LLM 每条主题输出：
 ```jsonc
@@ -163,7 +262,7 @@ tie-break: (-strength, -incremental_lift, -cohort_size, cross_stage, rule_id)
 
 **管理者立场要求（用户明确）**：决策建议必须同时满足「保经营」+「防风险」，写明动作的**经营代价与收益**，不能只写"压降不良"。
 
-## 7. render_report.py（C 产出）
+## 8. report.html / 验算清单（render_report.py 产出）
 
 **必须有图表**（用户明确）。约束：单文件自包含、断网可开、**内联 SVG**，不引任何 CDN/JS 框架。
 
@@ -180,7 +279,7 @@ tie-break: (-strength, -incremental_lift, -cohort_size, cross_stage, rule_id)
 
 **主题数量动态**：不得 `insights[:4]` 硬截断。进入主题的条件是：`strength>=0.30` **且** (`evidence_chain.status=="verified"` **或** 无钻取数据时 `strength>=0.5`)。数量由数据决定，0 条时退化为「指标监测式」。
 
-## 8. 预览版（C 产出）
+## 9. 预览版验收口径
 
 `preview/` 下 4 套合成数据集各一份完整 HTML：
 - `dataset_01.html` / `dataset_02.html` 主题集**必须不同**

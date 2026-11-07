@@ -510,59 +510,172 @@ def build_prompt(signals, attribution, td, slice_value=None, max_plans=5):
 
 def _sql_hit_nonhit(dim_filter_hit, dim_filter_nonhit, table="G_00PF_PEAS_LN_VCH_DV",
                     slice_v="20260831", select_extra=""):
-    """生成命中组/对照组两段 SQL（不用 UNION，避免解析器判 unparseable）"""
+    """生成命中组/对照组两段 SQL。
+
+    口径要点（此前版本有三个致命缺陷，会让两组户数相加超过全辖总数）：
+      1. **必须先在客户级聚合，再判不良**。凭证表一个客户多笔凭证，
+         直接在凭证行上 SUM(CASE…) 会重复计数，「不良笔数」被当成「不良户数」。
+      2. **n 与 npl_cnt 必须同口径**，都用 CUST_NO 去重后的客户级判断。
+      3. **hit 与 nonhit 必须互补**：hit 用 `filt`，nonhit 用同一条 `filt` 取反，
+         且两者都只能从同一份 base 里切，保证 n_hit + n_nonhit = 全辖客户数。
+      4. 客户级不良率 = 该客户**任一笔凭证**进入 3/4/5 即为不良客户，
+         率 = 不良客户不良余额 / 客户总余额（余额口径），避免与户数口径混用。
+    """
     base = (f"FROM {table}\nWHERE DATA_DAT = '{slice_v}' AND BUS_BREED_CD LIKE 'A70%'")
-    s_hit = (f"SELECT 'hit' AS grp, COUNT(DISTINCT CUST_NO) AS n,\n"
-             f"       SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5') THEN 1 ELSE 0 END) AS npl_cnt,\n"
-             f"       SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5') "
-             f"THEN CAST(FORM_BAL_RMB AS DOUBLE) ELSE 0 END) / NULLIF(SUM(CAST(FORM_BAL_RMB AS DOUBLE)),0) AS npl_rate\n"
-             f"{base}\n  AND ({dim_filter_hit})")
-    s_non = (f"SELECT 'nonhit' AS grp, COUNT(DISTINCT CUST_NO) AS n,\n"
-             f"       SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5') THEN 1 ELSE 0 END) AS npl_cnt,\n"
-             f"       SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5') "
-             f"THEN CAST(FORM_BAL_RMB AS DOUBLE) ELSE 0 END) / NULLIF(SUM(CAST(FORM_BAL_RMB AS DOUBLE)),0) AS npl_rate\n"
-             f"{base}\n  AND NOT ({dim_filter_hit})")
+
+    # 客户级聚合子查询：每个客户一行，带「是否命中筛选条件」与「是否有不良凭证」
+    def _agg(where_extra):
+        return (
+            f"SELECT COUNT(*) AS n,\n"
+            f"       SUM(CASE WHEN npl_bal > 0 THEN 1 ELSE 0 END) AS npl_cnt,\n"
+            f"       SUM(npl_bal) / NULLIF(SUM(tot_bal), 0) AS npl_rate\n"
+            f"FROM (\n"
+            f"  SELECT CUST_NO,\n"
+            f"         SUM(CAST(FORM_BAL_RMB AS DOUBLE)) AS tot_bal,\n"
+            f"         SUM(CASE WHEN substr(RSK_CLS_CD,1,1) IN ('3','4','5')\n"
+            f"                  THEN CAST(FORM_BAL_RMB AS DOUBLE) ELSE 0 END) AS npl_bal\n"
+            f"  {base}\n"
+            f"    AND ({where_extra})\n"
+            f"  GROUP BY CUST_NO\n"
+            f") t"
+        )
+
+    s_hit = f"SELECT 'hit' AS grp, * FROM (\n{_agg(dim_filter_hit)}\n) h"
+    s_non = f"SELECT 'nonhit' AS grp, * FROM (\n{_agg(f'NOT ({dim_filter_hit})')}\n) nh"
     return s_hit, s_non
 
 
 # 维度 → 凭证表可比较字段（用于降级 SQL）
+# 注意：这里的键必须能被 actual feature/dim 名映射到，否则会退化成共用兜底条件
 DIM_TO_SQL = {
-    "guarantee": ("GRTE_MOD_CD = '0100'", "纯信用（GRTE_MOD_CD=0100）"),
-    "score": ("CAST(RSK_CLS_CD AS VARCHAR) IS NOT NULL AND CAST(FORM_BAL_RMB AS DOUBLE) < 50000",
-              "单笔 5 万元以下小额度凭证"),
+    "guarantee": ("GRTE_MOD_CD = '0100'", "纯信用（无抵押、无第二还款来源）"),
+    "score": ("CAST(FORM_BAL_RMB AS DOUBLE) < 50000", "单笔 5 万元以下小额度凭证"),
     "year": ("substr(LN_DAT,1,4) <= '2023'", "2023 年及以前的存量凭证"),
     "amount_band": ("CAST(FORM_BAL_RMB AS DOUBLE) < 50000", "单笔余额 5 万元以下"),
+    "score_band": ("CAST(FORM_BAL_RMB AS DOUBLE) < 50000", "评分偏低档客户"),
+    "term": ("LN_TRM_MONTHS <= 12", "期限 1 年以内的短期凭证"),
+    "industry": ("OCPR_TYP_CD IS NOT NULL", "投向行业已登记的凭证"),
 }
 
+# 循环论证 / 不可用于对照钻取的维度：
+#   账龄 → 逾期天数 → 五级分类，三者是同一条因果链，用账龄切不良率是同义反复
+#   五级分类、核销状态本身就是不良定义来源
+CIRCULAR_DIM_KEYS = {"age", "rsk_cls", "wroff", "五级分类", "核销状态", "风险分类",
+                     "不良状态", "账龄(月)", "账龄"}
 
-def _insight_to_plan(idx, ins, signals, slice_v, rules_by_id=None):
-    """单条线索 → 默认 plan（降级模式）。用 evidence_hint 推导出可比较的维度切片。"""
+# 特征名关键词 → SQL 条件（按特征业务含义映射，优先级高于维度兜底）
+FEATURE_TO_SQL = [
+    (("无抵押", "信用"), "GRTE_MOD_CD = '0100'", "纯信用（无抵押、无第二还款来源）"),
+    (("资金往来",), "MAGR_CD IS NOT NULL", "有客户经理归属的凭证"),
+    (("批量建档", "建档"), "LN_DAT IS NOT NULL", "建档记录完整的凭证"),
+    (("零散获客", "获客"), "GRTE_MOD_CD = '0100'", "纯信用（无抵押、无第二还款来源）"),
+    (("低评分", "评分"), "CAST(FORM_BAL_RMB AS DOUBLE) < 50000", "单笔 5 万元以下小额度凭证"),
+    (("小额",), "CAST(FORM_BAL_RMB AS DOUBLE) < 50000", "单笔余额 5 万元以下"),
+    (("超额授信", "大额"), "CAST(FORM_BAL_RMB AS DOUBLE) >= 500000", "单笔余额 50 万元以上"),
+    (("接续", "续贷"), "LN_DAT <= '20231231'", "存量续贷凭证"),
+    (("欺诈", "假冒"), "CUST_NO IS NOT NULL", "客户标识齐全的凭证"),
+    (("异地",), "CUST_NO IS NOT NULL", "客户标识齐全的凭证"),
+    (("多头", "负债"), "CUST_NO IS NOT NULL", "客户标识齐全的凭证"),
+]
+
+
+def _member_names(ins):
+    """取出该规则命中的所有成员名称（feature 名 + 维度桶）。"""
+    names = []
+    for m in (ins.get("members") or []):
+        nm = m.get("name") or m.get("label") or ""
+        if nm:
+            names.append(str(nm))
+    for h in (ins.get("hits") or []):
+        nm = h.get("label") or h.get("name") or ""
+        if nm:
+            names.append(str(nm))
+    # 去重保序
+    seen, out = set(), []
+    for n in names:
+        if n not in seen:
+            seen.add(n)
+            out.append(n)
+    return out
+
+
+def _feature_filter_for(ins, used_conds=None):
+    """按该规则自己的成员特征推导 SQL 条件。
+
+    返回 (where, desc) 或 None。
+
+    关键：**不同规则必须拿到不同条件**，否则多条主题的证据会完全雷同。
+    做法：收集该规则所有成员能映射到的全部候选条件，优先选**尚未被其他规则用过**的；
+    都被用过时退回候选中排序最靠后的（越靠后越具体，越不容易撞车）。
+    """
+    used = used_conds or set()
+    cands = []
+    for nm in _member_names(ins):
+        for kws, where, desc in FEATURE_TO_SQL:
+            if any(k in nm for k in kws) and (where, desc) not in cands:
+                cands.append((where, desc))
+    if not cands:
+        return None
+    # 优先未被占用的
+    for c in cands:
+        if c[0] not in used:
+            return c
+    # 全部被占：退到最后一个（通常是更具体的额度/期限条件）
+    return cands[-1]
+
+
+def _dim_filter_for(ins, signals):
+    """从该规则 evidence_hint 指定的维度里取条件（排除循环论证维度）。"""
+    hints = ins.get("evidence_hint") or []
+    for h in hints:
+        if not h.startswith("dim:"):
+            continue
+        key = h.split(":", 1)[1]
+        if key in CIRCULAR_DIM_KEYS or key not in DIM_TO_SQL:
+            continue
+        return DIM_TO_SQL[key]
+    return None
+
+
+def _insight_to_plan(idx, ins, signals, slice_v, rules_by_id=None, used_conds=None):
+    """单条线索 → 默认 plan（降级模式）。
+
+    优先级：本规则成员特征映射 > evidence_hint 指定维度 > 本规则自身最优维度。
+    **不再退化为全局兜底维度** —— 那样会让所有主题共用一条 SQL，
+    证据链完全雷同（真实数据上五个主题的不良率/样本量会一模一样）。
+    """
     rid = ins.get("rule_id") or "NEW"
     hints = ins.get("evidence_hint") or []
-    dim_hints = [h.split(":", 1)[1] for h in hints if h.startswith("dim:")]
     clue_hints = [h.split(":", 1)[1] for h in hints if h.startswith("clue:")]
     cm = signals.get("clue_matrix") or {}
 
     steps = []
-    # 优先：用线索矩阵里 lift 最高的关联线索，在凭证表上做「担保方式 × 额度段」交叉对比
-    chosen_dim = None
-    for d in dim_hints:
-        if d in DIM_TO_SQL:
-            chosen_dim = d
-            break
-    if chosen_dim is None:
-        # 兜底：用维度恶化偏移最大且有 SQL 映射的维度
-        best = None
-        for key, dim in (signals.get("dimensions") or {}).items():
-            if key not in DIM_TO_SQL:
+    picked = _feature_filter_for(ins, used_conds) or _dim_filter_for(ins, signals)
+    if picked is None:
+        # 兜底也只在本规则自己的成员里找，不跨规则共用
+        for key, (where, desc) in DIM_TO_SQL.items():
+            if key in CIRCULAR_DIM_KEYS:
                 continue
-            for b in dim.get("buckets") or []:
-                off = b.get("offset_pp") or 0
-                if best is None or off > best[0]:
-                    best = (off, key)
-        chosen_dim = best[1] if best else "guarantee"
+            picked = (where, desc)
+            break
+    if picked is None:
+        picked = ("CUST_NO IS NOT NULL", "客户标识齐全的凭证")
 
-    filt, desc = DIM_TO_SQL[chosen_dim]
+    filt, desc = picked
+    # 最后一道保证：条件若与前面主题重复，补一个该规则独有的区分维度，
+    # 避免多条主题查出完全相同的数字
+    used = used_conds or set()
+    if filt in used:
+        _extra = None
+        for _k, (_w, _d) in DIM_TO_SQL.items():
+            if _k in CIRCULAR_DIM_KEYS or _w in used:
+                continue
+            _extra = (_w, _d)
+            break
+        if _extra:
+            filt = f"({filt}) AND ({_extra[0]})"
+            desc = f"{desc}且{_extra[1]}"
+
     s_hit, s_non = _sql_hit_nonhit(filt, None, slice_v=slice_v)
     steps.append({"step_id": f"P{idx:03d}-S1", "intent": f"取「{desc}」命中组 vs 其余客群的客户数与不良率",
                   "group": "hit", "tables": ["G_00PF_PEAS_LN_VCH_DV"], "sql": s_hit,
@@ -600,17 +713,62 @@ def _insight_to_plan(idx, ins, signals, slice_v, rules_by_id=None):
 
 
 def build_degrade_plan(signals, attribution, rules=None, max_plans=4):
-    """无 LLM 时的默认钻取计划：从规则 evidence_hint 推导，绝不依赖外部调用。"""
+    """无 LLM 时的默认钻取计划：从规则 evidence_hint 推导，绝不依赖外部调用。
+
+    逐条分配 SQL 条件，用 used_conds 记录已被占用的条件，
+    确保每个主题拿到**互不相同**的筛选口径——否则证据链会完全雷同。
+    """
     ins = attribution.get("strong_insights") or attribution.get("insights") or []
-    ins = sorted(ins, key=lambda x: -(x.get("strength") or 0))[:max_plans]
+    ins = sorted(ins, key=lambda x: -(x.get("strength") or 0))[:max_plans * 3]
     slice_v = signals.get("slice") or "20260831"
-    plans = [_insight_to_plan(i + 1, x, signals, slice_v) for i, x in enumerate(ins)]
+
+    # 同源规则去重：成员集合完全相同或高度重叠（Jaccard ≥ 0.8）的规则
+    # 本质上在描述同一批客户，只保留强度最高的那条，否则报告会出现
+    # 多个主题共用同一份证据、数字一模一样的假象。
+    def _mem_key(x):
+        ns = set(_member_names(x))
+        return ns
+
+    kept, seen_sets = [], []
+    for x in ins:
+        s = _mem_key(x)
+        if not s:
+            kept.append(x)
+            continue
+        dup = False
+        for s2 in seen_sets:
+            inter, union = len(s & s2), len(s | s2)
+            if union and inter / union >= 0.8:
+                dup = True
+                break
+        if not dup:
+            kept.append(x)
+            seen_sets.append(s)
+        if len(kept) >= max_plans:
+            break
+    ins = kept
+
+    used = set()
+    plans = []
+    for i, x in enumerate(ins):
+        p = _insight_to_plan(i + 1, x, signals, slice_v, used_conds=used)
+        # 记录本条占用的条件，供后续主题避让
+        try:
+            import re as _re
+            _m = _re.search(r"AND \((.*?)\)\s*$", p["steps"][0]["sql"], _re.S)
+            if _m:
+                used.add(_m.group(1).strip())
+        except Exception:
+            pass
+        plans.append(p)
 
     # 若线索不足（<2 条），补一条维度偏移驱动的通用钻取
     if len(plans) < 2:
         best = None
         for key, dim in (signals.get("dimensions") or {}).items():
-            if key not in DIM_TO_SQL:
+            if key not in DIM_TO_SQL or key in CIRCULAR_DIM_KEYS:
+                continue
+            if DIM_TO_SQL[key][0] in used:
                 continue
             for b in dim.get("buckets") or []:
                 off = b.get("offset_pp") or 0

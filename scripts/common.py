@@ -21,7 +21,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SHARED = ROOT / "shared"
 TABLE_DICT_PATH = SHARED / "table-dict.json"
-CONTRACT_PATH = SHARED / "CONTRACT.md"
+CONTRACT_PATH = ROOT / "references" / "INTERFACES.md"  # 中间产物接口契约
 
 # ---------------------------------------------------------------- IO
 

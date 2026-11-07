@@ -269,11 +269,24 @@ def _load_duckdb():
         return None
 
 
+def _cte_names(sql):
+    """提取 SQL 里 WITH 定义的 CTE 名，替换表名时必须跳过它们。
+
+    否则 `WITH grp AS (...)` 后面的 `FROM grp` 会被当成白名单表，
+    被替换成 read_parquet('{DATA_DIR}/grp/part-*.parquet') → 目录不存在。
+    """
+    return {n.lower() for n in re.findall(r"(?:WITH|,)\s*([A-Za-z_][A-Za-z0-9_]*)\s+AS\s*\(", sql, re.I)}
+
+
 def _sql_to_view(sql, slice_v=None):
-    """把白名单表名替换成 read_parquet(...) —— 真实执行时使用"""
+    """把白名单表名替换成 read_parquet(...) —— 真实执行时使用（跳过 CTE 名）"""
+    ctes = _cte_names(sql)
+
     def rep(m):
         kw = re.match(r"\s*([A-Za-z]+)", m.group(0)).group(1).upper()
         t = _ident_raw(m.group(1))
+        if t.lower() in ctes:
+            return m.group(0)          # CTE 引用，原样保留
         return f"{kw} read_parquet('{{DATA_DIR}}/{t}/part-*.parquet')"
     return _TABLE_REF_RE.sub(rep, sql)
 
@@ -328,8 +341,14 @@ def _extract_group_stat(columns, rows, group_label):
     return None
 
 
-def assess_plan(hit, nonhit, min_n=30, verify_lift=1.5, reject_lift=1.2):
-    """契约第 5 节的 status 判定"""
+def assess_plan(hit, nonhit, min_n=30, verify_lift=1.5, reject_lift=1.2, universe_n=None):
+    """契约第 5 节的 status 判定。
+
+    新增**口径自洽校验**（universe_n = 全辖客户数）：
+      命中组 + 对照组 的户数之和不应超过全辖客户数（两者是同一份 base 的互补切分）。
+      超过说明 SQL 口径错了（重复计数、未按客户去重、或切片过滤缺失），
+      此时即便 lift 很大也不能判 verified —— 数字本身就是假的。
+    """
     if not hit or not nonhit or hit.get("npl_rate") is None or nonhit.get("npl_rate") is None:
         return "insufficient", None, "缺命中组/对照组不良率"
     lift = common.safe_div(hit["npl_rate"], nonhit["npl_rate"])
@@ -337,6 +356,14 @@ def assess_plan(hit, nonhit, min_n=30, verify_lift=1.5, reject_lift=1.2):
         return "insufficient", lift, "样本量缺失"
     if hit["n"] < min_n or nonhit["n"] < min_n:
         return "insufficient", lift, f"样本不足（命中组 n={hit['n']}，对照组 n={nonhit['n']}，阈值 {min_n}）"
+    # 口径自洽：两组是互补切分，相加不应超过全辖
+    if universe_n:
+        total = hit["n"] + nonhit["n"]
+        if total > universe_n * 1.02:
+            return ("insufficient", lift,
+                    f"口径异常：命中组 {hit['n']} + 对照组 {nonhit['n']} = {total} 户，"
+                    f"超过全辖 {universe_n} 户，说明取数口径有误（重复计数或未按客户去重），"
+                    f"该证据不可采信")
     if lift is None:
         return "insufficient", None, "对照组不良率为 0，lift 不可计算"
     if lift >= verify_lift:
@@ -346,7 +373,7 @@ def assess_plan(hit, nonhit, min_n=30, verify_lift=1.5, reject_lift=1.2):
     return "insufficient", lift, f"lift={lift:.2f} 处于 [{reject_lift}, {verify_lift}) 灰区，证据不充分"
 
 
-def execute_plan(plan, td, mode="dry-run", con=None, data_dir=None, mock=None):
+def execute_plan(plan, td, mode="dry-run", con=None, data_dir=None, mock=None, universe_n=None):
     ok, reason, detail = validate_plan(plan, td)
     if not ok:
         return {"plan_id": plan.get("plan_id"), "status": "invalid", "reason": reason, "detail": detail,
@@ -380,7 +407,7 @@ def execute_plan(plan, td, mode="dry-run", con=None, data_dir=None, mock=None):
 
     hit = step_results.get("hit")
     nonhit = step_results.get("nonhit")
-    status, lift, why = assess_plan(hit, nonhit)
+    status, lift, why = assess_plan(hit, nonhit, universe_n=universe_n)
     comparisons = []
     if hit and nonhit:
         comparisons.append({"dim": "hit_vs_nonhit", "hit": hit, "nonhit": nonhit, "lift": common.rnd(lift, 2)})
@@ -622,11 +649,12 @@ def selftest():
     return ck.summary()
 
 
-def build_evidence(plan_doc, td, mode="dry-run", con=None, data_dir=None, mock=None):
+def build_evidence(plan_doc, td, mode="dry-run", con=None, data_dir=None, mock=None, universe_n=None):
     plans = plan_doc.get("plans") or []
     chain, audit, warnings = [], [], []
     for p in plans:
-        bad, ev = execute_plan(p, td, mode=mode, con=con, data_dir=data_dir, mock=mock)
+        bad, ev = execute_plan(p, td, mode=mode, con=con, data_dir=data_dir, mock=mock,
+                               universe_n=universe_n)
         if bad:
             audit.append(bad)
         else:
@@ -657,6 +685,10 @@ def main():
     ap.add_argument("--mock-db", action="store_true", help="用内置假结果集代替真实查询")
     ap.add_argument("--table-dict")
     ap.add_argument("--min-n", type=int, default=30)
+    ap.add_argument("--universe-n", type=int, default=None,
+                    help="全辖客户数，用于校验命中组+对照组是否超出总体（可自动从 --metrics 读）")
+    ap.add_argument("--metrics", default=None,
+                    help="metrics.json，用于自动取 overall.cust_cnt 作为 universe-n")
     ap.add_argument("--selftest", action="store_true")
     args = ap.parse_args()
 
@@ -691,7 +723,16 @@ def main():
             con = duckdb.connect()
             mode = "execute"
 
-    evidence = build_evidence(plan_doc, td, mode=mode, con=con, data_dir=args.data_dir)
+    universe_n = args.universe_n
+    if universe_n is None and args.metrics:
+        try:
+            _m = common.read_json(args.metrics)
+            universe_n = int((_m.get("overall") or {}).get("cust_cnt") or 0) or None
+        except Exception:
+            universe_n = None
+
+    evidence = build_evidence(plan_doc, td, mode=mode, con=con, data_dir=args.data_dir,
+                              universe_n=universe_n)
     common.write_json(args.out, evidence)
     print(f"✅ 钻取证据 → {args.out}（模式 {mode}）")
     print(f"   plans {evidence['plans_total']}：有效 {evidence['plans_valid']} / 拒绝 {evidence['plans_invalid']}")

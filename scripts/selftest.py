@@ -298,8 +298,10 @@ def test_t5(verbose):
     sig = SIG.build_signals(old_metrics, None, None, old_features, slice_dt="20260831")
     check("T5-1 无 baseline 的旧 features 不崩溃", isinstance(sig, dict) and sig.get("slice"))
     bsrc = {f["feature_id"]: f.get("baseline_src") for f in sig["features"]}
-    check("T5-2 无全辖基线的特征被标记 baseline_src=missing",
-          bsrc.get(2) == "missing", f"feature 2 → {bsrc.get(2)}")
+    check("T5-2 口径与全辖不良率不同构的特征标 baseline_src=unavailable",
+          bsrc.get(2) == "unavailable", f"feature 2 → {bsrc.get(2)}")
+    check("T5-2b 计数类特征标 baseline_src=not_applicable（不计入缺失）",
+          bsrc.get(3) in ("not_applicable", "unavailable"), f"feature 3 → {bsrc.get(3)}")
     check("T5-3 率类特征按全辖不良率回填基线（不编造，取同口径）",
           sig["features"][0].get("baseline", {}).get("零散不良率均值") == 0.062,
           f"baseline={sig['features'][0].get('baseline')}")

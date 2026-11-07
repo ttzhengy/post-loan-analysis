@@ -815,13 +815,37 @@ def build_topics(attr, nar, ev, drill_plan, signals, cohort):
 
 
 def est_extra_npl(t, overall):
-    """超额不良估算：命中户数 ×（命中不良率 − 对照不良率）× 全辖户均余额"""
+    """超额不良估算：命中户数 ×（命中不良率 − 对照不良率）× 全辖**户均**余额。
+
+    口径要点（旧版有两个错误，会算出超过全辖不良余额的天文数字）：
+      1. 户均余额必须用 bal / cust_cnt（余额 ÷ 客户数），
+         旧版用 bal / cnt（余额 ÷ 笔数），把「户均」算成了「笔均」，量级偏小但语义错。
+      2. 结果必须受全辖不良余额封顶 —— 一个客群的超额不良不可能超过全辖不良总量，
+         超过就说明上游口径有问题，此时宁可不给数，也不能给假数。
+    """
     hit, nonhit = t.get("hit") or {}, t.get("nonhit") or {}
     if hit.get("n") is None or hit.get("npl_rate") is None or nonhit.get("npl_rate") is None:
         return None, None
-    per_cust = (overall.get("bal") or 0) / (overall.get("cnt") or 1)
+    # 户均余额：优先客户数，缺失才退到笔数（并在返回值里标明口径）
+    base_cust = overall.get("cust_cnt") or 0
+    if base_cust:
+        per_cust = (overall.get("bal") or 0) / base_cust
+    else:
+        base_cust = overall.get("cnt") or 1
+        per_cust = (overall.get("bal") or 0) / base_cust
     diff = max(0.0, (hit["npl_rate"] or 0) - (nonhit["npl_rate"] or 0))
-    return hit["n"] * diff * per_cust, per_cust
+    est = hit["n"] * diff * per_cust
+
+    # 封顶：不超过全辖不良余额
+    total_npl = overall.get("npl_bal") or 0
+    if total_npl and est > total_npl:
+        return None, per_cust   # 上游口径不自洽，不给估算值
+
+    # 命中户数本身也不该超过全辖客户数
+    if base_cust and hit["n"] > base_cust * 1.02:
+        return None, per_cust
+
+    return est, per_cust
 
 
 # ---------------------------------------------------------------------------
@@ -1449,6 +1473,14 @@ def render(args):
     # =====================================================================
     g = "五、风险警示"
     warns = []
+    # 最高优先级的警示：钻取证据如果不是真实查询结果，必须在报告里明说
+    _ev_mode = str((evidence or {}).get("mode") or "").strip().lower()
+    if _ev_mode and _ev_mode != "execute":
+        _mode_txt = {"mock": "模拟结果", "dry-run": "未执行（仅校验）"}.get(_ev_mode, _ev_mode)
+        warns.append(
+            "⚠ 本期钻取证据为" + _mode_txt + "，命中组／对照组的样本量与不良率**不是真实数据计算结果**，"
+            "仅用于验证链路可跑通；引用这些数字做管理决策前，必须改用真实数据重新执行钻取。"
+        )
     feats = features.get("features") or []
     missing_feats = sum(1 for f in feats if f.get("status") == "data_missing")
     if missing_feats:
@@ -1667,8 +1699,9 @@ def _de_tech(s):
     # 5) 模板痕迹：LLM 未介入时的兜底文案不该把这个事实写给业务看
     s = _re.sub(r"[\[【]\s*降级模板\s*[\]】]\s*", "", s)
     s = _re.sub(r"[\[【]\s*(模板|TODO|FIXME)\s*[\]】]\s*", "", s)
-    # 6) 裸统计术语（lift / breadth / strength 等）
-    s = _re.sub(r"lift\s*[=:：]?\s*[\d.]+", "", s, flags=_re.I)
+    # 6) 裸统计术语（lift / breadth / strength 等）—— 保留数值，只换词
+    #    旧写法把 "lift=1.82" 整段删掉，导致判定句变成「假设成立：≥ 1.5」缺指标名
+    s = _re.sub(r"\blift\s*[=:：]\s*([\d.]+)", r"倍数 \1", s, flags=_re.I)
     s = _re.sub(r"\blift\b", "倍数", s, flags=_re.I)
     # 7) 维度/线索内部编号在句中（如「同时命中的线索（C01）背后」）→ 去掉括号里的编号
     s = _re.sub(r"[（(]\s*[CMD]\d{2,3}\s*[）)]", "", s)

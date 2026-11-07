@@ -8,11 +8,13 @@
     python3 scripts/attribution.py --help
 
 相对 v2.0 的实质变化（对应已诊断的 6 个缺陷）：
-1. 强度不再等于 hit_ratio。改为 CONTRACT 第 3 节公式：
-       breadth  = hit_count / total_members
+1. 强度不再等于 hit_ratio。公式见 references/INTERFACES.md 第 4 节：
+       breadth  = max_i(coverage_i)，成员真实覆盖率的最大值
        signal   = mean(norm(dev))  over hits,  norm(dev)=min(1, |dev|/SATURATION)
-       strength = 0.6*breadth + 0.4*signal
-   0.4 的强度分量此前从未实现，是「C01/C02/C03 永远霸榜」的根因。
+       strength = signal * (0.7 + 0.3*breadth)
+   signal 乘性主导，breadth 仅在 0.7~1.0 区间做调节。旧式
+   breadth = hit_count/total_members 由「规则写了几条成员」决定，
+   单成员规则只要命中就恒为 1.0，与现象是否普遍无关，已废弃。
 2. 规则不再硬编码，改读 references/rules.json 的 manual + mined + derived 三段。
 3. expr 支持 all_of / any_of / min_hits / min_any_hits / scale_max（一阶信号 + 低阶组合），
    成员池 > scale_max 时只枚举不超过 scale_max 阶的组合，避免组合爆炸。
@@ -74,6 +76,22 @@ def _r(v, n=4):
     if v is None:
         return None
     return round(float(v), n)
+
+
+# 计数类 metric 标签：这些是「规模/条数」而非「风险强度」，不能参与偏离度打分。
+# 与 signals.py 的 COUNT_LABELS 保持一致（两处必须同步改）。
+_COUNT_LABELS = {
+    "机构数", "任务数", "记录数", "流程数", "客户经理数", "评分记录数",
+    "征信覆盖客户数", "线索类型数", "担保类型数", "客户数", "笔数", "户数",
+    "审批拒绝数", "未办结任务数", "已办结任务数", "高风险经理数", "样本数",
+}
+
+
+def _is_count_label(label):
+    lab = str(label or "")
+    if lab in _COUNT_LABELS:
+        return True
+    return lab.endswith(("数", "个数", "笔数", "户数", "份数"))
 
 
 def load_json(path):
@@ -342,6 +360,11 @@ def compute_deviation(unit, warnings):
     for label, val in metric.items():
         v = _num(val)
         if v is None:
+            continue
+        # 计数类指标（机构数/任务数/记录数…）不是风险强度，不能参与偏离计算。
+        # 否则「机构数=1981、基线误当成 1.0」会算出 dev≈1980，压过所有真实风险指标，
+        # 报告里就会把「1981」当成特征强度展示。
+        if _is_count_label(label):
             continue
         base = _num(baseline.get(label))
         if base is None:
@@ -663,6 +686,55 @@ def resolve_cont(cfg, sigtab, thr):
     return [u]
 
 
+def unit_coverage(unit):
+    """成员覆盖率 coverage_i ∈ [0,1]，用于 breadth = max_i(coverage_i)。
+
+    feature     → numerator / denominator
+    dim_bucket  → 该档余额 / 全辖总余额
+    clue        → coverage_bal_pptn
+    cont        → 余额 / 总余额
+    取不到 → None（不参与 max）
+    """
+    if not unit:
+        return None
+    kind = unit.get("kind")
+    raw = unit.get("raw")
+    raw = raw if isinstance(raw, dict) else {}
+
+    def _f(v):
+        try:
+            return float(v)
+        except (TypeError, ValueError):
+            return None
+
+    if kind == "feature":
+        num, den = _f(unit.get("numerator")), _f(unit.get("denominator"))
+        if num is None or den is None:
+            num, den = _f(raw.get("numerator")), _f(raw.get("denominator"))
+        if num is not None and den:
+            return min(1.0, num / den)
+        return None
+
+    if kind == "dim_bucket":
+        bal = _f(unit.get("bal")) or _f(raw.get("bal"))
+        tot = _f(unit.get("total_bal")) or _f(raw.get("total_bal"))
+        if bal is not None and tot:
+            return min(1.0, bal / tot)
+        return None
+
+    if kind == "clue":
+        return _f(unit.get("coverage_bal_pptn")) or _f(raw.get("coverage_bal_pptn"))
+
+    if kind == "cont":
+        bal = _f(unit.get("bal")) or _f(raw.get("bal"))
+        tot = _f(unit.get("total_bal")) or _f(raw.get("total_bal"))
+        if bal is not None and tot:
+            return min(1.0, bal / tot)
+        return None
+
+    return _f(unit.get("coverage"))
+
+
 def norm_of(unit, saturation):
     """单成员归一化强度 ∈ [0,1]。无基线/不可算 → None（不参与 signal 均值）"""
     if unit is None or saturation <= 0:
@@ -709,10 +781,18 @@ class Evaluation:
     def compute(self, members, total_members, thr, n_no_baseline=0):
         self.members = members
         self.hit_count = len(members)
-        self.breadth = self.hit_count / total_members if total_members else 0.0
+        # breadth = max_i(coverage_i)：成员真实覆盖率的最大值
+        # 旧口径 hit_count/total_members 由「规则写了几条成员」决定，
+        # 单成员规则只要命中就恒为 1.0，与现象是否普遍无关
+        covs = [c for c in (unit_coverage(m[1]) for m in members) if c is not None]
+        if covs:
+            self.breadth = max(covs)
+        else:
+            self.breadth = self.hit_count / total_members if total_members else 0.0
         norms = [m[2] for m in members if m[2] is not None]
         self.signal = sum(norms) / len(norms) if norms else 0.0
-        self.strength = 0.6 * self.breadth + 0.4 * self.signal
+        # strength = signal * (0.7 + 0.3*breadth)：signal 乘性主导，breadth 仅在 0.7~1.0 调节
+        self.strength = self.signal * (0.7 + 0.3 * self.breadth)
         self.n_no_baseline = n_no_baseline
         return self
 

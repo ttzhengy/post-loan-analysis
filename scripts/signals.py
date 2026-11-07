@@ -10,7 +10,7 @@
     # 无真实数据时自测（内置合成数据，覆盖四种情形）
     python3 scripts/signals.py --mock --out signals.json
 
-产出结构见 shared/CONTRACT.md 第 2 节。相对旧流程，本脚本补齐三块此前缺失的数据：
+产出结构见 references/INTERFACES.md 第 3 节。相对旧流程，本脚本补齐三块此前缺失的数据：
   1. baseline   —— 全辖基线值（feature_id → {metric_label: baseline}），强度分量的必需输入
   2. clue_matrix—— 线索级不良率（来自 S_*_RSK_ORG_C4 长表，不再只取 RSK_LINE_TYP.nunique()）
   3. continuation—— 接续工具 / 接续链（来自 S_00PF_PEAS_CONT_QUAL_C4 与上年末接续情况表）
@@ -35,9 +35,11 @@ SCHEMA_VERSION = "3.0"
 # 维度档位最小样本门槛：余额占全辖低于此比例的档位，不良率不稳定（易出现 100% 异常值），
 # 不参与不良率排名与展示。0.001 = 全辖余额的 0.1%。
 MIN_DIM_BUCKET_PPTN = 0.001
-# 循环论证维度：五级分类/核销状态本身就是不良定义的来源，用它们解释不良率是同义反复，
-# 不进入归因维度（仍可保留在信号里供 drill 使用）
-CIRCULAR_DIMS = {"五级分类", "核销状态", "风险分类", "不良状态"}
+# 循环论证维度：这些字段本身就是不良定义的来源，或与不良同处一条因果链，
+# 用它们解释不良率是同义反复，不进入归因维度排名
+#   五级分类/核销状态 = 不良定义本身
+#   账龄 → 逾期天数 → 五级分类，账龄越长越必然被划为不良，方向上不可逆
+CIRCULAR_DIMS = {"五级分类", "核销状态", "风险分类", "不良状态", "账龄(月)", "账龄", "逾期账龄"}
 DIM_STAGE = {
     "担保方式": "贷前", "期限档": "贷前", "额度档": "贷前", "还款方式": "贷前",
     "循环标识": "贷前", "主体类型": "贷前", "首贷与否": "贷前", "性别": "贷前",
@@ -122,9 +124,11 @@ def build_dimensions(overview, overall, warnings):
             # 维度中文名缺失时退回 group 名，避免把 "buckets" 当维度名显示
             if not dim_name or dim_name in ("buckets", "items", "values"):
                 dim_name = group
-            # 循环论证维度不进入归因（五级分类/核销状态即不良定义本身）
-            if dim_name in CIRCULAR_DIMS:
-                warnings.append(f"{dim_name}：循环论证维度，已排除出归因维度")
+            # 循环论证维度不进入归因（五级分类/核销状态即不良定义本身；
+            # 账龄→逾期→不良同属一条因果链）
+            _dn = str(dim_name or "")
+            if _dn in CIRCULAR_DIMS or any(c in _dn for c in CIRCULAR_DIMS):
+                warnings.append(f"{_dn}：循环论证维度，已排除出归因维度")
                 continue
             # 同一维度名可能出现在不同 group，用 group 前缀消歧
             key = dim_name if dim_name not in dims_out else f"{group}·{dim_name}"
@@ -453,8 +457,8 @@ def enrich_baseline(feature_list, overall):
                 n_filled += 1
                 continue
 
-        # 3) 倍数型：基线恒为 1.0
-        ratio_labels = [k for k in metric if _is_ratio_to_normal(k)]
+        # 3) 倍数型：基线恒为 1.0（只对真正的强度/倍数/指数标签，计数类不参与）
+        ratio_labels = [k for k in metric if _is_ratio_to_normal(k) and not _is_count_label(k)]
         if ratio_labels:
             f["baseline"] = {k: 1.0 for k in ratio_labels}
             f["baseline_src"] = "normal_1_0"
