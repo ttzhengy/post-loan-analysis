@@ -505,6 +505,155 @@ def build_narrative(hypothesis, checks, agg):
 
 # ============================================================ 主流程
 
+def _collect_targets(tg, cs_doc, rules_doc=None):
+    """收集需要做可证伪检验的对象。
+
+    为什么不能只取 selection.topics
+    -------------------------------
+    闸门把主题拒掉的理由分两种，性质完全不同：
+      · 现象不成立（求交后实测率不达标）—— 没有可检验的现象，跳过是对的
+      · 归因四项检查通过、但组合没进现象清单 —— 这类「未做真实求交」
+        不等于「现象不成立」，直接丢弃等于永久误杀
+    只读 selection.topics 会让闸门全拒时 falsify 直接空转（0 个假设），
+    被拒线索没有任何翻案通道。
+
+    为什么不能无脑把 gated 全收进来
+    -------------------------------
+    实测发现 gated 里的条目大多**根本不存在可执行的客群条件**：
+    规则的成员是机构维度的聚合特征（零散获客占比、低分段占比这类），
+    只有汇总量、没有凭证级 SQL 表达式，无法求交定位客群。
+    这不是「漏做」，是「做不了」。把它们塞进检验只会得到一堆
+    unavailable，掩盖真实原因。因此这里按可定位性分三类：
+      locatable   —— 有 conds，可以做检验
+      unmappable  —— 成员含聚合特征，无 SQL 表达式，无法定位客群
+      no_phenomenon —— 现象层明确不成立，无检验意义
+    三类都写进结果，让「为什么没检验」可追溯。
+    """
+    def _feat_ids_from_rule(rule_id):
+        """从 rules.json 取规则的成员编号，用来判断成员是否可落 SQL。"""
+        if not isinstance(rules_doc, dict):
+            return []
+        for grp in ("manual", "mined", "derived"):
+            for r in (rules_doc.get(grp) or []):
+                if r.get("rule_id") == rule_id:
+                    ex = r.get("expr") or {}
+                    ids = [x for x in (ex.get("all_of") or []) if isinstance(x, int)]
+                    ids += [x for x in (ex.get("any_of") or []) if isinstance(x, int)]
+                    return ids
+        return []
+
+    targets, unmappable, no_phen = [], [], []
+
+    def _usable_conds(c):
+        """条件里引用的特征必须都有 SQL 表达式才算可定位。"""
+        if not c:
+            return False
+        for f in (c.get("features") or []):
+            fid = f.get("feature_id")
+            if fid not in cs.FEATURE_COND:
+                return False
+        return True
+
+    def _conds_from_members(rule_id, gate_conds):
+        """按规则成员编号反推可执行条件。
+
+        规则 expr 里的整数就是全局 feature_id（attribution.resolve_spec 同口径），
+        FEATURE_COND 里有的就能落 SQL。只有当**全部**成员都能落 SQL 时，
+        才认为这条线索可以求交定位客群；有一个落不了，整个组合就定位不了，
+        （少一个条件等于换了客群，不能拿来代替）。
+        """
+        if _usable_conds(gate_conds):
+            return gate_conds.get("conds") if isinstance(gate_conds, dict) else gate_conds
+        fids = _feat_ids_from_rule(rule_id)
+        if not fids:
+            return None
+        if any(fid not in cs.FEATURE_COND for fid in fids):
+            return None
+        feats = [{"feature_id": fid,
+                  "name": cs.FEATURE_COND[fid].get("label") or f"特征{fid}",
+                  "cond": cs.FEATURE_COND[fid]["cond"]}
+                 for fid in fids]
+        return {"features": feats,
+                "conds": [f["cond"] for f in feats],
+                "derived_from_rule_expr": True}
+
+    # 1) 已入选主题
+    for t in ((tg.get("selection") or {}).get("topics") or []):
+        conds = t.get("conds")
+        if not t.get("rule_id"):
+            continue
+        got = _conds_from_members(t["rule_id"], conds)
+        if got:
+            targets.append({"rule_id": t["rule_id"], "name": t.get("name"),
+                            "source": "selected", "cohort_conds": got})
+        else:
+            unmappable.append({"rule_id": t["rule_id"], "name": t.get("name"),
+                               "source": "selected",
+                               "member_feature_ids": _feat_ids_from_rule(t["rule_id"]),
+                               "reason": "入选主题未携带可执行客群条件"})
+
+    # 2) 被闸门拒掉、但归因四项检查已通过的条目 —— 允许翻案
+    for g in (tg.get("gated") or []):
+        ph = g.get("phenomenon") or {}
+        at = g.get("attribution") or {}
+        if g.get("both_passed"):
+            continue
+        if ph.get("passed"):
+            continue
+        ph_status = ph.get("status") or ""
+        if ph_status not in ("not_screened", "unavailable", "skipped"):
+            # 现象层给了明确的不成立结论，没有翻案必要
+            no_phen.append({"rule_id": g.get("rule_id"), "name": g.get("name"),
+                            "reason": f"现象层已判定不成立（{ph_status}）"})
+            continue
+        if not at.get("passed"):
+            continue
+        got = _conds_from_members(g.get("rule_id"), g.get("conds"))
+        if got:
+            targets.append({"rule_id": g.get("rule_id"), "name": g.get("name"),
+                            "source": "gate_rejected", "cohort_conds": got})
+        else:
+            fids = _feat_ids_from_rule(g.get("rule_id"))
+            bad = [fid for fid in fids if fid not in cs.FEATURE_COND]
+            unmappable.append({
+                "rule_id": g.get("rule_id"), "name": g.get("name"),
+                "source": "gate_rejected",
+                "member_feature_ids": fids,
+                "unmappable_feature_ids": bad,
+                "reason": ("规则成员含机构/客群汇总特征（"
+                           + (", ".join(str(x) for x in bad) if bad else "未知")
+                           + "），无凭证级 SQL 条件，无法求交定位客群，"
+                             "故不能进入可证伪检验"),
+            })
+
+    return targets, unmappable, no_phen
+
+
+def _resolve_conds(targets, cs_doc):
+    """给缺 conds 的目标从 combo_screen.candidates 里补组合条件。
+
+    _collect_targets 已经按规则成员反推过条件，这里只兜底仍是空的目标。
+    """
+    flat = {}
+    for c in (cs_doc.get("candidates") or []):
+        conds = c.get("conds")
+        if conds:
+            flat.setdefault(tuple(sorted(conds)), conds)
+
+    for t in targets:
+        if t.get("cohort_conds"):
+            continue
+        cand = flat.get(t.get("rule_id"))
+        t["cohort_conds"] = ({"conds": cand, "features": []} if cand else None)
+
+
+def _conds_list(cohort_conds):
+    """把 cohort_conds 统一取成 SQL 条件字符串列表。"""
+    if isinstance(cohort_conds, dict):
+        return cohort_conds.get("conds") or []
+    return cohort_conds or []
+
+
 def run_one(con, dx, hypothesis, cohort_conds, args, cfg):
     """对单个假设执行全部检验。"""
     def _q(sql):
@@ -556,6 +705,8 @@ def main():
     ap.add_argument("--slice", default="20260831")
     ap.add_argument("--base-slice", required=True)
     ap.add_argument("--data-dir", required=True)
+    ap.add_argument("--rules", default="",
+                    help="rules.json 路径，用于判断规则成员是否可落 SQL")
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
 
@@ -563,18 +714,29 @@ def main():
 
     tg = json.load(open(args.topic_gate, encoding="utf-8"))
     cs_doc = json.load(open(args.combo_screen, encoding="utf-8"))
-    topics = ((tg.get("selection") or {}).get("topics")) or []
-    phenomena = cs_doc.get("phenomena") or []
-    by_rule = {}
-    for p in phenomena:
-        for rid in (p.get("linked_rules") or []):
-            by_rule.setdefault(rid, p)
+
+    # 规则定义用于判断「成员是否可落 SQL」；缺文件时降级为不判断
+    rules_doc = None
+    if args.rules:
+        try:
+            rules_doc = json.load(open(args.rules, encoding="utf-8"))
+        except (OSError, ValueError) as exc:   # noqa: BLE001
+            print(f"⚠️  规则文件不可读（{exc}），跳过可定位性判断")
+
+    targets, unmappable, no_phen = _collect_targets(tg, cs_doc, rules_doc)
+    _resolve_conds(targets, cs_doc)
 
     result = {
         "schema_version": SCHEMA_VERSION, "kind": "falsification",
         "slice": args.slice, "base_slice": args.base_slice,
         "criteria": cfg, "hypotheses": [], "skipped": [],
         "summary": {}, "warnings": [],
+        # 没能进入检验的对象 + 原因，让「为什么没检验」可追溯
+        "unmappable": unmappable, "no_phenomenon": no_phen,
+        # 假设状态回写表：rule_id → {prior, status, note}
+        # 让「被闸门拒掉」的线索有一条可追溯的翻案/维持记录，
+        # 而不是拒了就再无下文。
+        "hypothesis_status": {},
     }
 
     import drill_executor as dx
@@ -586,31 +748,71 @@ def main():
         return 2
     con = duckdb.connect()
 
-    for t in topics:
-        rid = t.get("rule_id")
-        p = by_rule.get(rid)
-        if not p or not (p.get("conds")):
+    for t in targets:
+        rid = t["rule_id"]
+        conds = _conds_list(t.get("cohort_conds"))
+        if not conds:
             result["skipped"].append({"rule_id": rid, "name": t.get("name"),
                                       "reason": "无对应组合条件，无法定位客群"})
+            result["hypothesis_status"][rid] = {
+                "prior": t["source"], "status": "untested",
+                "note": "无法定位客群，未进入检验"}
             continue
         name = t.get("name") or rid
         try:
-            h = run_one(con, dx, name, p["conds"], args, cfg)
+            h = run_one(con, dx, name, conds, args, cfg)
+            h["rule_id"] = rid
+            h["source"] = t["source"]
             result["hypotheses"].append(h)
+            result["hypothesis_status"][rid] = {
+                "prior": t["source"],
+                "status": h["aggregate"]["status"],
+                "note": h["aggregate"].get("note") or "",
+            }
         except Exception as exc:   # noqa: BLE001
             result["warnings"].append(f"假设「{name}」检验失败：{exc}")
+            result["hypothesis_status"][rid] = {
+                "prior": t["source"], "status": "untested",
+                "note": f"检验失败：{exc}"}
 
     cnt = {}
     for h in result["hypotheses"]:
         s = h["aggregate"]["status"]
         cnt[s] = cnt.get(s, 0) + 1
-    result["summary"] = {"total": len(result["hypotheses"]), "by_status": cnt}
+    by_src = {}
+    for h in result["hypotheses"]:
+        by_src[h.get("source")] = by_src.get(h.get("source"), 0) + 1
+    result["summary"] = {"total": len(result["hypotheses"]),
+                         "by_status": cnt, "by_source": by_src,
+                         "unmappable": len(unmappable),
+                         "no_phenomenon": len(no_phen),
+                         "candidates_considered": (len(targets) + len(unmappable)
+                                                   + len(no_phen))}
+
+    # 关键：survived 的「被拒线索」才允许向上游申请复裁
+    revive = [rid for rid, st in result["hypothesis_status"].items()
+              if st["prior"] == "gate_rejected"
+              and st["status"] == "survived"]
+    result["summary"]["revive_candidates"] = revive
+    result["summary"]["revive_note"] = (
+        f"{len(revive)} 条被闸门拒掉的线索通过可证伪检验，具备复裁资格；"
+        f"复裁不等于入选，仍需现象层实测校验"
+        if revive else "无被拒线索通过可证伪检验")
 
     json.dump(result, open(args.out, "w", encoding="utf-8"),
               ensure_ascii=False, indent=2)
-    print(f"✅ 可证伪检验：{len(result['hypotheses'])} 个假设 → {cnt}")
+    print(f"✅ 可证伪检验：{len(result['hypotheses'])} 个假设 → {cnt}"
+          f"（来源 {by_src}）")
+    if unmappable:
+        print(f"   ⚠️  {len(unmappable)} 条无法定位客群（成员含汇总特征，无 SQL 条件），"
+              f"未进入检验")
+    if no_phen:
+        print(f"   ⚠️  {len(no_phen)} 条现象层已判定不成立，无需检验")
     for h in result["hypotheses"]:
-        print(f"   [{h['aggregate']['status']}] {h['hypothesis']}")
+        src = "已入选" if h.get("source") == "selected" else "闸门拒"
+        print(f"   [{h['aggregate']['status']}] ({src}) {h['hypothesis']}")
+    if revive:
+        print(f"   ↩️  可复裁：{', '.join(revive)}")
     print(f"   → {args.out}")
     return 0
 

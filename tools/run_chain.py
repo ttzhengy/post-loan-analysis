@@ -228,10 +228,13 @@ def main():
     log("   归因不能停在「哪类客户坏得多」。这一步对每个入选主题做四项检验：")
     log("   时间集中性、剂量反应、准入与贷后区分、客群资质对照。")
     log("   只有「未被推翻」的假设才进结论，被反驳的明确写出反驳理由。")
+    log("   被闸门拒掉但归因检查已通过的线索也一并检验，避免永久误杀；")
+    log("   成员含汇总特征、无法落 SQL 定位客群的对象如实记为「无法检验」。")
     if execute and (out / "topic_gate.json").exists() and base_slice:
         run([py, SCRIPTS / "falsify.py",
              "--topic-gate", "topic_gate.json",
              "--combo-screen", "combo_screen.json",
+             "--rules", RULES,
              "--slice", slice_v, "--base-slice", base_slice,
              "--data-dir", data_dir, "--out", "falsify.json"], cwd=out)
     else:

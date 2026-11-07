@@ -38,6 +38,7 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 import common  # noqa: E402
+import falsify_eval  # noqa: E402
 
 SCHEMA_VERSION = "3.0"
 
@@ -459,6 +460,33 @@ def execute_plan(plan, td, mode="dry-run", con=None, data_dir=None, mock=None, u
         "insufficient": f"证据不足：{why}",
     }[status]
 
+    # 证伪条件求值并回写假设状态。
+    # 这一步把 falsify_if 从「写给人看的字符串」变成真正的判定：
+    #   · 条件成立 → nullified，该假设不得再作为结论引用
+    #   · 指标缺失 → undetermined，绝不能退化成「未被推翻」
+    # dry-run 没有实测数字，任何判定都是假的，直接置 undetermined。
+    falsify_result = None
+    hypothesis_status = "undetermined"
+    if mode != "dry-run" and hit and nonhit:
+        falsify_result, _fs = falsify_eval.apply_to_plan(plan, hit, nonhit)
+        falsify_result = falsify_result.get("falsify_result")
+        hypothesis_status = falsify_result.get("status") if falsify_result else "undetermined"
+        hypothesis_status = {
+            falsify_eval.STATUS_REFUTED: "nullified",
+            falsify_eval.STATUS_SURVIVED: "not_excluded",
+            falsify_eval.STATUS_INDETERMINATE: "undetermined",
+            falsify_eval.STATUS_INVALID: "undetermined",
+        }.get(hypothesis_status, "undetermined")
+        # 证伪条件被触发时，assess 的 verified 结论必须让位
+        if hypothesis_status == "nullified" and status == "verified":
+            status = "rejected"
+            verdict = ("假设被推翻：" + (falsify_result or {}).get("reason", "")
+                       + "（assess 的 lift 达标，但 plan 自带的证伪条件成立）")
+            caveats.append("该假设的证伪条件已在本次数据上成立，不纳入结论")
+    elif mode == "dry-run":
+        falsify_result = {"status": falsify_eval.STATUS_INDETERMINATE,
+                          "reason": "dry-run 未取数，证伪条件无法判定"}
+
     return None, {
         "plan_id": plan.get("plan_id"), "linked_rule": plan.get("linked_rule"),
         "hypothesis": plan.get("hypothesis"), "topic_hint": plan.get("topic_hint"),
@@ -466,6 +494,10 @@ def execute_plan(plan, td, mode="dry-run", con=None, data_dir=None, mock=None, u
         "status": status, "comparisons": comparisons,
         "drill_rows": drill_rows, "verdict": verdict, "caveats": caveats,
         "steps_total": len(plan.get("steps") or []),
+        # 证伪判定与假设状态回写，供 topic_gate / narrative 读取
+        "falsify_result": falsify_result,
+        "hypothesis_status": hypothesis_status,
+        "falsify_if": plan.get("falsify_if"),
     }
 
 

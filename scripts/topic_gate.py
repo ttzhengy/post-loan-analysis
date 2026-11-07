@@ -337,6 +337,9 @@ def run(combo_screen, evidence, attributions, max_topics=MAX_TOPICS_DEFAULT, cfg
         gated.append({
             "rule_id": rid, "name": t.get("name"), "strength": t.get("strength"),
             "level": t.get("level"), "phenomenon": ph, "attribution": at,
+            # 只有真做了求交才有 conds；未求交时为 None，下游据此判定
+            # 「无法定位客群」而不是「检验没通过」——两者性质完全不同。
+            "conds": (combo or {}).get("conds"),
             "both_passed": bool(ph.get("passed") and at.get("passed")),
         })
 
