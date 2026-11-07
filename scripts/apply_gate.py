@@ -109,12 +109,31 @@ def main(argv=None):
     ap.add_argument("--topic-gate", required=True)
     ap.add_argument("--attribution", required=True)
     ap.add_argument("--evidence", help="仅用于日志，不参与判定")
+    ap.add_argument("--combo-screen", help="combo_screen.json，用于记录组合候选总数")
     ap.add_argument("--out", default="attribution.json")
     args = ap.parse_args(argv)
 
     tg = common.read_json(args.topic_gate)
     attr = common.read_json(args.attribution)
     new_attr, st = apply_gate(tg, attr)
+
+    # 组合候选总数来自 combo_screen，与 topic_selection 的规则条数是两个层面的对象：
+    # 前者是「组合」候选（60），后者是「规则」条数（42）。报告摘要必须引用前者，
+    # 否则会出现「42 条组合线索」但候选表列了 60 行的口径错位。
+    if args.combo_screen:
+        try:
+            cs = common.read_json(args.combo_screen)
+            n_cand = cs.get("candidates_total")
+            if n_cand is None and isinstance(cs.get("candidates"), list):
+                n_cand = len(cs["candidates"])
+            if n_cand is not None:
+                gate_applied = new_attr.get("topic_gate_applied") or {}
+                gate_applied["combo_candidates_total"] = int(n_cand)
+                gate_applied["combo_phenomena_total"] = int(cs.get("phenomena_total") or 0)
+                new_attr["topic_gate_applied"] = gate_applied
+        except (OSError, ValueError) as exc:
+            print(f"⚠️  读 combo_screen 失败，组合候选数留空：{exc}")
+
     common.write_json(args.out, new_attr)
 
     if st["blocked"]:

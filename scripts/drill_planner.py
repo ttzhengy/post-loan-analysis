@@ -570,18 +570,19 @@ CIRCULAR_DIM_KEYS = {"age", "rsk_cls", "wroff", "五级分类", "核销状态", 
                      "不良状态", "账龄(月)", "账龄"}
 
 # 特征名关键词 → SQL 条件（按特征业务含义映射，优先级高于维度兜底）
+# 注意：关键词必须与条件有真实业务对应关系。像「零散获客」「异地」「多头」
+# 这类特征在凭证表里没有直接字段，写成 CUST_NO IS NOT NULL / GRTE_MOD_CD
+# 只会让不同规则撞到同一条 SQL，产出完全相同的数字（曾导致 C01 与 M16
+# 共用「纯信用」条件，hit/nonhit 完全一致）。宁可返回 None 标为不可定位。
 FEATURE_TO_SQL = [
     (("无抵押", "信用"), "GRTE_MOD_CD = '0101'", "纯信用（无抵押、无第二还款来源）"),
     (("资金往来",), "MAGR_CD IS NOT NULL", "有客户经理归属的凭证"),
-    (("批量建档", "建档"), "LN_DAT IS NOT NULL", "建档记录完整的凭证"),
-    (("零散获客", "获客"), "GRTE_MOD_CD = '0101'", "纯信用（无抵押、无第二还款来源）"),
-    (("低评分", "评分"), "CAST(FORM_BAL_RMB AS DOUBLE) < 50000", "单笔 5 万元以下小额度凭证"),
+    (("批量建档",), "LN_DAT IS NOT NULL", "建档记录完整的凭证"),
+    (("低评分", "评分准入"), "CAST(FORM_BAL_RMB AS DOUBLE) < 50000", "单笔 5 万元以下小额度凭证"),
     (("小额",), "CAST(FORM_BAL_RMB AS DOUBLE) < 50000", "单笔余额 5 万元以下"),
     (("超额授信", "大额"), "CAST(FORM_BAL_RMB AS DOUBLE) >= 500000", "单笔余额 50 万元以上"),
     (("接续", "续贷"), "LN_DAT <= '20231231'", "存量续贷凭证"),
-    (("欺诈", "假冒"), "CUST_NO IS NOT NULL", "客户标识齐全的凭证"),
-    (("异地",), "CUST_NO IS NOT NULL", "客户标识齐全的凭证"),
-    (("多头", "负债"), "CUST_NO IS NOT NULL", "客户标识齐全的凭证"),
+    (("期限", "短期"), "LN_TRM_MONTHS <= 12", "期限 1 年以内的短期凭证"),
 ]
 
 
@@ -655,6 +656,28 @@ def _insight_to_plan(idx, ins, signals, slice_v, rules_by_id=None, used_conds=No
     clue_hints = [h.split(":", 1)[1] for h in hints if h.startswith("clue:")]
     cm = signals.get("clue_matrix") or {}
 
+    # 规则一条成员都没命中时，不硬造假设。
+    # 这类规则（如 M16 老资产质量恶化，hits 为空）在凭证表里没有任何可定位的
+    # 条件，硬套兜底维度只会产出与其它主题雷同的 SQL（曾与 C01 共用「纯信用」，
+    # hit/nonhit 数字完全一致），报告会写出一个数据并不支持的结论。
+    # 如实标 locatable=False，由下游按「不可定位」处理。
+    if not _member_names(ins):
+        return {
+            "plan_id": f"P{idx:03d}",
+            "topic_hint": f"{ins.get('name', '')}的风险集中在哪类合同",
+            "linked_rule": rid,
+            "hypothesis": "",
+            "mechanism": "",
+            "falsify_if": "",
+            "priority": idx,
+            "origin": "degrade_from_rule",
+            "locatable": False,
+            "unlocatable_reason": "规则本期无任何命中成员，凭证表内无可定位条件，无法构造对照钻取",
+            "evidence_hint_used": hints,
+            "cond_used": None,
+            "steps": [],
+        }
+
     steps = []
     picked = _feature_filter_for(ins, used_conds) or _dim_filter_for(ins, signals)
     if picked is None:
@@ -714,6 +737,11 @@ def _insight_to_plan(idx, ins, signals, slice_v, rules_by_id=None, used_conds=No
         "priority": idx,
         "origin": "degrade_from_rule",
         "evidence_hint_used": hints,
+        # 供 build_degrade_plan 记录「本 plan 占用了哪个条件」。
+        # 之前用正则从 SQL 里反解（AND \((.*?)\)$），但条件是嵌在
+        # CASE WHEN (...) 里的，尾部并非该形状，导致 used 恒为空、
+        # 「避让」机制形同虚设。直接返回更可靠。
+        "cond_used": filt,
         "steps": steps,
     }
 
@@ -756,16 +784,28 @@ def build_degrade_plan(signals, attribution, rules=None, max_plans=4):
 
     used = set()
     plans = []
+    skipped = []
     for i, x in enumerate(ins):
         p = _insight_to_plan(i + 1, x, signals, slice_v, used_conds=used)
-        # 记录本条占用的条件，供后续主题避让
-        try:
-            import re as _re
-            _m = _re.search(r"AND \((.*?)\)\s*$", p["steps"][0]["sql"], _re.S)
-            if _m:
-                used.add(_m.group(1).strip())
-        except Exception:
-            pass
+        # 不可定位的规则不产出 plan，单独记入 skipped，如实说明原因
+        if not p.get("steps"):
+            skipped.append({"rule_id": p.get("linked_rule"),
+                            "name": x.get("name") or "",
+                            "reason": p.get("unlocatable_reason") or "无可执行步骤"})
+            continue
+        # 记录本条占用的条件，供后续主题避让。
+        # 优先用 plan 自报的 cond_used；老格式才退回正则解析。
+        cond = p.get("cond_used")
+        if cond:
+            used.add(cond)
+        else:
+            try:
+                import re as _re
+                _m = _re.search(r"AND \((.*?)\)\s*$", p["steps"][0]["sql"], _re.S)
+                if _m:
+                    used.add(_m.group(1).strip())
+            except Exception:
+                pass
         plans.append(p)
 
     # 若线索不足（<2 条），补一条维度偏移驱动的通用钻取
@@ -810,7 +850,11 @@ def build_degrade_plan(signals, attribution, rules=None, max_plans=4):
         "note": "无 LLM 返回时由规则 evidence_hint 自动生成的默认钻取计划；hypothesis 带 [降级模板] 前缀，"
                 "下游 narrative 据此选用数据驱动措辞。",
         "plans": plans,
-        "warnings": [] if plans else ["无已触发线索，未生成任何钻取计划"],
+        # 不可定位的规则如实列出，不当成「无风险」，也不硬造条件凑数
+        "skipped": skipped,
+        "warnings": ([] if plans else ["无已触发线索，未生成任何钻取计划"])
+                    + ([f"{len(skipped)} 条线索无可定位条件，未生成钻取计划（{', '.join(s['rule_id'] for s in skipped)}）"]
+                       if skipped else []),
     }
 
 

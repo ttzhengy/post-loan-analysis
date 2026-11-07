@@ -317,6 +317,11 @@ def _dims_brief(signals):
     rows = []
     for key, dim in (signals.get("dimensions") or {}).items():
         for b in dim.get("buckets") or []:
+            # 余额过小的档位（sample_too_small）会被不良率 100% 之类的极端值主导，
+            # signals.py 已标 valid=False 剔除排名。这里同样排除，避免把无效档位
+            # 当成「恶化最明显」喂给模型。
+            if b.get("valid") is False:
+                continue
             off = b.get("offset_pp") or 0
             if off > 0 and (b.get("offset_pp") or 0) > 0:
                 rows.append((off, dim.get("name", key), b.get("bucket"), b.get("npl_rate"),
@@ -633,17 +638,22 @@ def _monitor_summary(signals, attribution, health=None):
     ov = signals.get("overall") or {}
     r = ov.get("npl_rate")
     sel = attribution.get("topic_selection") or []
-    n_eval = len(sel)
+    n_rules = len(sel)
     health = health or {}
     hstat = (health.get("status") or "ok").lower()
     n_tot = health.get("total")
     n_ver = health.get("verified")
 
-    # 分层口径：42 条是候选评估数，其中只有一部分真正进入证据闸门做实测校验。
-    # 注意不能拿 topic_gate_applied.rejected 当闸门条数 —— 它是对全部
-    # topic_selection 逐条写回的结果（42 条全 rejected），而闸门实际只评估了
-    # 进入 gated 的那几条。两个数混用会出现「42 条进入实测校验」的假陈述。
+    # 口径分层，三个数不能混用：
+    #   n_eval  —— 组合候选总数（combo_screen.candidates_total，如 60），报告正文引用这个
+    #   n_rules —— topic_selection 的规则条数（如 42），是「规则」不是「组合」
+    #   n_gated —— 真正进入证据闸门做实测校验的条数
+    # 早期版本把 n_rules 当成「组合线索数」写进报告，出现「42 条组合线索」
+    # 而候选表实际列了 60 行的错位。有 combo 候选数时优先用它。
     _ga = attribution.get("topic_gate_applied") or {}
+    n_eval = _ga.get("combo_candidates_total")
+    if n_eval is None:
+        n_eval = n_rules
     n_gated = _ga.get("gated_total")
     if n_gated is None:
         n_gated = _ga.get("rejected", 0)

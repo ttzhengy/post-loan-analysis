@@ -409,6 +409,10 @@ class Facts:
                 bk = str(b.get("bucket") or b.get("dim_value") or "")
                 if not bk:
                     continue
+                # 与图 2 / 正文口径一致：余额过小的档位已剔除排名，
+                # 不允许在叙述里作为「该类合同的真实倍数」回显。
+                if b.get("valid") is False:
+                    continue
                 for f in self.feats:
                     toks = [t for t in re.split(r"[（(、/]", f["word"]) if len(t) >= 2]
                     if f["word"] and (f["word"] in bk or bk in f["word"] or any(t in bk for t in toks)):

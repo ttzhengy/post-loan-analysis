@@ -200,6 +200,7 @@ def main():
              "--topic-gate", "topic_gate.json",
              "--attribution", "attribution.json",
              "--evidence", "evidence.json",
+             "--combo-screen", "combo_screen.json",
              "--out", "attribution.json"], cwd=out)
     else:
         log("   跳过：缺 topic_gate.json 或 attribution.json")

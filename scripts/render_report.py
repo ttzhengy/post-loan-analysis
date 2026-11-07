@@ -1104,12 +1104,19 @@ def render(args):
                         + reg.unit("前3机构不良占比", s3, pct, "attribution.json top.org[0:3].npl_bal",
                                    "前3机构不良余额合计 ÷ 全辖不良余额", g) + "。")
     signals_txt = ""
+    # 组合候选总数：优先取 apply_gate 写回的 combo_screen.candidates_total，
+    # 退回到 coverage.rules_total（规则条数）。这是「组合」与「规则」两个层面，
+    # 报告正文与候选表必须同源，否则会出现正文 42 条 / 表格 60 行的错位。
+    _ga_top = attr.get("topic_gate_applied") or {}
+    _cov_top = attr.get("coverage") or {}
+    n_eval = (_ga_top.get("combo_candidates_total")
+              or _cov_top.get("rules_total")
+              or len(attr.get("topic_selection") or []))
     if topics:
         signals_txt = (f"本期有 {len(topics)} 条组合线索同时通过「强度达标」与「客群校验」两道门槛，"
                        f"进入本报告的分析主题（{'、'.join('「' + t['name'] + '」' for t in topics[:4])}）。")
     else:
         cov = attr.get("coverage") or {}
-        n_eval = cov.get("rules_total") or len(attr.get("topic_selection") or [])
         n_cand = cov.get("candidate_topics", 0)
         signals_txt = (f"本期共评估 {n_eval} 条候选组合线索，其中 {n_cand} 条强度达标但因客群校验未通过而列观察，"
                        f"没有一条同时满足进入主题的门槛，故本报告按「指标监测」形态出具。")
@@ -1155,6 +1162,11 @@ def render(args):
         for key, d in dims.items():
             for b in (d.get("buckets") or []):
                 if b.get("offset_pp") is None:
+                    continue
+                # 与图 2 保持同一口径：余额过小（sample_too_small）的档位
+                # 已被 signals.py 标 valid=False 并剔除排名，正文不得再引用，
+                # 否则文字结论会指向一个图表里根本不存在的档位。
+                if b.get("valid") is False:
                     continue
                 if best is None or b["offset_pp"] > best[0]:
                     best = (b["offset_pp"], d.get("name") or key, b.get("bucket"))
@@ -1448,8 +1460,7 @@ def render(args):
   <div class="card">
     <h4>本期结论</h4>
     <p>{esc(execution)}</p>
-    <p>这不是数据缺失或分析未完成，而是本切片的风险特征尚未形成足以支撑管理动作的组合信号。
-    对 {reg.unit('监测-候选评估条数', cov.get('rules_total'), lambda v: int(v), 'attribution.json coverage.rules_total', '评估的规则条数', g)} 条候选组合线索的评估结果显示：
+    <p>对 {reg.unit('监测-候选评估条数', n_eval, lambda v: int(v), 'attribution.json topic_gate_applied.combo_candidates_total', 'combo_screen 评估的组合候选总数', g)} 条候选组合线索的评估结果显示：
     显著级 {reg.unit('监测-显著线索数', cov.get('significant'), lambda v: int(v), 'coverage.significant', 'strength>=0.5 且通过校验', g)} 条、
     一般级 {reg.unit('监测-一般线索数', cov.get('moderate'), lambda v: int(v), 'coverage.moderate', '0.3<=strength<0.5', g)} 条。
     建议维持现行准入与贷后管理要求，按季复核；重点盯住下列候选线索的下一期变化。</p>
