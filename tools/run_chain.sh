@@ -44,17 +44,25 @@ echo "── S2 signals ──"
 echo "── S2b combo_split（组合真实求交 + 回库取数）──"
 # 这一步取代旧的「复用 cohort/comparisons 数字」做法：每个风险指标组合都
 # 重新回凭证表求交集，hit / nonhit / universe 三组由同一条 SQL 产出。
-# 没有 DATA_DIR 时只产出候选组合与 SQL（dry-run），不产出任何数字。
+# 默认 chg（不良生成率）口径：归因回答的是「同期谁新变坏」，
+# 存量不良率里混着历史包袱与账龄效应，不能用来解释「为什么会坏」。
+# BASE_SLICE 不给时由脚本自动取分析时点之前的最近一个可用切片；
+# 找不到对比时点会显式回退 vch 并把原因写进 warnings，不会静默降级。
+BASE_SLICE="${BASE_SLICE:-}"
+LEVEL="${LEVEL:-chg}"
 if [ -n "${DATA_DIR:-}" ] && [ -d "${DATA_DIR:-}" ]; then
-  echo "   模式：execute（真实查询 $DATA_DIR）"
+  echo "   模式：execute（真实查询 $DATA_DIR，口径 $LEVEL）"
   "$PY" "$ROOT/scripts/combo_split.py" \
-    --signals signals.json --slice 20260831 --data-dir "$DATA_DIR" \
+    --signals signals.json --slice 20260831 --level "$LEVEL" \
+    ${BASE_SLICE:+--base-slice "$BASE_SLICE"} \
+    --data-dir "$DATA_DIR" \
     --rules "$ROOT/references/rules.json" \
     --out combo_screen.json || echo "   ⚠️ combo_split 失败（不中断链路）"
 else
   echo "   模式：dry-run（未提供 DATA_DIR，仅产出候选组合与 SQL）"
   "$PY" "$ROOT/scripts/combo_split.py" \
-    --signals signals.json --slice 20260831 \
+    --signals signals.json --slice 20260831 --level "$LEVEL" \
+    ${BASE_SLICE:+--base-slice "$BASE_SLICE"} \
     --rules "$ROOT/references/rules.json" \
     --out combo_screen.json || echo "   ⚠️ combo_split 失败（不中断链路）"
 fi
@@ -101,6 +109,37 @@ echo "── S4b topic_gate（两道校验 + 主题名额）──"
   --combo-screen combo_screen.json --evidence evidence.json \
   --attribution attribution.json --max-topics 10 \
   --out topic_gate.json || echo "   ⚠️ topic_gate 失败（不中断链路）"
+
+echo "── S4c mitigate（风险下可贷：高危客群内部缓释分层）──"
+# 只回答「哪里不能放」是半个结论。这一步在已确认的高风险客群内部
+# 再按担保/逾期/金额/接续等维度分层，给出「照常 / 附条件 / 暂停」三档，
+# 并必须同时给出保护性履约敞口占比与暂停档潜在误伤规模。
+# 客群来源：topic_gate 入选主题的 hit 条件；无入选主题时整步跳过。
+if [ -f topic_gate.json ] && [ -n "${DATA_DIR:-}" ] && [ -d "${DATA_DIR:-}" ]; then
+  "$PY" "$ROOT/scripts/mitigate_batch.py" \
+    --topic-gate topic_gate.json --combo-screen combo_screen.json \
+    --slice 20260831 --level "$LEVEL" \
+    ${BASE_SLICE:+--base-slice "$BASE_SLICE"} \
+    --data-dir "$DATA_DIR" --out mitigate.json \
+    || echo "   ⚠️ mitigate 失败（不中断链路）"
+else
+  echo "   跳过：无 topic_gate.json 或未提供 DATA_DIR"
+fi
+
+echo "── S4d internal_external（内部 / 外部 / 未识别三分）──"
+# 外部用「超额」而非「标记」：有标记组的实际新增不良减去
+# 「按同口径基准生成率本来也会坏的部分」，剩下的超额才算外部冲击。
+# 三分账必须精确加总等于全辖新增不良，否则标为 broken 不进报告。
+if [ -n "${DATA_DIR:-}" ] && [ -d "${DATA_DIR:-}" ]; then
+  "$PY" "$ROOT/scripts/internal_external.py" \
+    --slice 20260831 --level "$LEVEL" \
+    ${BASE_SLICE:+--base-slice "$BASE_SLICE"} \
+    --data-dir "$DATA_DIR" \
+    ${COHORTS:+--cohorts "$COHORTS"} \
+    --out internal_external.json || echo "   ⚠️ internal_external 失败（不中断链路）"
+else
+  echo "   跳过：未提供 DATA_DIR"
+fi
 
 echo "── S5 narrative（降级模板，不调 LLM）──"
 "$PY" "$ROOT/scripts/narrative.py" \

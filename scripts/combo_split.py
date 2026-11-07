@@ -42,13 +42,28 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import common  # noqa: E402
 
-SCHEMA_VERSION = "3.0"
+SCHEMA_VERSION = "3.1"
 
 TABLE = "G_00PF_PEAS_LN_VCH_DV"
 
 # 基础过滤：与 core_metrics / drill_planner 完全一致，改动须同步三处
+# 注意：chg 口径下条件判定发生在 **对比时点**（客户在对比时点是什么状态），
+# 不良判定发生在 **分析时点**，所以 CHG_CTE 里需要两份过滤条件。
 BASE_WHERE = "DATA_DAT = '{slice}' AND BUS_BREED_CD LIKE 'A70%'"
 NPL_EXPR = "substr(RSK_CLS_CD,1,1) IN ('3','4','5')"
+
+# —— 口径（level）——
+# vch : 截面存量不良率 Σ(分析时点不良余额)/Σ(分析时点余额)  ← 旧口径，保留向后兼容
+# chg : 新增不良生成率 Σ(对比正常→分析不良的余额)/Σ(对比时点在贷余额)
+#
+# 为什么要有 chg
+# --------------
+# vch 分子混着历史包袱与账龄效应：一笔 2019 年放的历史不良会一直躺在分子里，
+# 让「今年才变坏的客群」和「早就坏了的客群」不可比。归因要回答的是
+# 「同期内谁**新**变坏」，所以分子必须限定为「对比时点正常 且 分析时点不良」。
+# 分母用对比时点在贷余额（风险敞口基数），不是分析时点余额——否则
+# 已核销/已结清的敞口会从分母消失，分母被系统性低估。
+LEVELS = ("vch", "chg")
 
 # ============================================================ 特征 → 凭证表条件
 # 只列出**能由凭证表字段直接判定**的特征。value 是 SQL 布尔表达式。
@@ -183,8 +198,8 @@ PROJ = [
 ]
 
 
-def _cte(conds, slice_v, table=TABLE):
-    """客户级归属 CTE：每个客户只落一个组，杜绝 hit/nonhit 重叠。
+def _cte_vch(conds, slice_v, table=TABLE):
+    """客户级归属 CTE（vch 截面口径）：每个客户只落一个组，杜绝 hit/nonhit 重叠。
 
     为什么必须做客户级归属
     ----------------------
@@ -224,13 +239,88 @@ def _cte(conds, slice_v, table=TABLE):
     )
 
 
+def _cte_chg(conds, slice_v, base_slice, table=TABLE):
+    """客户级归属 CTE（chg 不良生成率口径）：两期凭证表按凭证号对齐。
+
+    口径定义
+    --------
+    hit_flag   : 客户在**对比时点**任一笔凭证满足全部组合条件
+                 （条件判定在对比时点做——归因要看的是「放贷当时/期初是什么状态
+                 的客群后来变坏了」，而不是「已经变坏之后才呈现什么状态」，
+                 后者会引入状态反演：不良客户的逾期天数、五级分类天然异常）
+    npl_bal    : 对比时点**正常**且分析时点**不良**的凭证，在分析时点的不良余额
+    tot_bal    : 对比时点的在贷余额（风险敞口基数）
+    npl_vch_cnt: 由 normal 转为不良的凭证笔数
+
+    为什么分子取分析时点余额、分母取对比时点余额
+    --------------------------------------------
+    分子是「这笔敞口最终坏成了多少」，自然用分析时点余额；
+    分母是「期初有多少敞口暴露在风险下」，必须用对比时点余额。
+    若分母也用分析时点余额，已结清/已核销的正常敞口会消失，
+    分母被系统性低估，生成率虚高。
+
+    左表（base）是骨架：只有在对比时点存在的凭证才有资格进分母。
+    分析时点新增发放的凭证不进分母（它们的生成率要到下一期才可观测）。
+    """
+    alland = " AND ".join("(" + c + ")" for c in conds)
+    base_where = BASE_WHERE.format(slice=base_slice)
+    cur_where = BASE_WHERE.format(slice=slice_v)
+    return (
+        "WITH b AS (\n"
+        "  SELECT CUST_NO, FORM_NO,\n"
+        "         CAST(FORM_BAL_RMB AS DOUBLE) AS bal0,\n"
+        "         CASE WHEN " + NPL_EXPR + " THEN 1 ELSE 0 END AS npl0,\n"
+        "         CASE WHEN " + alland + " THEN 1 ELSE 0 END AS cond_hit\n"
+        "  FROM " + table + "\n"
+        "  WHERE " + base_where + "\n"
+        "),\n"
+        "c AS (\n"
+        "  SELECT FORM_NO,\n"
+        "         CAST(FORM_BAL_RMB AS DOUBLE) AS bal1,\n"
+        "         CASE WHEN " + NPL_EXPR + " THEN 1 ELSE 0 END AS npl1\n"
+        "  FROM " + table + "\n"
+        "  WHERE " + cur_where + "\n"
+        "),\n"
+        # 客户级：只要在对比时点有任一笔凭证满足组合，即归入 hit
+        "cli AS (\n"
+        "  SELECT CUST_NO, MAX(cond_hit) AS hit_flag\n"
+        "  FROM b GROUP BY CUST_NO\n"
+        "),\n"
+        # 凭证级对齐：对比正常 → 分析不良 才算新增不良
+        "chg AS (\n"
+        "  SELECT b.CUST_NO,\n"
+        "         b.bal0,\n"
+        "         CASE WHEN b.npl0 = 0 AND COALESCE(c.npl1,0) = 1\n"
+        "              THEN COALESCE(c.bal1, b.bal0) ELSE 0 END AS npl1_bal,\n"
+        "         CASE WHEN b.npl0 = 0 AND COALESCE(c.npl1,0) = 1 THEN 1 ELSE 0 END AS downgrade_vch\n"
+        "  FROM b LEFT JOIN c ON c.FORM_NO = b.FORM_NO\n"
+        "),\n"
+        "vch_tagged AS (\n"
+        "  SELECT g.CUST_NO, g.hit_flag,\n"
+        "         SUM(x.downgrade_vch) AS npl_vch_cnt,\n"
+        "         SUM(x.npl1_bal)      AS npl_bal,\n"
+        "         SUM(x.bal0)          AS tot_bal\n"
+        "  FROM cli g JOIN chg x ON x.CUST_NO = g.CUST_NO\n"
+        "  GROUP BY g.CUST_NO, g.hit_flag\n"
+        ")\n"
+    )
+
+
+def _cte(conds, slice_v, table=TABLE, level="vch", base_slice=None):
+    if level == "chg":
+        if not base_slice:
+            raise ValueError("chg 口径必须提供 base_slice（对比时点）")
+        return _cte_chg(conds, slice_v, base_slice, table)
+    return _cte_vch(conds, slice_v, table)
+
+
 def _agg(grp_label, where_extra=""):
     cols = ",\n       ".join(expr + " AS " + alias for alias, expr in PROJ)
     return ("SELECT '" + grp_label + "' AS grp,\n       " + cols + "\n"
             "FROM vch_tagged" + (("\nWHERE " + where_extra) if where_extra else ""))
 
 
-def split_sql(conds, slice_v, table=TABLE):
+def split_sql(conds, slice_v, table=TABLE, level="vch", base_slice=None):
     """组合条件 → 一条 SQL，输出 hit / nonhit / universe 三行（客户级归属）。
 
     conds: list[str] 布尔表达式，长度 >= 2（单条件是单维分析，不构成组合）
@@ -239,6 +329,8 @@ def split_sql(conds, slice_v, table=TABLE):
     universe: 全部有凭证的客户
 
     三个分组由同一 CTE 派生，避免多次扫描不同快照导致口径漂移。
+    level="chg" 时 npl_rate 是**不良生成率**而非存量不良率，语义由
+    result["level"] 显式记录，下游渲染必须据此改变措辞。
     """
     if len(conds) < 2:
         raise ValueError("split_sql 需要至少 2 个条件（单条件是单维分析，不构成组合）")
@@ -248,15 +340,15 @@ def split_sql(conds, slice_v, table=TABLE):
         _agg("universe"),
     ]
     body = "\nUNION ALL\n".join(parts)
-    return (_cte(conds, slice_v, table)
+    return (_cte(conds, slice_v, table, level, base_slice)
             + "SELECT * FROM (\n" + body + "\n) t\n"
             + "ORDER BY CASE grp WHEN 'hit' THEN 1 WHEN 'nonhit' THEN 2 ELSE 3 END")
 
 
-def single_sql(cond, slice_v, table=TABLE):
+def single_sql(cond, slice_v, table=TABLE, level="vch", base_slice=None):
     """单条件 → 客户级 hit / universe 两行（用于「组合 vs 单条件」增量检验）"""
     body = "\nUNION ALL\n".join([_agg("hit", "hit_flag = 1"), _agg("universe")])
-    return (_cte([cond], slice_v, table)
+    return (_cte([cond], slice_v, table, level, base_slice)
             + "SELECT * FROM (\n" + body + "\n) t\n"
             + "ORDER BY CASE grp WHEN 'hit' THEN 1 ELSE 2 END")
 
@@ -279,7 +371,7 @@ def _num(x):
         return None
 
 
-def screen(hit, nonhit, universe, singles, cfg=None):
+def screen(hit, nonhit, universe, singles, cfg=None, level="vch"):
     """判定「这是不是一个真正的风险现象」。
 
     返回 status ∈ {phenomenon, weak_phenomenon, insufficient, broken}
@@ -328,6 +420,7 @@ def screen(hit, nonhit, universe, singles, cfg=None):
     incremental = (uni_lift / best_single["lift"]) if best_single and best_single["lift"] else None
 
     metrics = {
+        "level": level,
         "hit_n": uh, "nonhit_n": un, "universe_n": uu, "hit_share": round(share, 6),
         "hit_rate": round(hit_rate, 6), "nonhit_rate": round(non_rate, 6),
         "universe_rate": round(uni_rate, 6),
@@ -337,14 +430,15 @@ def screen(hit, nonhit, universe, singles, cfg=None):
         "incremental_lift": round(incremental, 4) if incremental else None,
     }
 
+    rate_word = "生成率" if level == "chg" else "不良率"
     if uh < cfg["min_hit_n"] or share < cfg["min_hit_share"]:
         return "insufficient", {**metrics,
                                 "reason": f"命中 {uh:.0f} 户（占比 {share:.2%}）低于门槛 "
                                           f"{cfg['min_hit_n']} 户 / {cfg['min_hit_share']:.1%}"}
     if uni_lift is None or uni_lift < cfg["lift_floor"]:
         return "weak_phenomenon", {**metrics,
-                                   "reason": f"组合 lift {uni_lift:.2f} < {cfg['lift_floor']}，"
-                                             f"不良率未显著高于全辖，不构成独立风险现象"}
+                                   "reason": f"组合{rate_word} {hit_rate:.2%} 为全辖的 {uni_lift:.2f} 倍，"
+                                             f"低于门槛 {cfg['lift_floor']}，不构成独立风险现象"}
     if incremental is not None and best_single and incremental < cfg["singleton_margin"]:
         return "weak_phenomenon", {**metrics,
                                    "reason": f"组合 lift {uni_lift:.2f} 仅为最强单条件"
@@ -356,12 +450,72 @@ def screen(hit, nonhit, universe, singles, cfg=None):
 
 # ============================================================ 组合生成
 
+def conds_conflict(conds):
+    """判断一组条件是否逻辑互斥（交集恒为空）。
+
+    为什么必须判
+    ------------
+    特征 2（纯信用 GRTE_MOD_CD='0100'）与特征 6（非信用
+    GRTE_MOD_CD IN ('0200','0300','0400','9900')）是两个互斥集合，
+    组合起来交集恒为空。旧版 build_candidates 只检查 cond **字符串**是否
+    完全相同，于是把这类组合也送进库，白跑一遍 SQL 后拿到空集，
+    最后报「insufficient：不良率缺失」—— 真正的错误（条件互斥）
+    被伪装成数据问题，读者会以为数据不全。
+
+    这类假组合在真实数据上同样是纯浪费：45 个特征里成对互斥的不止一组。
+
+    判定方式：同一字段在两条条件里分别取了互不重叠的取值集合。
+    只做集合级判断，不做通用布尔求解。
+    """
+    import re
+    fields = ("GRTE_MOD_CD", "CONT_LN_IND", "CYC_LN_IND", "RPAY_MOD_CD",
+              "BUS_BREED_CD")
+    for f in fields:
+        eq_sets = []      # 出现 = 'x' 的条件：取值集合只有一个元素
+        ne_sets = []      # 出现 NOT IN 的条件：补集
+        for c in conds:
+            u = c.upper()
+            if f not in u:
+                continue
+            m_eq = re.findall(f + r"\s*=\s*'([^']+)'", u)
+            m_in = re.findall(f + r"\s+IN\s*\(([^)]+)\)", u)
+            m_notin = re.findall(f + r"\s+NOT\s+IN\s*\(([^)]+)\)", u)
+            m_like = re.findall(f + r"\s+LIKE\s+'([^']+)'", u)
+            if m_eq:
+                eq_sets.append(set(m_eq))
+            if m_in:
+                eq_sets.append({x.strip().strip("'") for x in m_in[0].split(",")})
+            if m_notin:
+                ne_sets.append({x.strip().strip("'") for x in m_notin[0].split(",")})
+            if m_like:
+                # 前缀匹配：A701% 与 A702% 互斥
+                eq_sets.append({m_like[0]})
+
+        if len(eq_sets) >= 2:
+            inter = set.intersection(*eq_sets)
+            if not inter:
+                return True, f"字段 {f} 的取值集合互不重叠（{eq_sets}），交集恒为空"
+            # 前缀互斥：A701 与 A702 都不互为前缀
+            if all(len(s) == 1 for s in eq_sets):
+                vals = [next(iter(s)) for s in eq_sets]
+                if all(not (a.startswith(b) or b.startswith(a))
+                       for a in vals for b in vals if a is not b):
+                    return True, f"字段 {f} 的匹配前缀互斥（{vals}），交集恒为空"
+        # 等值 AND NOT IN 同值 → 空集
+        for s in eq_sets:
+            for n in ne_sets:
+                if s <= n:
+                    return True, f"字段 {f} 同时要求等于与不等于 {sorted(s)}，交集恒为空"
+    return False, ""
+
+
 def build_candidates(signal_rows, max_combo=3, min_signal=0.0, max_candidates=200, max_feat=8):
     """从可映射特征里生成二/三组合候选。
 
     signal_rows: [{"feature_id", "name", "norm"(0-1 归一化强度)}]，按 norm 降序
     规则：只取可映射特征；两两组合 + 三三组合；跳过 cond 完全相同的对
-    （如 13 已包含 2 的条件，组合起来等于单条件）。
+    （如 13 已包含 2 的条件，组合起来等于单条件），以及**逻辑互斥**的对
+    （如 2 纯信用 与 6 非信用，交集恒为空）。
 
     min_signal 默认 0：强度只用于**排序**，不用来**淘汰**。
     是否构成风险现象由 screen() 用实测算出的 lift 判定 —— 在取数之前
@@ -392,10 +546,18 @@ def build_candidates(signal_rows, max_combo=3, min_signal=0.0, max_candidates=20
                     cands.append((usable[i], usable[j], usable[k]))
 
     out = []
+    skipped_conflict = []
     for combo in cands:
         conds = [translate(c["feature_id"])["cond"] for c in combo]
         # 条件去重后不足 2 条 → 实际是单条件，不算组合
         if len({c.strip() for c in conds}) < 2:
+            continue
+        # 逻辑互斥 → 交集恒为空，不送库
+        conflict, why = conds_conflict(conds)
+        if conflict:
+            skipped_conflict.append({
+                "features": [c["feature_id"] for c in combo],
+                "reason": why})
             continue
         out.append({
             "features": [{"feature_id": c["feature_id"], "name": c.get("name"),
@@ -406,13 +568,17 @@ def build_candidates(signal_rows, max_combo=3, min_signal=0.0, max_candidates=20
             "sum_norm": round(sum((c.get("norm") or 0) for c in combo), 4),
         })
     out.sort(key=lambda x: (-x["sum_norm"], -x["combo_size"]))
-    return out[:max_candidates]
+    return out[:max_candidates], skipped_conflict
 
 
 def main():
     ap = argparse.ArgumentParser(description="风险指标组合真实求交 + 回库取数")
     ap.add_argument("--signals", help="signals.json（取特征强度）")
     ap.add_argument("--slice", default="20260831")
+    ap.add_argument("--level", default="chg", choices=list(LEVELS),
+                    help="口径：chg=不良生成率（默认，归因主口径）/ vch=存量不良率")
+    ap.add_argument("--base-slice", default=None,
+                    help="chg 口径的对比时点，如 20260331；缺省时从可用切片自动取上一个")
     ap.add_argument("--out", help="输出 combo_screen.json")
     ap.add_argument("--data-dir", help="CSV 目录；给了才真执行，否则 dry-run")
     ap.add_argument("--max-combo", type=int, default=3)
@@ -466,28 +632,40 @@ def main():
             norm = min(1.0, max(devs) / 3.0) if devs else 0.0
         rows.append({"feature_id": u.get("feature_id"), "name": u.get("name") or u.get("label"),
                      "norm": norm})
-    cands = build_candidates(rows, max_combo=args.max_combo, max_candidates=args.max_candidates)
+    cands, conflicts = build_candidates(rows, max_combo=args.max_combo,
+                                        max_candidates=args.max_candidates)
 
     result = {
         "schema_version": SCHEMA_VERSION,
         "kind": "combo_screen",
         "slice": args.slice,
+        "level": args.level,
+        "base_slice": args.base_slice,
+        "rate_label": "不良生成率" if args.level == "chg" else "不良率",
         "mode": "execute" if args.data_dir else "dry-run",
         "criteria": DEFAULT_SCREEN,
         "mappable_features": sorted(FEATURE_COND),
         "unmappable_features": FEATURE_UNAVAILABLE,
         "candidates_total": len(cands),
+        "conflict_skipped_total": len(conflicts),
+        "conflict_skipped": conflicts[:50],
         "candidates": [],
         "warnings": [],
     }
 
+    def _emit_dry(extra_warn=None):
+        for c in cands:
+            c["sql"] = split_sql(c["conds"], args.slice, level=args.level,
+                                 base_slice=args.base_slice)
+        result["candidates"] = cands
+        if extra_warn:
+            result["warnings"].append(extra_warn)
+        json.dump(result, open(args.out, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+
     if not args.data_dir:
         # dry-run：只产出 SQL，不产出任何数字（避免 mock 静默进报告）
-        for c in cands:
-            c["sql"] = split_sql(c["conds"], args.slice)
-        result["candidates"] = cands
-        result["warnings"].append("dry-run：未连接数据源，仅产出候选组合与 SQL，无任何实测数字")
-        json.dump(result, open(args.out, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+        result["mode"] = "dry-run"
+        _emit_dry("dry-run：未连接数据源，仅产出候选组合与 SQL，无任何实测数字")
         print(f"✅ 组合候选 {len(cands)} 个（dry-run，未取数）→ {args.out}")
         return 0
 
@@ -496,13 +674,43 @@ def main():
     duckdb = dx._load_duckdb()
     if duckdb is None:
         result["warnings"].append("duckdb 未安装，无法执行；改用 dry-run 输出")
-        for c in cands:
-            c["sql"] = split_sql(c["conds"], args.slice)
         result["mode"] = "dry-run"
-        json.dump(result, open(args.out, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+        _emit_dry()
         print(f"⚠️  duckdb 未安装，组合候选 {len(cands)} 个仅产出 SQL → {args.out}")
         return 2
     con = duckdb.connect()
+
+    # —— chg 口径必须确认对比时点真实存在，否则生成率会静默变成空值 ——
+    if args.level == "chg":
+        try:
+            vch_glob = f"{args.data_dir.rstrip('/')}/{TABLE}/*.parquet"
+            avail = [r[0] for r in con.execute(
+                f"SELECT DISTINCT DATA_DAT FROM read_parquet('{vch_glob}') "
+                f"ORDER BY 1 DESC LIMIT 12").fetchall()]
+        except Exception as exc:   # noqa: BLE001
+            result["warnings"].append(f"无法探测可用切片（{exc}），chg 口径回退为 vch")
+            args.level = "chg_disabled"
+            avail = []
+        if args.level == "chg":
+            if not args.base_slice:
+                prior = [d for d in avail if d < args.slice]
+                if not prior:
+                    result["warnings"].append(
+                        f"凭证表只有 {avail}，找不到 {args.slice} 之前的对比时点；"
+                        f"不良生成率口径无法成立，本次回退为存量不良率（vch）")
+                    args.level = "vch"
+                else:
+                    args.base_slice = prior[0]
+                    result["warnings"].append(
+                        f"未指定 --base-slice，自动取上一个可用切片 {args.base_slice}")
+            elif args.base_slice not in avail:
+                result["warnings"].append(
+                    f"指定的对比时点 {args.base_slice} 在凭证表中不存在（可用 {avail}），"
+                    f"回退为存量不良率（vch）")
+                args.level = "vch"
+    result["level"] = args.level
+    result["base_slice"] = args.base_slice
+    result["rate_label"] = "不良生成率" if args.level == "chg" else "不良率"
 
     def _q(sql):
         cols, rws, _ = dx.run_sql(con, sql, args.data_dir)
@@ -510,16 +718,17 @@ def main():
 
     passed = []
     for c in cands:
-        sql = split_sql(c["conds"], args.slice)
+        sql = split_sql(c["conds"], args.slice, level=args.level, base_slice=args.base_slice)
         c["sql"] = sql
         groups = _q(sql)   # {grp: row-dict}
         singles = []
         for f in c["features"]:
-            sg = _q(single_sql(f["cond"], args.slice))
+            sg = _q(single_sql(f["cond"], args.slice, level=args.level,
+                               base_slice=args.base_slice))
             singles.append({"feature_id": f["feature_id"], "name": f["name"],
                             "cond": f["cond"], "hit": sg.get("hit"), "universe": sg.get("universe")})
         status, metrics = screen(groups.get("hit"), groups.get("nonhit"),
-                                 groups.get("universe"), singles)
+                                 groups.get("universe"), singles, level=args.level)
         c.update({"status": status, "metrics": metrics})
         if status == "phenomenon":
             passed.append(c)
