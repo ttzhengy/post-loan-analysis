@@ -540,8 +540,14 @@ def _sql_hit_nonhit(dim_filter_hit, dim_filter_nonhit, table="G_00PF_PEAS_LN_VCH
             f") t"
         )
 
-    s_hit = f"SELECT 'hit' AS grp, * FROM (\n{_agg(dim_filter_hit)}\n) h"
-    s_non = f"SELECT 'nonhit' AS grp, * FROM (\n{_agg(f'NOT ({dim_filter_hit})')}\n) nh"
+    # 外层只加来源标记列，内层列必须显式列出。
+    # 原写法 `SELECT 'hit' AS grp, * FROM (...)` 会被 drill_executor 的
+    # select_star 白名单拒绝（禁止 SELECT *），导致全部 plan 无法执行、
+    # evidence.json 为空 —— 而空证据仍会流向报告。生成器与校验器的契约
+    # 必须一致：产物是固定三列，就显式写这三列。
+    _COLS = "n, npl_cnt, npl_rate"
+    s_hit = f"SELECT 'hit' AS grp, {_COLS} FROM (\n{_agg(dim_filter_hit)}\n) h"
+    s_non = f"SELECT 'nonhit' AS grp, {_COLS} FROM (\n{_agg(f'NOT ({dim_filter_hit})')}\n) nh"
     return s_hit, s_non
 
 

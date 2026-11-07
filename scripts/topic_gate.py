@@ -244,14 +244,67 @@ def select_topics(gated, max_topics=MAX_TOPICS_DEFAULT):
     }
 
 
+def _evidence_health(evidence):
+    """证据链健康度汇总：把「执行失败」与「没发现问题」彻底分开。
+
+    为什么必须分开
+    --------------
+    钻取 SQL 被拒（select_star）、执行报错、结果为空，这三种情况都没有
+    任何可用的实测数字。若它们被当成「没有证据 → 跳过」，报告会静默
+    退化成模板叙述，读者看到的是「本期未见强组合信号」——
+    而真实情况是「分析没跑成」。把执行故障包装成业务结论，是贷后归因
+    场景不可接受的错误。
+
+    返回 status ∈ {ok, partial, empty, failed}
+      failed  : 所有证据都执行失败（rejected/error）→ 不得出结论
+      empty   : 证据链为空 → 不得出结论
+      partial : 有 verified 但也有失败项 → 可出结论，须标注覆盖不完整
+      ok      : 全部 verified
+    """
+    chain = evidence.get("evidence_chain") or []
+    if not chain:
+        return {"status": "empty", "total": 0, "verified": 0,
+                "rejected": 0, "error": 0, "reasons": {},
+                "note": "证据链为空：未产出任何钻取证据，本报告不具备归因能力"}
+    cnt = {"verified": 0, "rejected": 0, "error": 0, "empty": 0}
+    reasons = {}
+    for e in chain:
+        st = (e.get("status") or "empty").lower()
+        cnt[st] = cnt.get(st, 0) + 1
+        if st != "verified":
+            r = e.get("reason") or st
+            reasons[r] = reasons.get(r, 0) + 1
+    total = len(chain)
+    if cnt["verified"] == 0:
+        status = "failed"
+        note = (f"{total} 条钻取全部未产出可用证据（失败 {cnt['rejected'] + cnt['error']} 条），"
+                f"本报告不具备归因能力，不得输出管理结论")
+    elif cnt["verified"] < total:
+        status = "partial"
+        note = f"{cnt['verified']}/{total} 条钻取产出可用证据，结论覆盖不完整"
+    else:
+        status, note = "ok", ""
+    return {"status": status, "total": total, "verified": cnt["verified"],
+            "rejected": cnt["rejected"], "error": cnt["error"],
+            "reasons": reasons, "note": note}
+
+
 def run(combo_screen, evidence, attributions, max_topics=MAX_TOPICS_DEFAULT, cfg=None):
     """串起两道校验，产出最终主题清单。
 
     combo_screen: combo_screen.json（含 phenomena[]）
     evidence:     evidence.json（含 evidence_chain[]，按 linked_rule 分组）
     attributions: attribution.json 的 topics[]（提供 strength/name/rule_id）
+
+    证据硬门
+    --------
+    只有 status == 'verified' 的钻取证据能参与归因校验。
+    原实现用 `[... if verified] or evs` 兜底，会把 rejected/error 的证据
+    当成有效证据喂进闸门 —— 这是「执行失败被包装成结论」的直接来源。
     """
     phenomena = combo_screen.get("phenomena") or []
+    health = _evidence_health(evidence)
+
     ev_by_rule = {}
     for e in (evidence.get("evidence_chain") or []):
         ev_by_rule.setdefault(e.get("linked_rule"), []).append(e)
@@ -266,12 +319,21 @@ def run(combo_screen, evidence, attributions, max_topics=MAX_TOPICS_DEFAULT, cfg
             "gate": "phenomenon", "passed": False, "status": "not_screened",
             "reason": "该规则的组合未进入 combo_screen 的现象清单（未做真实求交或未通过）",
         }
+        # 第二道：只认 verified 证据，失败证据一律不放行
         evs = ev_by_rule.get(rid) or []
-        verified = [x for x in evs if x.get("status") == "verified"] or evs
+        verified = [x for x in evs if (x.get("status") or "").lower() == "verified"]
         cmp_all = []
         for x in verified:
             cmp_all.extend(x.get("comparisons") or [])
-        at = attribution_gate(cmp_all, cfg)
+        if evs and not verified:
+            # 有钻取尝试但全部失败：明确标 failed，不能退回 insufficient
+            failed_reasons = sorted({(x.get("reason") or "error") for x in evs})
+            at = {"gate": "attribution", "passed": False, "status": "failed",
+                  "reason": f"钻取未产出可用证据（{'；'.join(failed_reasons)}），"
+                            f"无法检验归因，不得据此得出结论",
+                  "failed_evidence": len(evs)}
+        else:
+            at = attribution_gate(cmp_all, cfg)
         gated.append({
             "rule_id": rid, "name": t.get("name"), "strength": t.get("strength"),
             "level": t.get("level"), "phenomenon": ph, "attribution": at,
@@ -279,10 +341,20 @@ def run(combo_screen, evidence, attributions, max_topics=MAX_TOPICS_DEFAULT, cfg
         })
 
     sel = select_topics([g for g in gated if g["both_passed"]], max_topics=max_topics)
+    # 证据链不健康时，任何主题都不许作为结论输出
+    blocked = health["status"] in ("empty", "failed")
+    if blocked and sel.get("topics"):
+        sel = {**sel, "topics": [],
+               "blocked_reason": health["note"]}
     return {
         "schema_version": SCHEMA_VERSION,
         "kind": "topic_gate",
         "criteria": {**DEFAULT_ATTRIBUTION_GATE, **(cfg or {})},
+        "evidence_health": health,
+        # evidence_status 是 evidence_health.status 的顶层别名：
+        # 下游（render_report / apply_gate / 外部消费方）有按旧名读取的，
+        # 两个名字同值不同位置，避免出现「一处说 ok 一处说 partial」。
+        "evidence_status": health.get("status"),
         "gated": gated,
         "selection": sel,
         "reject_reasons": _reason_summary(gated),

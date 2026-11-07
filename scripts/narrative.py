@@ -623,22 +623,62 @@ def _title(tier, ctx, hit, nonhit, signals, rule_name):
 
 
 
-def _monitor_summary(signals, attribution):
-    """无选中主题时的执行摘要：指标监测口径，不编造归因。"""
+def _monitor_summary(signals, attribution, health=None):
+    """无选中主题时的执行摘要：指标监测口径，不编造归因。
+
+    措辞必须跟着证据健康度走，不能一律宣称「不是数据缺失」：
+    证据 partial / failed 时说「校验未完成」才是实话，
+    否则等于用一句否定句掩盖了链路没跑完。
+    """
     ov = signals.get("overall") or {}
     r = ov.get("npl_rate")
     sel = attribution.get("topic_selection") or []
     n_eval = len(sel)
-    n_sel = sum(1 for t in sel if t.get("decision") == "selected")
+    health = health or {}
+    hstat = (health.get("status") or "ok").lower()
+    n_tot = health.get("total")
+    n_ver = health.get("verified")
+
+    # 分层口径：42 条是候选评估数，其中只有一部分真正进入证据闸门做实测校验。
+    # 注意不能拿 topic_gate_applied.rejected 当闸门条数 —— 它是对全部
+    # topic_selection 逐条写回的结果（42 条全 rejected），而闸门实际只评估了
+    # 进入 gated 的那几条。两个数混用会出现「42 条进入实测校验」的假陈述。
+    _ga = attribution.get("topic_gate_applied") or {}
+    n_gated = _ga.get("gated_total")
+    if n_gated is None:
+        n_gated = _ga.get("rejected", 0)
+        if _ga.get("selected"):
+            n_gated += _ga.get("selected", 0)
+
     parts = [
         f"本期农户贷款余额 {float(ov.get('bal') or 0):,.0f} 元，不良率 {common.pct(r)}，"
         f"资产质量总体处于监测区间。",
-        f"本期对 {n_eval} 条组合线索完成评估，无一条同时满足「强度达标 + 客群实测校验通过」"
-        f"两项条件，故不形成归因主题。",
-        "这不是数据缺失或分析未完成，而是本切片的风险特征尚未形成足以支撑管理动作的组合信号。"
-        "建议维持现行准入与贷后管理要求，按季复核。",
     ]
-    return "".join(parts)
+    if n_gated:
+        parts.append(
+            f"本期共评估 {n_eval} 条组合线索，其中 {n_gated} 条进入数据实测校验，"
+            f"无一条同时满足「强度达标 + 客群实测校验通过」两项条件，故不形成归因主题。")
+    else:
+        parts.append(
+            f"本期共评估 {n_eval} 条组合线索，无一条同时满足「强度达标 + 客群实测校验通过」"
+            f"两项条件，故不形成归因主题。")
+
+    if hstat == "ok":
+        parts.append(
+            "这不是数据缺失或分析未完成，而是本切片的风险特征尚未形成足以支撑管理动作的组合信号。"
+            "建议维持现行准入与贷后管理要求，按季复核。")
+    elif hstat == "partial":
+        parts.append(
+            f"需要说明的是，本次钻取校验未能全部完成（{n_ver}/{n_tot} 条产出可用证据），"
+            "上述判断仅覆盖已验证部分，未验证的线索不排除存在真实信号。"
+            "建议补齐校验后再下管理结论。")
+    else:
+        parts.append(
+            f"需要说明的是，本次钻取校验未能产出可用证据（共 {n_tot or 0} 条），"
+            "结论仅基于指标监测口径，不具备归因能力，请先排查数据与执行链路。")
+
+    parts.append("建议维持现行准入与贷后管理要求，按季复核。" if hstat == "ok" else "")
+    return "".join(p for p in parts if p)
 
 
 def _blind_spots(signals):
@@ -734,12 +774,46 @@ def _blind_spots(signals, attribution, topics):
     return out
 
 
+def _evidence_block(evidence):
+    """证据链是否足以支撑归因结论。返回 (blocked, health)。
+
+    为什么 narrative 要自己再查一遍
+    -------------------------------
+    topic_gate 会拦主题，但 narrative 的主题源是 attribution.topic_selection，
+    不读 topic_gate.json —— 闸门拦下的主题照样能被渲染进报告。
+    这里做第二道独立校验：证据链为空或全部执行失败时，直接判定
+    本报告不具备归因能力，不生成任何主题，只输出执行状态说明。
+    宁可出一份「这次没跑成」的报告，也不能出一份「本期无风险」的报告。
+    """
+    chain = evidence.get("evidence_chain") or []
+    if not chain:
+        return True, {"status": "empty", "total": 0, "verified": 0,
+                      "note": "证据链为空：未产出任何钻取证据"}
+    verified = [e for e in chain if (e.get("status") or "").lower() == "verified"]
+    if not verified:
+        reasons = {}
+        for e in chain:
+            r = e.get("reason") or (e.get("status") or "error")
+            reasons[r] = reasons.get(r, 0) + 1
+        return True, {"status": "failed", "total": len(chain), "verified": 0,
+                      "reasons": reasons,
+                      "note": f"{len(chain)} 条钻取全部未产出可用证据"}
+    if len(verified) < len(chain):
+        return False, {"status": "partial", "total": len(chain),
+                       "verified": len(verified),
+                       "note": f"{len(verified)}/{len(chain)} 条钻取产出可用证据"}
+    return False, {"status": "ok", "total": len(chain), "verified": len(verified), "note": ""}
+
+
 def build_degrade_narrative(evidence, signals, attribution, td=None, rules_doc=None):
     """无 LLM 时的数据驱动模板：由规则语义 + 数据形态派生差异化文案。
 
     **主题源铁律**：只认 `attribution.topic_selection` 中 decision=="selected" 的规则。
       evidence 的条数由 drill_plan 决定（mock 模式恒为 4 条），与「哪些规则真正进了
       报告」无关；若按 evidence 遍历，会出现「选中 0 条却写出 4 条主题」的错位。
+
+    **证据硬门**：证据链为空或全部执行失败时，不产出任何主题，
+    只输出「本次分析未跑成」的状态说明，避免把执行故障写成业务结论。
 
     文案由 _degrade_text 模块构造：
       build_title     —— 机制短语 / 客群短语 / 环节短语 + 量级尾巴
@@ -752,6 +826,21 @@ def build_degrade_narrative(evidence, signals, attribution, td=None, rules_doc=N
     audit = evidence.get("plan_audit") or []
     overall = signals.get("overall") or {}
 
+    # 证据硬门：不健康直接返回空报告，不进任何主题构造
+    blocked, health = _evidence_block(evidence)
+    if blocked:
+        return {
+            "schema_version": SCHEMA_VERSION, "kind": "narrative",
+            "origin": "degrade_template", "generated_at": datetime.now().isoformat(timespec="seconds"),
+            "model": None, "topics": [], "observation_only": [],
+            "execution_status": health,
+            "executive_summary": (
+                "本次贷后归因分析未能产出可用结论。"
+                f"{health['note']}。报告不输出管理判断，请先排查数据与执行链路。"),
+            "data_blind_spots": [health["note"]],
+            "data_sufficient": False,
+        }
+
     ev_by_rule = {}
     for e in chain:
         ev_by_rule.setdefault(e.get("linked_rule"), []).append(e)
@@ -763,7 +852,8 @@ def build_degrade_narrative(evidence, signals, attribution, td=None, rules_doc=N
             "schema_version": SCHEMA_VERSION, "kind": "narrative",
             "origin": "degrade_template", "generated_at": datetime.now().isoformat(timespec="seconds"),
             "model": None, "topics": [], "observation_only": [],
-            "executive_summary": _monitor_summary(signals, attribution),
+            "execution_status": health,
+            "executive_summary": _monitor_summary(signals, attribution, health),
             "data_blind_spots": _blind_spots(signals, attribution, []),
             "warnings": ["本期未触发任何达标的组合线索，报告退化为指标监测形态，不强行拼凑归因主题"],
             "theme_source": "attribution.topic_selection（0 条选中）",

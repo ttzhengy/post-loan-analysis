@@ -63,12 +63,25 @@ SQL_KEYWORDS = {
 }
 
 # 拒绝的语法特征（安全优先：解析不了就拒）
+# 分两级：
+#   untrusted（默认）—— 面向 LLM/外部生成的自由 SQL，禁一切结构化语法
+#   template          —— 面向内置模板产出的聚合分析 SQL，允许子查询/CTE
+#                        因为「先按客户聚合、再算指标」必然需要嵌套；
+#                        但写操作、表名白名单、切片过滤、列白名单照旧不放宽
 REJECT_PATTERNS = [
     (re.compile(r"\bWITH\s+(?:RECURSIVE\s+)?[A-Za-z_][A-Za-z0-9_]*\s+AS\s*\(", re.I), "cte_not_allowed"),
     (re.compile(r"\bOVER\s*\(", re.I), "window_function_not_allowed"),
     (re.compile(r"\bUNION\b", re.I), "union_not_allowed"),
     (re.compile(r"\bINTERSECT\b|\bEXCEPT\b", re.I), "set_operation_not_allowed"),
     (re.compile(r"\(\s*SELECT\b", re.I), "subquery_not_allowed"),
+    (re.compile(r";\s*\S", re.I), "multi_statement"),
+    (re.compile(r"--", re.I), "comment_not_allowed"),
+    (re.compile(r"/\*", re.I), "comment_not_allowed"),
+]
+
+# template 级：允许子查询与 CTE（聚合分析必需），其余仍然禁
+_TEMPLATE_REJECT = [
+    (re.compile(r"\bOVER\s*\(", re.I), "window_function_not_allowed"),
     (re.compile(r";\s*\S", re.I), "multi_statement"),
     (re.compile(r"--", re.I), "comment_not_allowed"),
     (re.compile(r"/\*", re.I), "comment_not_allowed"),
@@ -88,7 +101,7 @@ _NUM_RE = re.compile(r"\b\d+(?:\.\d+)?(?:[eE][+-]?\d+)?\b")
 class SqlValidation:
     def __init__(self):
         self.ok = True
-        self.reason = None
+        self.reason = None          # type: str | None
         self.detail = ""
         self.tables = []
         self.columns = []
@@ -104,9 +117,22 @@ def _ident_raw(tok):
     return tok.strip('"')
 
 
-def validate_sql(sql, td):
-    """白名单强校验。返回 SqlValidation（ok / reason / detail / tables / columns）"""
+def validate_sql(sql, td, trust="untrusted"):
+    """白名单强校验。返回 SqlValidation（ok / reason / detail / tables / columns）
+
+    trust
+    -----
+    untrusted（默认）：LLM / 外部来源的自由 SQL。禁用子查询、CTE、UNION 等
+                      一切结构化语法，最小攻击面。
+    template        ：内置 planner 模板产出的聚合分析 SQL。允许子查询与 CTE
+                      （按客户聚合再算指标必然需要嵌套），但写操作、表名
+                      白名单、切片过滤、列白名单、单语句、无注释等规则
+                      一律照旧执行。
+    """
     v = SqlValidation()
+    if trust not in ("untrusted", "template"):
+        v.ok, v.reason, v.detail = False, "bad_trust_level", f"未知 trust={trust}"
+        return v
     if not isinstance(sql, str) or not sql.strip():
         v.ok, v.reason, v.detail = False, "missing_sql", ""
         return v
@@ -131,7 +157,8 @@ def validate_sql(sql, td):
         return v
 
     # 4) 解析不了的语法一律拒
-    for pat, reason in REJECT_PATTERNS:
+    patterns = REJECT_PATTERNS if trust == "untrusted" else _TEMPLATE_REJECT
+    for pat, reason in patterns:
         if pat.search(s):
             v.ok, v.reason, v.detail = False, "unparseable_sql", reason
             return v
@@ -245,6 +272,9 @@ def validate_plan(plan, td):
     steps = plan.get("steps") or []
     if not steps:
         return False, "missing_steps", "plan 无 steps"
+    # 内置模板（origin 以 degrade 开头）产出的聚合分析 SQL 必须嵌套子查询，
+    # 走 template 级校验；其余（LLM / 外部）走 untrusted 级。
+    trust = "template" if str(plan.get("origin") or "").startswith("degrade") else "untrusted"
     for st in steps:
         if not isinstance(st, dict):
             return False, "malformed_step", ""
@@ -252,7 +282,7 @@ def validate_plan(plan, td):
             # expect 缺失不致命（S4 仍可算），但按 C5 记为 invalid 更严格？—— 取「不阻塞执行」策略：
             # expect 缺失只警告，因为 DRY-RUN 下不影响证据产出。这里按契约 C5 强制。
             return False, "missing_expect", f"{st.get('step_id', '?')} 未给 expect"
-        v = validate_sql(st.get("sql", ""), td)
+        v = validate_sql(st.get("sql", ""), td, trust=trust)
         if not v.ok:
             return False, v.reason, f"{st.get('step_id', '?')}: {v.detail}"
     return True, None, ""

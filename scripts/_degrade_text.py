@@ -392,7 +392,7 @@ class Facts:
         c = (plan.get("comparisons") or [{}])[0]
         self.hit = c.get("hit") or {}
         self.nonhit = c.get("nonhit") or {}
-        self.lift = c.get("lift")
+        self.lift = _resolve_lift(c.get("lift"), self.hit, self.nonhit)
         self.hit_rate = self.hit.get("npl_rate")
         self.non_rate = self.nonhit.get("npl_rate")
         self.overall = (self.signals.get("overall") or {})
@@ -459,14 +459,46 @@ class Facts:
 
 # ============================================================ 标题
 
+def _resolve_lift(raw, hit, nonhit):
+    """倍数口径兜底：plan 给的 lift 可能缺失或与 hit/nonhit 矛盾。
+
+    为什么不能直接信 plan
+    ---------------------
+    曾出现「不良率 40.90%，是全辖平均的 0.0 倍」这类自相矛盾的渲染：
+    plan 里 lift 为 None/0，而 hit/nonhit 两个比率的实际比值是有效的。
+    此时按 hit/nonhit 现算；两边都算不出来才返回 None（标题里就不写倍数），
+    绝不用 `or 0` 兜底 —— 0.0 倍会被读成「风险极低」，方向性错误比缺失更糟。
+    """
+    def _num(v):
+        try:
+            return float(v)
+        except (TypeError, ValueError):
+            return None
+
+    h = _num((hit or {}).get("npl_rate"))
+    n = _num((nonhit or {}).get("npl_rate"))
+    calc = (h / n) if (h is not None and n) else None
+
+    r = _num(raw)
+    # plan 的 lift 明显失真（<=0 或与实算差一倍以上）时以实算为准
+    if calc is not None and (r is None or r <= 0 or abs(r - calc) > max(1.0, calc)):
+        return calc
+    return r if r is not None and r > 0 else calc
+
+
 def _lift_tail(f, idx):
     """量级尾巴：source 决定口径，idx 保证同 source 的多条标题也不撞句式"""
     hit = f"{f.hit_rate:.2%}" if f.hit_rate is not None else "—"
     non = f"{f.non_rate:.2%}" if f.non_rate is not None else "—"
-    L = f.lift or 0
     pool = TAILS[f.source]
     t = pool[idx % len(pool)]
-    return t.format(hit=hit, non=non, lift=L)
+    if not f.lift:
+        # 倍数算不出来时，退到不含倍数的句式，不编造 0.0 倍
+        plain = [p for p in pool if "{lift" not in p]
+        if plain:
+            return plain[idx % len(plain)].format(hit=hit, non=non, lift="—")
+        return f"不良率 {hit}"
+    return t.format(hit=hit, non=non, lift=f.lift)
 
 
 def build_title(f, idx):

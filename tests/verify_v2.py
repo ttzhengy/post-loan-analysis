@@ -322,7 +322,7 @@ def run_online(c: Checker, data_dir: str, keep: bool):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--data-dir", default="/tmp/vchfix2")
+    ap.add_argument("--data-dir", default="/tmp/vchfix3")
     ap.add_argument("--keep", action="store_true")
     args = ap.parse_args()
 

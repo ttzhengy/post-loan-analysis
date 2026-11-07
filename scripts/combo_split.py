@@ -414,9 +414,10 @@ def single_sql(cond, slice_v, table=TABLE, level="vch", base_slice=None):
 DEFAULT_SCREEN = {
     "min_hit_n": 200,          # 命中客户数下限
     "min_hit_share": 0.002,    # 命中占全辖比下限（0.2%）
-    "lift_floor": 1.5,         # 组合整体 lift 下限
+    "lift_floor": 1.5,         # 相对基准（父群优先）的 lift 下限
     "singleton_margin": 1.15,  # 组合 lift 应至少比最强单条件 lift 高 15%
     "nonhit_max_lift": 1.3,    # 对照组的 lift 上限，太高说明条件不具区分性
+    "max_p_value": 0.05,       # 与基准组差异的双侧检验 p 值上限
 }
 
 
@@ -427,17 +428,49 @@ def _num(x):
         return None
 
 
-def screen(hit, nonhit, universe, singles, cfg=None, level="vch"):
+def _z_test_two_prop(p1, n1, p2, n2):
+    """两比例差异检验（双侧 z 检验），返回 p 值。
+
+    为什么必须要
+    ------------
+    固定「lift ≥ 1.5」这种门槛完全忽略样本量：不良率 3~5% 时，
+    30 个样本只有 1~2 个坏样本，lift 再高也是噪声。
+    改用 z 检验给 p 值，配合样本量与绝对差一起判断。
+    """
+    import math
+    if not n1 or not n2 or n1 <= 0 or n2 <= 0:
+        return None
+    p_pool = (p1 * n1 + p2 * n2) / (n1 + n2)
+    if p_pool <= 0 or p_pool >= 1:
+        return None
+    se = math.sqrt(p_pool * (1 - p_pool) * (1 / n1 + 1 / n2))
+    if se <= 0:
+        return None
+    z = (p1 - p2) / se
+    # 双侧：2 * (1 - Φ(|z|))
+    return round(math.erfc(abs(z) / math.sqrt(2)), 6)
+
+
+def screen(hit, nonhit, universe, singles, cfg=None, level="vch", parent=None):
     """判定「这是不是一个真正的风险现象」。
 
     返回 status ∈ {phenomenon, weak_phenomenon, insufficient, broken}
       broken      : 口径不自洽（hit+nonhit≠universe，或命中超全辖）→ 证据作废
-      insufficient: 样本不足
+      insufficient: 样本不足 / 统计不显著
       weak_phenomenon: 有样本但 lift 不够，或组合未超过最强单条件
       phenomenon  : 通过
 
-    额外返回 `incremental_lift` = 组合 lift / 最强单条件 lift，
-    这是「叠加是否真的有增量」的判据，直接回应「每个组合不良率都一样」。
+    比较基准：父群优先，全辖为辅
+    ------------------------------
+    原实现只用「相对全辖」的 lift。全辖率本身是混合群体的加权结果，
+    任何子群相对它都会被稀释 —— 全辖 32% 时，子群甚至可能全部落在
+    1.5 倍以下，而子群之间的差异其实很显著。
+
+    正确基准是「去掉最后一个条件的父群」：
+      「接续贷 + 循环额度」应该跟「接续贷 + 非循环额度」或「接续贷」比，
+      而不是跟全辖比。
+    `parent` 传入 {"n","npl_rate"} 时按父群判定；缺省时退回全辖口径
+    （保持对已有调用方的兼容），并在 metrics 里标明用了哪个基准。
     """
     cfg = {**DEFAULT_SCREEN, **(cfg or {})}
     if not all([hit, nonhit, universe]):
@@ -464,6 +497,25 @@ def screen(hit, nonhit, universe, singles, cfg=None, level="vch"):
     uni_lift = hit_rate / uni_rate if uni_rate else None
     share = uh / uu
 
+    # 父群基线：优先用父群，否则退回全辖
+    par_n = _num((parent or {}).get("n"))
+    par_rate = _num((parent or {}).get("npl_rate"))
+    use_parent = bool(par_n and par_rate and par_n > 0)
+    if use_parent:
+        base_rate, base_n, base_name = par_rate, par_n, "父群"
+    else:
+        base_rate, base_n, base_name = uni_rate, uu, "全辖"
+    base_lift = (hit_rate / base_rate) if base_rate else None
+    # 与基准组的显著性：父群口径下，对照 = 父群去掉命中部分
+    if use_parent:
+        assert par_n is not None and par_rate is not None
+        cmp_n = max(par_n - uh, 0)
+        cmp_bad_rate = ((par_rate * par_n - hit_rate * uh) / cmp_n) if cmp_n > 0 else None
+    else:
+        cmp_n, cmp_bad_rate = un, non_rate
+    p_value = (_z_test_two_prop(hit_rate, uh, cmp_bad_rate, cmp_n)
+               if (cmp_bad_rate is not None and cmp_n and cmp_n > 0) else None)
+
     single_lifts = []
     for s in singles or []:
         r = _num((s.get("hit") or {}).get("npl_rate"))
@@ -482,6 +534,10 @@ def screen(hit, nonhit, universe, singles, cfg=None, level="vch"):
         "universe_rate": round(uni_rate, 6),
         "lift_vs_nonhit": round(lift, 4) if lift else None,
         "lift_vs_universe": round(uni_lift, 4) if uni_lift else None,
+        "baseline_used": base_name,
+        "baseline_rate": round(base_rate, 6) if base_rate else None,
+        "lift_vs_baseline": round(base_lift, 4) if base_lift else None,
+        "p_value": p_value,
         "singles": single_lifts, "best_single": best_single,
         "incremental_lift": round(incremental, 4) if incremental else None,
     }
@@ -491,10 +547,16 @@ def screen(hit, nonhit, universe, singles, cfg=None, level="vch"):
         return "insufficient", {**metrics,
                                 "reason": f"命中 {uh:.0f} 户（占比 {share:.2%}）低于门槛 "
                                           f"{cfg['min_hit_n']} 户 / {cfg['min_hit_share']:.1%}"}
-    if uni_lift is None or uni_lift < cfg["lift_floor"]:
+    # 统计显著性：p 值太大说明差异可能是噪声，不能当现象
+    if p_value is not None and p_value > cfg["max_p_value"]:
+        return "insufficient", {**metrics,
+                                "reason": f"与{base_name}的差异不显著（p={p_value:.3f} > "
+                                          f"{cfg['max_p_value']}），样本不足以支撑该现象"}
+    if base_lift is None or base_lift < cfg["lift_floor"]:
         return "weak_phenomenon", {**metrics,
-                                   "reason": f"组合{rate_word} {hit_rate:.2%} 为全辖的 {uni_lift:.2f} 倍，"
-                                             f"低于门槛 {cfg['lift_floor']}，不构成独立风险现象"}
+                                   "reason": f"组合{rate_word} {hit_rate:.2%} 为{base_name}的 "
+                                             f"{base_lift:.2f} 倍，低于门槛 {cfg['lift_floor']}，"
+                                             f"不构成独立风险现象"}
     if incremental is not None and best_single and incremental < cfg["singleton_margin"]:
         return "weak_phenomenon", {**metrics,
                                    "reason": f"组合 lift {uni_lift:.2f} 仅为最强单条件"
@@ -786,13 +848,27 @@ def main():
                                base_slice=args.base_slice))
             singles.append({"feature_id": f["feature_id"], "name": f["name"],
                             "cond": f["cond"], "hit": sg.get("hit"), "universe": sg.get("universe")})
+        # 父群基线：去掉最后一个条件后的客群（组合 size>=2 才有意义）。
+        # 「接续贷 + 循环额度」该跟「接续贷」比，而不是跟全辖比 ——
+        # 全辖率是混合群体的加权结果，会把子群差异稀释掉。
+        parent = None
+        if len(c["conds"]) >= 2:
+            try:
+                p_sql = split_sql(c["conds"][:-1], args.slice, level=args.level,
+                                  base_slice=args.base_slice)
+                p_groups = _q(p_sql)
+                parent = p_groups.get("hit")     # 父群条件全命中即父群整体
+            except Exception:
+                parent = None
         status, metrics = screen(groups.get("hit"), groups.get("nonhit"),
-                                 groups.get("universe"), singles, level=args.level)
+                                 groups.get("universe"), singles, level=args.level,
+                                 parent=parent)
         c.update({"status": status, "metrics": metrics})
         if status == "phenomenon":
             passed.append(c)
 
-    passed.sort(key=lambda x: -((x["metrics"] or {}).get("lift_vs_universe") or 0))
+    passed.sort(key=lambda x: -((x["metrics"] or {}).get("lift_vs_baseline")
+                                or (x["metrics"] or {}).get("lift_vs_universe") or 0))
 
     # 把通过的现象挂到「引用同一组特征」的归因规则上，供 topic_gate 第一道校验
     # 匹配。匹配依据是特征集合的 Jaccard（>=0.6），不做文字相似度猜测。

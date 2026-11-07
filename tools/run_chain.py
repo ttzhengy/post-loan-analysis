@@ -178,6 +178,20 @@ def main():
          "--evidence", "evidence.json", "--attribution", "attribution.json",
          "--max-topics", "10", "--out", "topic_gate.json"], cwd=out)
 
+    step("S4b2 apply_gate（把闸门结果写回主题源）")
+    log("   narrative 的主题源是 attribution.topic_selection，而这个字段在 S3")
+    log("   就定好了，不经过 topic_gate —— 闸门拦下的主题照样会被渲染进报告，")
+    log("   出现「闸门 0 条 / 报告 5 条」的矛盾。这一步用闸门结果覆写它，")
+    log("   让下游只认真正过了两道校验的主题。")
+    if (out / "topic_gate.json").exists() and (out / "attribution.json").exists():
+        run([py, SCRIPTS / "apply_gate.py",
+             "--topic-gate", "topic_gate.json",
+             "--attribution", "attribution.json",
+             "--evidence", "evidence.json",
+             "--out", "attribution.json"], cwd=out)
+    else:
+        log("   跳过：缺 topic_gate.json 或 attribution.json")
+
     step("S4c mitigate（风险下可贷：高危客群内部缓释分层）")
     log("   只回答「哪里不能放」是半个结论。这一步在已确认的高风险客群内部")
     log("   再分层，给出「照常 / 附条件 / 暂停」三档，并给出保护性履约敞口")
